@@ -34,10 +34,57 @@ type Check struct {
 	Points  float64              // points awarded if the check is positive (can also be negative).
 	Every   time.Duration        // throttles duration (zero evaluates on every loop iteration (which is defined by Challenge.Interval))
 	Repeat  bool                 // should the points be awarded on every evaluation?
+	Live    bool                 // typed checks continue to track their result after passing.
+	Type    ScoreType            // optional score category; typed checks submit their current score and maximum.
+	Reason  string               // explanation shown with the result after the challenge ends.
 	Trigger func() (bool, error) // condition that tells if the check is successful.
 
-	last    time.Time
-	retired bool
+	last       time.Time
+	lastResult *bool
+	retired    bool
+}
+
+const (
+	MaxDiagramSize  = api.MaxDiagramSize
+	MaxDiagramCount = api.MaxDiagramCount
+	MaxHTTPBodySize = api.MaxHTTPBodySize
+)
+
+type ScoreType = api.ScoreType
+
+const (
+	ScoreTypeUnspecified = api.ScoreTypeUnspecified
+	ScoreTypeDesign      = api.ScoreTypeDesign
+	ScoreTypeOperational = api.ScoreTypeOperational
+)
+
+type HTTPRequest = api.SendHTTPInput
+type HTTPResponse = api.SendHTTPOutput
+
+// NewDesignCheck creates a one-shot configuration check in the design score category.
+func NewDesignCheck(points float64, reason string, trigger func() (bool, error)) Check {
+	return NewScoreCheck(ScoreTypeDesign, points, false, reason, trigger)
+}
+
+// NewOperationalCheck creates a live check whose points follow its current result.
+func NewOperationalCheck(points float64, reason string, trigger func() (bool, error)) Check {
+	return NewScoreCheck(ScoreTypeOperational, points, true, reason, trigger)
+}
+
+// NewScoreCheck creates a typed check for a score category.
+func NewScoreCheck(scoreType ScoreType, points float64, live bool, reason string, trigger func() (bool, error)) Check {
+	return Check{Points: points, Live: live, Type: scoreType, Reason: reason, Trigger: trigger}
+}
+
+// NewHTTPRequest creates an HTTP request with an initialized header map and a ten second timeout.
+func NewHTTPRequest(method, url string, body []byte) HTTPRequest {
+	return HTTPRequest{
+		Method:        method,
+		URL:           url,
+		Headers:       map[string][]string{},
+		Body:          body,
+		TimeoutMillis: 10_000,
+	}
 }
 
 // Scenario is the main challenge subject, per challenge there should only be one scenario.
@@ -51,7 +98,9 @@ type Scenario struct {
 	initTitle        string
 	initDescriptions []string
 	initAssets       map[string]string
+	initDiagrams     map[string][]byte
 	initClues        map[string]string
+	initCluePrices   map[string]float64
 	initPermission   string
 	initGuardrail    string
 	init             atomic.Bool
@@ -69,16 +118,48 @@ type Scenario struct {
 // New creates the scenario for your plugin.
 func New(title string, interval time.Duration, boostrap func(s *Scenario) error) *Scenario {
 	return &Scenario{
-		bootstrap:    boostrap,
-		initTitle:    title,
-		interval:     max(10*time.Second, interval),
-		init:         atomic.Bool{},
-		initAssets:   map[string]string{},
-		initClues:    map[string]string{},
-		checks:       map[string]*Check{},
-		events:       map[string]Event{},
-		activeEvents: map[string]context.CancelFunc{},
+		bootstrap:      boostrap,
+		initTitle:      title,
+		interval:       max(10*time.Second, interval),
+		init:           atomic.Bool{},
+		initAssets:     map[string]string{},
+		initDiagrams:   map[string][]byte{},
+		initClues:      map[string]string{},
+		initCluePrices: map[string]float64{},
+		checks:         map[string]*Check{},
+		events:         map[string]Event{},
+		activeEvents:   map[string]context.CancelFunc{},
 	}
+}
+
+// SendHTTP asks the challenge host to send an HTTP request and returns its response.
+func (c *Scenario) SendHTTP(request HTTPRequest) (HTTPResponse, error) {
+	return api.SendHTTP(request)
+}
+
+func (c *Scenario) ReportProgress(message string) error {
+	_, err := api.UpdateScore(api.UpdateScoreInput{Reason: message})
+	return err
+}
+
+// AddDiagram adds a small JPEG infrastructure diagram to the challenge metadata.
+func (c *Scenario) AddDiagram(name string, diagram []byte) *Scenario {
+	if !c.init.Load() {
+		c.initDiagrams[name] = diagram
+	} else {
+		if _, err := api.UpdateMeta(api.UpdateMetaInput{
+			AdditionalDiagrams: map[string][]byte{name: diagram},
+		}); err != nil {
+			_, err := api.Cancel(api.CancelInput{
+				Error:       "diagram is defect",
+				DetailError: fmt.Sprintf("failed to update diagram metadata '%s': %v", name, err),
+			})
+			if err != nil {
+				slog.Error(fmt.Sprintf("failed to cancel: %v", err))
+			}
+		}
+	}
+	return c
 }
 
 // AddAsset uploads the provided asset with a specified name to the providers asset storage.
@@ -153,6 +234,7 @@ func (c *Scenario) AddDescription(description string) *Scenario {
 func (c *Scenario) AddClue(hint, secret string, price float64) *Scenario {
 	if !c.init.Load() {
 		c.initClues[hint] = secret
+		c.initCluePrices[hint] = price
 	} else {
 		if _, err := api.UpdateMeta(api.UpdateMetaInput{
 			AdditionalClues: map[string]string{
@@ -217,6 +299,22 @@ func (c *Scenario) SetGuardrail(doc fmt.Stringer) *Scenario {
 
 // AddCheck adds a check to the next cycle.
 func (c *Scenario) AddCheck(name string, check Check) *Scenario {
+	if check.Type != ScoreTypeUnspecified {
+		if _, err := api.RegisterScore(api.RegisterScoreInput{
+			Name:    name,
+			Type:    check.Type,
+			Maximum: check.Points,
+		}); err != nil {
+			_, err := api.Cancel(api.CancelInput{
+				Error:       "score metadata is defect",
+				DetailError: fmt.Sprintf("failed to register score '%s': %v", name, err),
+			})
+			if err != nil {
+				slog.Error(fmt.Sprintf("failed to cancel: %v", err))
+			}
+			return c
+		}
+	}
 	c.checksLock.Lock()
 	defer c.checksLock.Unlock()
 	c.checks[name] = &check
@@ -261,7 +359,9 @@ func (c *Scenario) Start() {
 		Title:        c.initTitle,
 		Descriptions: c.initDescriptions,
 		Clues:        c.initClues,
+		CluePrices:   c.initCluePrices,
 		Assets:       c.initAssets,
+		Diagrams:     c.initDiagrams,
 		Ready:        false,
 	}); err != nil {
 		_, err := api.Cancel(api.CancelInput{
@@ -377,7 +477,47 @@ func (c *Scenario) evaluateChecks() {
 
 		passed, err := check.Trigger()
 		if err != nil {
+			if check.Type != ScoreTypeUnspecified {
+				reason := err.Error()
+				if check.Reason != "" {
+					reason = fmt.Sprintf("%s: %v", check.Reason, err)
+				}
+				if _, submitErr := api.SubmitScore(api.SubmitScoreInput{
+					Name:    name,
+					Type:    check.Type,
+					Maximum: check.Points,
+					Reason:  reason,
+				}); submitErr != nil {
+					slog.Error(fmt.Sprintf("check %q: submit failure: %v", name, submitErr))
+				} else {
+					check.lastResult = nil
+				}
+			}
 			slog.Error(fmt.Sprintf("check %q: %v", name, err))
+			continue
+		}
+		if check.Type != ScoreTypeUnspecified {
+			if check.lastResult != nil && *check.lastResult == passed {
+				continue
+			}
+			score := 0.0
+			if passed {
+				score = check.Points
+			}
+			if _, err := api.SubmitScore(api.SubmitScoreInput{
+				Name:    name,
+				Type:    check.Type,
+				Score:   score,
+				Maximum: check.Points,
+				Reason:  check.Reason,
+			}); err != nil {
+				slog.Error(fmt.Sprintf("check %q: submit: %v", name, err))
+				continue
+			}
+			check.lastResult = new(passed)
+			if passed && !check.Live {
+				check.retired = true
+			}
 			continue
 		}
 		if !passed {

@@ -49,6 +49,27 @@ func UpdateScore(in UpdateScoreInput) (UpdateScoreOutput, error) {
 	return callInOut[UpdateScoreInput, UpdateScoreOutput](func(i uint64) uint64 { return hostUpdateScore(i) }, in)
 }
 
+//go:wasmimport extism:host/user register_score
+func hostRegisterScore(uint64) uint64
+
+func RegisterScore(in RegisterScoreInput) (RegisterScoreOutput, error) {
+	return callInOut[RegisterScoreInput, RegisterScoreOutput](func(i uint64) uint64 { return hostRegisterScore(i) }, in)
+}
+
+//go:wasmimport extism:host/user submit_score
+func hostSubmitScore(uint64) uint64
+
+func SubmitScore(in SubmitScoreInput) (SubmitScoreOutput, error) {
+	return callInOut[SubmitScoreInput, SubmitScoreOutput](func(i uint64) uint64 { return hostSubmitScore(i) }, in)
+}
+
+//go:wasmimport extism:host/user send_http
+func hostSendHTTP(uint64) uint64
+
+func SendHTTP(in SendHTTPInput) (SendHTTPOutput, error) {
+	return callInOut[SendHTTPInput, SendHTTPOutput](func(i uint64) uint64 { return hostSendHTTP(i) }, in)
+}
+
 //go:wasmimport extism:host/user create_asset
 func hostCreateAsset(uint64) uint64
 

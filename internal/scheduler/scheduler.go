@@ -5,10 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"sync"
-
-	"codeberg.org/megakuul/cloudjam/internal/provider/cache"
-	"github.com/megakuul/dynamitedb"
-	"github.com/megakuul/lake"
 )
 
 type Scheduler struct {
@@ -16,14 +12,11 @@ type Scheduler struct {
 	wg      sync.WaitGroup
 
 	logger *slog.Logger
-	oltp   *dynamitedb.Bucket
-	olap   *lake.Bucket
-
-	providerCache *cache.Cache
 }
 
-func New(rootCtx context.Context) *Scheduler {
+func New(rootCtx context.Context, logger *slog.Logger) *Scheduler {
 	return &Scheduler{
+		logger:  logger,
 		rootCtx: rootCtx,
 	}
 }

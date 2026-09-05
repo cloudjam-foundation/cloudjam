@@ -2,8 +2,8 @@
 // @generated from file v1/play/challenge.proto (package v1.play, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
 import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_duration, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file v1/play/challenge.proto.
  */
 export const file_v1_play_challenge: GenFile = /*@__PURE__*/
-  fileDesc("Chd2MS9wbGF5L2NoYWxsZW5nZS5wcm90bxIHdjEucGxheSJZCgpTY29yZUV2ZW50Ei0KCXRpbWVzdGFtcBgBIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDAoEdGV4dBgCIAEoCRIOCgZjaGFuZ2UYAyABKAEi2QMKCUNoYWxsZW5nZRINCgVzY29wZRgBIAEoCRIZCgdnYW1lX2lkGAIgASgJQgi6SAVyA7ABARIUCgJpZBgDIAEoCUIIukgFcgOwAQESGQoHdGVhbV9pZBgEIAEoCUIIukgFcgOwAQESKAoWZGVmaW5pdGlvbl9wcm92aWRlcl9pZBgFIAEoCUIIukgFcgOwAQESHwoNZGVmaW5pdGlvbl9pZBgGIAEoCUIIukgFcgOwAQESDQoFdGl0bGUYByABKAkSEwoLZGVzY3JpcHRpb24YCCADKAkSLgoGYXNzZXRzGAkgAygLMh4udjEucGxheS5DaGFsbGVuZ2UuQXNzZXRzRW50cnkSLAoFY2x1ZXMYCiADKAsyHS52MS5wbGF5LkNoYWxsZW5nZS5DbHVlc0VudHJ5Eg0KBWVycm9yGAsgASgJEikKDHNjb3JlX2V2ZW50cxgMIAMoCzITLnYxLnBsYXkuU2NvcmVFdmVudBINCgVyZWFkeRgNIAEoCBotCgtBc3NldHNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBGiwKCkNsdWVzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4AUIwWi5jb2RlYmVyZy5vcmcvbWVnYWt1dWwvY2xvdWRqYW0vcGtnL2FwaS92MS9wbGF5YgZwcm90bzM", [file_buf_validate_validate, file_google_protobuf_duration, file_google_protobuf_timestamp]);
+  fileDesc("Chd2MS9wbGF5L2NoYWxsZW5nZS5wcm90bxIHdjEucGxheSKrAQoKU2NvcmVFdmVudBItCgl0aW1lc3RhbXAYASABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEgwKBHRleHQYAiABKAkSDgoGY2hhbmdlGAMgASgBEiAKBHR5cGUYBCABKA4yEi52MS5wbGF5LlNjb3JlVHlwZRINCgVzY29yZRgFIAEoARIPCgdtYXhpbXVtGAYgASgBEg4KBnJlYXNvbhgHIAEoCSJJCgVTY29yZRIgCgR0eXBlGAEgASgOMhIudjEucGxheS5TY29yZVR5cGUSDQoFdmFsdWUYAiABKAESDwoHbWF4aW11bRgDIAEoASLkBQoJQ2hhbGxlbmdlEg0KBXNjb3BlGAEgASgJEhkKB2dhbWVfaWQYAiABKAlCCLpIBXIDsAEBEhQKAmlkGAMgASgJQgi6SAVyA7ABARIZCgd0ZWFtX2lkGAQgASgJQgi6SAVyA7ABARIoChZkZWZpbml0aW9uX3Byb3ZpZGVyX2lkGAUgASgJQgi6SAVyA7ABARIfCg1kZWZpbml0aW9uX2lkGAYgASgJQgi6SAVyA7ABARINCgV0aXRsZRgHIAEoCRITCgtkZXNjcmlwdGlvbhgIIAMoCRIuCgZhc3NldHMYCSADKAsyHi52MS5wbGF5LkNoYWxsZW5nZS5Bc3NldHNFbnRyeRIsCgVjbHVlcxgKIAMoCzIdLnYxLnBsYXkuQ2hhbGxlbmdlLkNsdWVzRW50cnkSDQoFZXJyb3IYCyABKAkSKQoMc2NvcmVfZXZlbnRzGAwgAygLMhMudjEucGxheS5TY29yZUV2ZW50Eg0KBXJlYWR5GA0gASgIEh4KBnNjb3JlcxgOIAMoCzIOLnYxLnBsYXkuU2NvcmUSTAoIZGlhZ3JhbXMYDyADKAsyIC52MS5wbGF5LkNoYWxsZW5nZS5EaWFncmFtc0VudHJ5Qhi6SBWaARIQBCIGcgQQARhkKgZ6BBiAgAQSNwoLY2x1ZV9wcmljZXMYECADKAsyIi52MS5wbGF5LkNoYWxsZW5nZS5DbHVlUHJpY2VzRW50cnkaLQoLQXNzZXRzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ARosCgpDbHVlc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEaLwoNRGlhZ3JhbXNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAw6AjgBGjEKD0NsdWVQcmljZXNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAE6AjgBKjkKCVNjb3JlVHlwZRIPCgtVbnNwZWNpZmllZBAAEgoKBkRlc2lnbhABEg8KC09wZXJhdGlvbmFsEAJCMFouY29kZWJlcmcub3JnL21lZ2FrdXVsL2Nsb3VkamFtL3BrZy9hcGkvdjEvcGxheWIGcHJvdG8z", [file_buf_validate_validate, file_google_protobuf_duration, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message v1.play.ScoreEvent
@@ -33,6 +33,26 @@ export type ScoreEvent = Message<"v1.play.ScoreEvent"> & {
    * @generated from field: double change = 3;
    */
   change: number;
+
+  /**
+   * @generated from field: v1.play.ScoreType type = 4;
+   */
+  type: ScoreType;
+
+  /**
+   * @generated from field: double score = 5;
+   */
+  score: number;
+
+  /**
+   * @generated from field: double maximum = 6;
+   */
+  maximum: number;
+
+  /**
+   * @generated from field: string reason = 7;
+   */
+  reason: string;
 };
 
 /**
@@ -41,6 +61,33 @@ export type ScoreEvent = Message<"v1.play.ScoreEvent"> & {
  */
 export const ScoreEventSchema: GenMessage<ScoreEvent> = /*@__PURE__*/
   messageDesc(file_v1_play_challenge, 0);
+
+/**
+ * @generated from message v1.play.Score
+ */
+export type Score = Message<"v1.play.Score"> & {
+  /**
+   * @generated from field: v1.play.ScoreType type = 1;
+   */
+  type: ScoreType;
+
+  /**
+   * @generated from field: double value = 2;
+   */
+  value: number;
+
+  /**
+   * @generated from field: double maximum = 3;
+   */
+  maximum: number;
+};
+
+/**
+ * Describes the message v1.play.Score.
+ * Use `create(ScoreSchema)` to create a new message.
+ */
+export const ScoreSchema: GenMessage<Score> = /*@__PURE__*/
+  messageDesc(file_v1_play_challenge, 1);
 
 /**
  * @generated from message v1.play.Challenge
@@ -110,6 +157,21 @@ export type Challenge = Message<"v1.play.Challenge"> & {
    * @generated from field: bool ready = 13;
    */
   ready: boolean;
+
+  /**
+   * @generated from field: repeated v1.play.Score scores = 14;
+   */
+  scores: Score[];
+
+  /**
+   * @generated from field: map<string, bytes> diagrams = 15;
+   */
+  diagrams: { [key: string]: Uint8Array };
+
+  /**
+   * @generated from field: map<string, double> clue_prices = 16;
+   */
+  cluePrices: { [key: string]: number };
 };
 
 /**
@@ -117,5 +179,31 @@ export type Challenge = Message<"v1.play.Challenge"> & {
  * Use `create(ChallengeSchema)` to create a new message.
  */
 export const ChallengeSchema: GenMessage<Challenge> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge, 1);
+  messageDesc(file_v1_play_challenge, 2);
+
+/**
+ * @generated from enum v1.play.ScoreType
+ */
+export enum ScoreType {
+  /**
+   * @generated from enum value: Unspecified = 0;
+   */
+  Unspecified = 0,
+
+  /**
+   * @generated from enum value: Design = 1;
+   */
+  Design = 1,
+
+  /**
+   * @generated from enum value: Operational = 2;
+   */
+  Operational = 2,
+}
+
+/**
+ * Describes the enum v1.play.ScoreType.
+ */
+export const ScoreTypeSchema: GenEnum<ScoreType> = /*@__PURE__*/
+  enumDesc(file_v1_play_challenge, 0);
 

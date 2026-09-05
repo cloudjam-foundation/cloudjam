@@ -40,10 +40,10 @@
 	let teamId: string | undefined = $state('');
 	let teamState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let team: Team | undefined = $state();
-	$effect(() => {
+	async function reloadTeam() {
 		if (!teamId) return undefined;
 		if (!gameId) return undefined;
-		Submit(async () => {
+		await Submit(async () => {
 			team = (
 				await Glue.team.get(
 					create(GetTeamRequestSchema, {
@@ -53,7 +53,7 @@
 				)
 			).team;
 		}, teamState);
-	});
+	}
 
 	let definitionId: string | undefined = $state();
 	let definitionProviderId: string | undefined = $state();
@@ -91,6 +91,7 @@
 				).challenge;
 			}, challengeState);
 			teamId = challenge?.teamId;
+			await reloadTeam();
 			definitionId = challenge?.definitionId;
 			definitionProviderId = challenge?.definitionProviderId;
 			nextInterval = new Date(Date.now() + reloadInterval);
@@ -111,13 +112,24 @@
 	let score = $derived(challenge?.scoreEvents.reduce((sum, event) => sum + event.change, 0) ?? 0);
 
 	let active = $state(false);
+	let remaining = $state('');
+	function formatRemaining(milliseconds: number): string {
+		const seconds = Math.max(0, Math.ceil(milliseconds / 1000));
+		const hours = Math.floor(seconds / 3600);
+		const minutes = Math.floor((seconds % 3600) / 60);
+		return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`;
+	}
 	$effect(() => {
 		if (!game) {
 			active = false;
+			remaining = '';
 			return;
 		}
 		const updateActive = () => {
-			active = timestampDate(game!.from!).getTime() < Date.now() && timestampDate(game!.to!).getTime() > Date.now();
+			const now = Date.now();
+			const end = timestampDate(game!.to!).getTime();
+			active = timestampDate(game!.from!).getTime() < now && end > now;
+			remaining = formatRemaining(end - now);
 		};
 		updateActive();
 		const interval = setInterval(updateActive, 1000);
@@ -146,6 +158,8 @@
 				<LockIcon />
 				Locked
 			</Badge>
+		{:else}
+			<Badge variant="secondary">ends in {remaining}</Badge>
 		{/if}
 		<Badge variant="outline">score: {score}</Badge>
 	</div>

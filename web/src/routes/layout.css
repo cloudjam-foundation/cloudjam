@@ -6,6 +6,8 @@
 @import 'tw-animate-css';
 @import 'shadcn-svelte/tailwind.css';
 
+@plugin '@tailwindcss/typography';
+
 /* Inter, declared here instead of importing @fontsource-variable/inter so the faces can use
  * font-display: optional. With swap the browser paints in the fallback first and re-lays out
  * every text node once the woff2 arrives, which is the flicker on a cold load. */

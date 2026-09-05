@@ -24,11 +24,64 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type ScoreType int32
+
+const (
+	ScoreType_Unspecified ScoreType = 0
+	ScoreType_Design      ScoreType = 1
+	ScoreType_Operational ScoreType = 2
+)
+
+// Enum value maps for ScoreType.
+var (
+	ScoreType_name = map[int32]string{
+		0: "Unspecified",
+		1: "Design",
+		2: "Operational",
+	}
+	ScoreType_value = map[string]int32{
+		"Unspecified": 0,
+		"Design":      1,
+		"Operational": 2,
+	}
+)
+
+func (x ScoreType) Enum() *ScoreType {
+	p := new(ScoreType)
+	*p = x
+	return p
+}
+
+func (x ScoreType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ScoreType) Descriptor() protoreflect.EnumDescriptor {
+	return file_v1_play_challenge_proto_enumTypes[0].Descriptor()
+}
+
+func (ScoreType) Type() protoreflect.EnumType {
+	return &file_v1_play_challenge_proto_enumTypes[0]
+}
+
+func (x ScoreType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ScoreType.Descriptor instead.
+func (ScoreType) EnumDescriptor() ([]byte, []int) {
+	return file_v1_play_challenge_proto_rawDescGZIP(), []int{0}
+}
+
 type ScoreEvent struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Timestamp     *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 	Text          string                 `protobuf:"bytes,2,opt,name=text,proto3" json:"text,omitempty"`
 	Change        float64                `protobuf:"fixed64,3,opt,name=change,proto3" json:"change,omitempty"`
+	Type          ScoreType              `protobuf:"varint,4,opt,name=type,proto3,enum=v1.play.ScoreType" json:"type,omitempty"`
+	Score         float64                `protobuf:"fixed64,5,opt,name=score,proto3" json:"score,omitempty"`
+	Maximum       float64                `protobuf:"fixed64,6,opt,name=maximum,proto3" json:"maximum,omitempty"`
+	Reason        string                 `protobuf:"bytes,7,opt,name=reason,proto3" json:"reason,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -84,6 +137,94 @@ func (x *ScoreEvent) GetChange() float64 {
 	return 0
 }
 
+func (x *ScoreEvent) GetType() ScoreType {
+	if x != nil {
+		return x.Type
+	}
+	return ScoreType_Unspecified
+}
+
+func (x *ScoreEvent) GetScore() float64 {
+	if x != nil {
+		return x.Score
+	}
+	return 0
+}
+
+func (x *ScoreEvent) GetMaximum() float64 {
+	if x != nil {
+		return x.Maximum
+	}
+	return 0
+}
+
+func (x *ScoreEvent) GetReason() string {
+	if x != nil {
+		return x.Reason
+	}
+	return ""
+}
+
+type Score struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Type          ScoreType              `protobuf:"varint,1,opt,name=type,proto3,enum=v1.play.ScoreType" json:"type,omitempty"`
+	Value         float64                `protobuf:"fixed64,2,opt,name=value,proto3" json:"value,omitempty"`
+	Maximum       float64                `protobuf:"fixed64,3,opt,name=maximum,proto3" json:"maximum,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Score) Reset() {
+	*x = Score{}
+	mi := &file_v1_play_challenge_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Score) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Score) ProtoMessage() {}
+
+func (x *Score) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_play_challenge_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Score.ProtoReflect.Descriptor instead.
+func (*Score) Descriptor() ([]byte, []int) {
+	return file_v1_play_challenge_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *Score) GetType() ScoreType {
+	if x != nil {
+		return x.Type
+	}
+	return ScoreType_Unspecified
+}
+
+func (x *Score) GetValue() float64 {
+	if x != nil {
+		return x.Value
+	}
+	return 0
+}
+
+func (x *Score) GetMaximum() float64 {
+	if x != nil {
+		return x.Maximum
+	}
+	return 0
+}
+
 type Challenge struct {
 	state                protoimpl.MessageState `protogen:"open.v1"`
 	Scope                string                 `protobuf:"bytes,1,opt,name=scope,proto3" json:"scope,omitempty"`
@@ -99,13 +240,16 @@ type Challenge struct {
 	Error                string                 `protobuf:"bytes,11,opt,name=error,proto3" json:"error,omitempty"`
 	ScoreEvents          []*ScoreEvent          `protobuf:"bytes,12,rep,name=score_events,json=scoreEvents,proto3" json:"score_events,omitempty"`
 	Ready                bool                   `protobuf:"varint,13,opt,name=ready,proto3" json:"ready,omitempty"`
+	Scores               []*Score               `protobuf:"bytes,14,rep,name=scores,proto3" json:"scores,omitempty"`
+	Diagrams             map[string][]byte      `protobuf:"bytes,15,rep,name=diagrams,proto3" json:"diagrams,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	CluePrices           map[string]float64     `protobuf:"bytes,16,rep,name=clue_prices,json=cluePrices,proto3" json:"clue_prices,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"fixed64,2,opt,name=value"`
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
 
 func (x *Challenge) Reset() {
 	*x = Challenge{}
-	mi := &file_v1_play_challenge_proto_msgTypes[1]
+	mi := &file_v1_play_challenge_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -117,7 +261,7 @@ func (x *Challenge) String() string {
 func (*Challenge) ProtoMessage() {}
 
 func (x *Challenge) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_play_challenge_proto_msgTypes[1]
+	mi := &file_v1_play_challenge_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -130,7 +274,7 @@ func (x *Challenge) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Challenge.ProtoReflect.Descriptor instead.
 func (*Challenge) Descriptor() ([]byte, []int) {
-	return file_v1_play_challenge_proto_rawDescGZIP(), []int{1}
+	return file_v1_play_challenge_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Challenge) GetScope() string {
@@ -224,16 +368,45 @@ func (x *Challenge) GetReady() bool {
 	return false
 }
 
+func (x *Challenge) GetScores() []*Score {
+	if x != nil {
+		return x.Scores
+	}
+	return nil
+}
+
+func (x *Challenge) GetDiagrams() map[string][]byte {
+	if x != nil {
+		return x.Diagrams
+	}
+	return nil
+}
+
+func (x *Challenge) GetCluePrices() map[string]float64 {
+	if x != nil {
+		return x.CluePrices
+	}
+	return nil
+}
+
 var File_v1_play_challenge_proto protoreflect.FileDescriptor
 
 const file_v1_play_challenge_proto_rawDesc = "" +
 	"\n" +
-	"\x17v1/play/challenge.proto\x12\av1.play\x1a\x1bbuf/validate/validate.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"r\n" +
+	"\x17v1/play/challenge.proto\x12\av1.play\x1a\x1bbuf/validate/validate.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe2\x01\n" +
 	"\n" +
 	"ScoreEvent\x128\n" +
 	"\ttimestamp\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\x12\x12\n" +
 	"\x04text\x18\x02 \x01(\tR\x04text\x12\x16\n" +
-	"\x06change\x18\x03 \x01(\x01R\x06change\"\xee\x04\n" +
+	"\x06change\x18\x03 \x01(\x01R\x06change\x12&\n" +
+	"\x04type\x18\x04 \x01(\x0e2\x12.v1.play.ScoreTypeR\x04type\x12\x14\n" +
+	"\x05score\x18\x05 \x01(\x01R\x05score\x12\x18\n" +
+	"\amaximum\x18\x06 \x01(\x01R\amaximum\x12\x16\n" +
+	"\x06reason\x18\a \x01(\tR\x06reason\"_\n" +
+	"\x05Score\x12&\n" +
+	"\x04type\x18\x01 \x01(\x0e2\x12.v1.play.ScoreTypeR\x04type\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x01R\x05value\x12\x18\n" +
+	"\amaximum\x18\x03 \x01(\x01R\amaximum\"\xaf\a\n" +
 	"\tChallenge\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12!\n" +
 	"\agame_id\x18\x02 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\x06gameId\x12\x18\n" +
@@ -248,14 +421,29 @@ const file_v1_play_challenge_proto_rawDesc = "" +
 	" \x03(\v2\x1d.v1.play.Challenge.CluesEntryR\x05clues\x12\x14\n" +
 	"\x05error\x18\v \x01(\tR\x05error\x126\n" +
 	"\fscore_events\x18\f \x03(\v2\x13.v1.play.ScoreEventR\vscoreEvents\x12\x14\n" +
-	"\x05ready\x18\r \x01(\bR\x05ready\x1a9\n" +
+	"\x05ready\x18\r \x01(\bR\x05ready\x12&\n" +
+	"\x06scores\x18\x0e \x03(\v2\x0e.v1.play.ScoreR\x06scores\x12V\n" +
+	"\bdiagrams\x18\x0f \x03(\v2 .v1.play.Challenge.DiagramsEntryB\x18\xbaH\x15\x9a\x01\x12\x10\x04\"\x06r\x04\x10\x01\x18d*\x06z\x04\x18\x80\x80\x04R\bdiagrams\x12C\n" +
+	"\vclue_prices\x18\x10 \x03(\v2\".v1.play.Challenge.CluePricesEntryR\n" +
+	"cluePrices\x1a9\n" +
 	"\vAssetsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a8\n" +
 	"\n" +
 	"CluesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B0Z.codeberg.org/megakuul/cloudjam/pkg/api/v1/playb\x06proto3"
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a;\n" +
+	"\rDiagramsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\fR\x05value:\x028\x01\x1a=\n" +
+	"\x0fCluePricesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x01R\x05value:\x028\x01*9\n" +
+	"\tScoreType\x12\x0f\n" +
+	"\vUnspecified\x10\x00\x12\n" +
+	"\n" +
+	"\x06Design\x10\x01\x12\x0f\n" +
+	"\vOperational\x10\x02B0Z.codeberg.org/megakuul/cloudjam/pkg/api/v1/playb\x06proto3"
 
 var (
 	file_v1_play_challenge_proto_rawDescOnce sync.Once
@@ -269,24 +457,34 @@ func file_v1_play_challenge_proto_rawDescGZIP() []byte {
 	return file_v1_play_challenge_proto_rawDescData
 }
 
-var file_v1_play_challenge_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_v1_play_challenge_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_v1_play_challenge_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_v1_play_challenge_proto_goTypes = []any{
-	(*ScoreEvent)(nil),            // 0: v1.play.ScoreEvent
-	(*Challenge)(nil),             // 1: v1.play.Challenge
-	nil,                           // 2: v1.play.Challenge.AssetsEntry
-	nil,                           // 3: v1.play.Challenge.CluesEntry
-	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
+	(ScoreType)(0),                // 0: v1.play.ScoreType
+	(*ScoreEvent)(nil),            // 1: v1.play.ScoreEvent
+	(*Score)(nil),                 // 2: v1.play.Score
+	(*Challenge)(nil),             // 3: v1.play.Challenge
+	nil,                           // 4: v1.play.Challenge.AssetsEntry
+	nil,                           // 5: v1.play.Challenge.CluesEntry
+	nil,                           // 6: v1.play.Challenge.DiagramsEntry
+	nil,                           // 7: v1.play.Challenge.CluePricesEntry
+	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
 }
 var file_v1_play_challenge_proto_depIdxs = []int32{
-	4, // 0: v1.play.ScoreEvent.timestamp:type_name -> google.protobuf.Timestamp
-	2, // 1: v1.play.Challenge.assets:type_name -> v1.play.Challenge.AssetsEntry
-	3, // 2: v1.play.Challenge.clues:type_name -> v1.play.Challenge.CluesEntry
-	0, // 3: v1.play.Challenge.score_events:type_name -> v1.play.ScoreEvent
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	8, // 0: v1.play.ScoreEvent.timestamp:type_name -> google.protobuf.Timestamp
+	0, // 1: v1.play.ScoreEvent.type:type_name -> v1.play.ScoreType
+	0, // 2: v1.play.Score.type:type_name -> v1.play.ScoreType
+	4, // 3: v1.play.Challenge.assets:type_name -> v1.play.Challenge.AssetsEntry
+	5, // 4: v1.play.Challenge.clues:type_name -> v1.play.Challenge.CluesEntry
+	1, // 5: v1.play.Challenge.score_events:type_name -> v1.play.ScoreEvent
+	2, // 6: v1.play.Challenge.scores:type_name -> v1.play.Score
+	6, // 7: v1.play.Challenge.diagrams:type_name -> v1.play.Challenge.DiagramsEntry
+	7, // 8: v1.play.Challenge.clue_prices:type_name -> v1.play.Challenge.CluePricesEntry
+	9, // [9:9] is the sub-list for method output_type
+	9, // [9:9] is the sub-list for method input_type
+	9, // [9:9] is the sub-list for extension type_name
+	9, // [9:9] is the sub-list for extension extendee
+	0, // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_v1_play_challenge_proto_init() }
@@ -299,13 +497,14 @@ func file_v1_play_challenge_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_v1_play_challenge_proto_rawDesc), len(file_v1_play_challenge_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   4,
+			NumEnums:      1,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_v1_play_challenge_proto_goTypes,
 		DependencyIndexes: file_v1_play_challenge_proto_depIdxs,
+		EnumInfos:         file_v1_play_challenge_proto_enumTypes,
 		MessageInfos:      file_v1_play_challenge_proto_msgTypes,
 	}.Build()
 	File_v1_play_challenge_proto = out.File

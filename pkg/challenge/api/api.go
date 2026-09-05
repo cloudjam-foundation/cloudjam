@@ -4,6 +4,14 @@ package api
 
 import (
 	"log/slog"
+
+	"codeberg.org/megakuul/cloudjam/pkg/api/v1/play"
+)
+
+const (
+	MaxDiagramSize  = 64 * 1024
+	MaxDiagramCount = 4
+	MaxHTTPBodySize = 1024 * 1024
 )
 
 const CancelName = "cancel"
@@ -32,6 +40,7 @@ type CreateMetaInput struct {
 	Clues        map[string]string  `json:"clues,omitempty"`
 	CluePrices   map[string]float64 `json:"clue_prices,omitempty"`
 	Assets       map[string]string  `json:"assets,omitempty"`
+	Diagrams     map[string][]byte  `json:"diagrams,omitempty"`
 	Ready        bool               `json:"ready,omitempty"`
 }
 
@@ -44,6 +53,7 @@ type UpdateMetaInput struct {
 	AdditionalClues        map[string]string  `json:"additional_clues,omitempty"`
 	AdditionalCluePrices   map[string]float64 `json:"additional_clue_prices,omitempty"`
 	AdditionalAssets       map[string]string  `json:"additional_assets,omitempty"`
+	AdditionalDiagrams     map[string][]byte  `json:"additional_diagrams,omitempty"`
 	Ready                  *bool              `json:"ready,omitempty"`
 }
 
@@ -51,10 +61,27 @@ type UpdateMetaOutput struct{}
 
 const ReadScoreName = "read_score"
 
-type ReadScoreInput struct{}
+type ScoreType = play.ScoreType
+
+const (
+	ScoreTypeUnspecified = play.ScoreType_Unspecified
+	ScoreTypeDesign      = play.ScoreType_Design
+	ScoreTypeOperational = play.ScoreType_Operational
+)
+
+type Score struct {
+	Value   float64 `json:"value,omitempty"`
+	Maximum float64 `json:"maximum,omitempty"`
+}
+
+type ReadScoreInput struct {
+	Type ScoreType `json:"type,omitempty"`
+}
 
 type ReadScoreOutput struct {
-	Score float64 `json:"score,omitempty"`
+	Score   float64             `json:"score,omitempty"`
+	Maximum float64             `json:"maximum,omitempty"`
+	Scores  map[ScoreType]Score `json:"scores,omitempty"`
 }
 
 const UpdateScoreName = "update_score"
@@ -65,6 +92,44 @@ type UpdateScoreInput struct {
 }
 
 type UpdateScoreOutput struct{}
+
+const RegisterScoreName = "register_score"
+
+type RegisterScoreInput struct {
+	Name    string    `json:"name,omitempty"`
+	Type    ScoreType `json:"type,omitempty"`
+	Maximum float64   `json:"maximum,omitempty"`
+}
+
+type RegisterScoreOutput struct{}
+
+const SubmitScoreName = "submit_score"
+
+type SubmitScoreInput struct {
+	Name    string    `json:"name,omitempty"`
+	Type    ScoreType `json:"type,omitempty"`
+	Score   float64   `json:"score,omitempty"`
+	Maximum float64   `json:"maximum,omitempty"`
+	Reason  string    `json:"reason,omitempty"`
+}
+
+type SubmitScoreOutput struct{}
+
+const SendHTTPName = "send_http"
+
+type SendHTTPInput struct {
+	Method        string              `json:"method,omitempty"`
+	URL           string              `json:"url,omitempty"`
+	Headers       map[string][]string `json:"headers,omitempty"`
+	Body          []byte              `json:"body,omitempty"`
+	TimeoutMillis int64               `json:"timeout_millis,omitempty"`
+}
+
+type SendHTTPOutput struct {
+	StatusCode int                 `json:"status_code,omitempty"`
+	Headers    map[string][]string `json:"headers,omitempty"`
+	Body       []byte              `json:"body,omitempty"`
+}
 
 const CreateAssetName = "create_asset"
 
@@ -162,7 +227,8 @@ type DeleteResourceOutput struct{}
 const ListResourceName = "list_resource"
 
 type ListResourceInput struct {
-	Type string `json:"type,omitempty"`
+	Type          string `json:"type,omitempty"`
+	ResourceModel string `json:"resource_model,omitempty"`
 }
 
 type ListResourceOutput struct {

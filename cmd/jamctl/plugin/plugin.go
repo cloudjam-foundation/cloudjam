@@ -34,7 +34,14 @@ func Run(ctx context.Context, source string, access provider.AccessController, a
 		return fmt.Errorf("compile %s: %w\n%s", source, err, strings.TrimSpace(string(out)))
 	}
 
-	provider := &localProvider{access: access, assets: assets, resources: resources}
+	provider := &localProvider{
+		access:     access,
+		assets:     assets,
+		resources:  resources,
+		scores:     map[api.ScoreType]api.Score{},
+		scoreItems: map[string]api.SubmitScoreInput{},
+		diagrams:   map[string][]byte{},
+	}
 
 	report := func(err error) {
 		slog.Error(err.Error())
@@ -55,6 +62,9 @@ func Run(ctx context.Context, source string, access provider.AccessController, a
 			challenge.RegisterInOutHost(api.UpdateMetaName, provider.updateMeta, report),
 			challenge.RegisterInOutHost(api.ReadScoreName, provider.readScore, report),
 			challenge.RegisterInOutHost(api.UpdateScoreName, provider.updateScore, report),
+			challenge.RegisterInOutHost(api.RegisterScoreName, provider.registerScore, report),
+			challenge.RegisterInOutHost(api.SubmitScoreName, provider.submitScore, report),
+			challenge.RegisterInOutHost(api.SendHTTPName, provider.sendHTTP, report),
 			challenge.RegisterOutHost(api.CreateAssetName, provider.createAsset, report),
 			challenge.RegisterInOutHost(api.UpdateAssetName, provider.updateAsset, report),
 			challenge.RegisterInOutHost(api.CreatePermissionName, provider.createPermission, report),

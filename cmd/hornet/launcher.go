@@ -128,7 +128,7 @@ func Start(ctx context.Context, opts *Options) error {
 
 	runGroups, runCtx := errgroup.WithContext(ctx)
 
-	scheduler := scheduler.New(runCtx)
+	scheduler := scheduler.New(runCtx, slog.With("system", "scheduler"))
 	runGroups.Go(func() error {
 		scheduler.Wait()
 		return nil

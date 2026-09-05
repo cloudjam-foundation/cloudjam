@@ -125,16 +125,23 @@ func (r *ResourceController) Delete(ctx context.Context, resourceType, resourceI
 	return nil
 }
 
-func (r *ResourceController) List(ctx context.Context, resourceType string) (map[string]string, error) {
-	resp, err := r.client.ListResources(ctx, &cloudcontrol.ListResourcesInput{
-		TypeName: &resourceType,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("list %s: %w", resourceType, err)
+func (r *ResourceController) List(ctx context.Context, resourceType, resourceModel string) (map[string]string, error) {
+	input := &cloudcontrol.ListResourcesInput{TypeName: &resourceType}
+	if resourceModel != "" {
+		input.ResourceModel = &resourceModel
 	}
 	output := map[string]string{}
-	for _, resource := range resp.ResourceDescriptions {
-		output[*resource.Identifier] = *resource.Properties
+	for {
+		resp, err := r.client.ListResources(ctx, input)
+		if err != nil {
+			return nil, fmt.Errorf("list %s: %w", resourceType, err)
+		}
+		for _, resource := range resp.ResourceDescriptions {
+			output[*resource.Identifier] = *resource.Properties
+		}
+		if resp.NextToken == nil {
+			return output, nil
+		}
+		input.NextToken = resp.NextToken
 	}
-	return output, nil
 }

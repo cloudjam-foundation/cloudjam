@@ -1,6 +1,7 @@
 package challenge
 
 import (
+	"cmp"
 	"context"
 	"errors"
 	"fmt"
@@ -82,6 +83,14 @@ func (s *Server) Get(ctx context.Context, req *connect.Request[challenge.GetRequ
 			coveredClues[clue] = "<hidden>"
 		}
 	}
+	gameMeta, err := dynamitedb.Get(ctx, s.oltp, &oltp.Game{
+		GameID: dynamitedb.Key(challengeMeta.GameID.Value()),
+	})
+	if err != nil {
+		l.Error(fmt.Sprintf("failed to fetch challenge game: %v", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch challenge game"))
+	}
+	ended := time.Now().After(gameMeta.To.Value())
 
 	return &connect.Response[challenge.GetResponse]{Msg: &challenge.GetResponse{Challenge: &play.Challenge{
 		GameId:               challengeMeta.GameID.Value(),
@@ -92,9 +101,12 @@ func (s *Server) Get(ctx context.Context, req *connect.Request[challenge.GetRequ
 		Title:                challengeMeta.Title.Value(),
 		Description:          challengeMeta.Description.Value(),
 		Assets:               challengeMeta.Assets.Value(),
+		Diagrams:             challengeMeta.Diagrams.Value(),
 		Clues:                coveredClues,
+		CluePrices:           challengeMeta.CluePrices.Value(),
 		Error:                challengeMeta.Error.Value(),
-		ScoreEvents:          challengeMeta.ScoreEvents.Value(),
+		Scores:               visibleScores(challengeMeta.Scores.Value(), ended),
+		ScoreEvents:          visibleScoreEvents(challengeMeta.ScoreEvents.Value(), ended),
 		Ready:                challengeMeta.Ready.Value(),
 		Scope:                challengeMeta.Scope.Value(),
 	}}}, nil
@@ -102,6 +114,14 @@ func (s *Server) Get(ctx context.Context, req *connect.Request[challenge.GetRequ
 
 func (s *Server) List(ctx context.Context, req *connect.Request[challenge.ListRequest]) (*connect.Response[challenge.ListResponse], error) {
 	l := s.logger.With("proc", req.Spec().Procedure)
+	gameMeta, err := dynamitedb.Get(ctx, s.oltp, &oltp.Game{
+		GameID: dynamitedb.Key(req.Msg.GameId),
+	})
+	if err != nil {
+		l.Error(fmt.Sprintf("failed to fetch challenge game: %v", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch challenge game"))
+	}
+	ended := time.Now().After(gameMeta.To.Value())
 
 	opts := []dynamitedb.Option{dynamitedb.WithLimit(int(req.Msg.Limit))}
 	if req.Msg.StartAfter != "" {
@@ -136,9 +156,12 @@ func (s *Server) List(ctx context.Context, req *connect.Request[challenge.ListRe
 			Title:                challenge.Title.Value(),
 			Description:          challenge.Description.Value(),
 			Assets:               challenge.Assets.Value(),
+			Diagrams:             challenge.Diagrams.Value(),
 			Clues:                coveredClues,
+			CluePrices:           challenge.CluePrices.Value(),
 			Error:                challenge.Error.Value(),
-			ScoreEvents:          challenge.ScoreEvents.Value(),
+			Scores:               visibleScores(challenge.Scores.Value(), ended),
+			ScoreEvents:          visibleScoreEvents(challenge.ScoreEvents.Value(), ended),
 			Ready:                challenge.Ready.Value(),
 			Scope:                challenge.Scope.Value(),
 		})
@@ -147,6 +170,38 @@ func (s *Server) List(ctx context.Context, req *connect.Request[challenge.ListRe
 	return &connect.Response[challenge.ListResponse]{Msg: &challenge.ListResponse{
 		Challenges: challengesOutput,
 	}}, nil
+}
+
+func visibleScoreEvents(events []*play.ScoreEvent, ended bool) []*play.ScoreEvent {
+	if ended {
+		return events
+	}
+	visible := make([]*play.ScoreEvent, 0, len(events))
+	for _, event := range events {
+		if event == nil || !ended && event.Type != play.ScoreType_Operational {
+			continue
+		}
+		cloned := *event
+		cloned.Reason = ""
+		visible = append(visible, &cloned)
+	}
+	return visible
+}
+
+func visibleScores(scores map[play.ScoreType]*play.Score, ended bool) []*play.Score {
+	result := make([]*play.Score, 0, len(scores))
+	for scoreType, score := range scores {
+		if score == nil || !ended && scoreType != play.ScoreType_Operational {
+			continue
+		}
+		cloned := *score
+		cloned.Type = scoreType
+		result = append(result, &cloned)
+	}
+	slices.SortFunc(result, func(a, b *play.Score) int {
+		return cmp.Compare(a.Type, b.Type)
+	})
+	return result
 }
 
 func (s *Server) Create(ctx context.Context, req *connect.Request[challenge.CreateRequest]) (*connect.Response[challenge.CreateResponse], error) {
@@ -392,10 +447,10 @@ func (s *Server) Start(ctx context.Context, req *connect.Request[challenge.Start
 		s.pluginCache, s.oltp, s.olap, access, assets, resources,
 	)
 
-	s.scheduler.Schedule(func(ctx context.Context) error {
-		ctx, cancel := context.WithDeadline(ctx, gameMeta.To.Value())
+	s.scheduler.Schedule(func(challengeCtx context.Context) error {
+		challengeCtx, cancel := context.WithDeadline(challengeCtx, gameMeta.To.Value())
 		defer cancel()
-		if err := challengeRunner.Start(ctx); err != nil {
+		if err := challengeRunner.Start(challengeCtx); err != nil {
 			if !errors.Is(err, context.Canceled) && !errors.Is(err, context.DeadlineExceeded) {
 				return fmt.Errorf("challenge host failure: %w", err)
 			}
@@ -417,11 +472,11 @@ func (s *Server) Start(ctx context.Context, req *connect.Request[challenge.Start
 		}
 		return nil
 	}, func(ctx context.Context, err error) error {
-		l.Warn(fmt.Sprintf("failed to start challenge (%q): %v", challengeMeta.ChallengeID.Value(), err))
+		l.Warn(fmt.Sprintf("challenge failed (%q): %v", challengeMeta.ChallengeID.Value(), err))
 		return dynamitedb.Update(ctx, s.oltp, &oltp.Challenge{
 			GameID:      dynamitedb.Key(challengeMeta.GameID.Value()),
 			ChallengeID: dynamitedb.Key(challengeMeta.ChallengeID.Value()),
-			Error:       dynamitedb.Set("failure while starting challenge"),
+			Error:       dynamitedb.Set("failure in challenge operator"),
 		})
 	})
 

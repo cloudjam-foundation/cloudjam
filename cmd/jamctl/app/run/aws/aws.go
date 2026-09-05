@@ -92,7 +92,7 @@ func (r *Options) Run(ctx context.Context, args []string) error {
 		))
 	} else {
 		var err error
-		awsConfig, err = config.LoadDefaultConfig(ctx)
+		awsConfig, err = config.LoadDefaultConfig(ctx, config.WithRegion(r.region))
 		if err != nil {
 			return fmt.Errorf("load aws configuration: %w", err)
 		}

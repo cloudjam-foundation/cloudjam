@@ -53,8 +53,22 @@ func Read[T Resource](identifier string) (T, error) {
 
 // List returns every resource of a type.
 func List[T Resource]() (map[string]T, error) {
+	return list[T]("")
+}
+
+// ListMatching returns resources selected by the fields set on resource.
+// Some Cloud Control list handlers require primary properties such as a parent id.
+func ListMatching[T Resource](resource T) (map[string]T, error) {
+	model, err := json.Marshal(resource)
+	if err != nil {
+		return nil, err
+	}
+	return list[T](string(model))
+}
+
+func list[T Resource](resourceModel string) (map[string]T, error) {
 	typeName := empty[T]().CloudJamType()
-	out, err := api.ListResource(api.ListResourceInput{Type: typeName})
+	out, err := api.ListResource(api.ListResourceInput{Type: typeName, ResourceModel: resourceModel})
 	if err != nil {
 		return nil, fmt.Errorf("list %s: %w", typeName, err)
 	}

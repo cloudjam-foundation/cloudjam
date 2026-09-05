@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
+	import Markdown from '$lib/components/custom/Markdown.svelte';
 	import * as Alert from '$lib/components/shad/alert';
 	import { Badge } from '$lib/components/shad/badge';
 	import { Button } from '$lib/components/shad/button';
@@ -8,9 +9,10 @@
 	import { Separator } from '$lib/components/shad/separator';
 	import * as Table from '$lib/components/shad/table';
 	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb';
-	import type { Challenge } from '$lib/sdk/v1/play/challenge_pb';
+	import { ScoreType, ScoreTypeSchema, type Challenge } from '$lib/sdk/v1/play/challenge_pb';
 	import type { Team } from '$lib/sdk/v1/play/team_pb';
-	import { create } from '@bufbuild/protobuf';
+	import { jpegDataURL } from '$lib/utils';
+	import { create, enumToJson } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 
@@ -20,6 +22,9 @@
 	// svelte-ignore state_referenced_locally
 	let teamId = $state(challenge.teamId);
 	let confirmDelete = $state(false);
+	let hasScoreReasons = $derived(challenge.scoreEvents.some((event) => event.reason));
+	const scoreTypeName = (type: ScoreType) =>
+		type === ScoreType.Unspecified ? '' : enumToJson(ScoreTypeSchema, type)?.toString().toLowerCase();
 
 	let updateState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let removeState: SubmitState = $state({ error: '', loading: false, forbidden: false });
@@ -28,7 +33,11 @@
 <Card.Root class="w-full">
 	<Card.Header>
 		<Card.Title class="text-2xl">{challenge.title || 'Not started yet'}</Card.Title>
-		<Card.Description>{challenge.description.join(' ')}</Card.Description>
+		<Card.Description>
+			{#each challenge.scores as score (score.type)}
+				<Badge variant="outline">{scoreTypeName(score.type)}: {score.value} / {score.maximum}</Badge>
+			{/each}
+		</Card.Description>
 		<div class="flex flex-row flex-wrap gap-1">
 			<Badge variant="secondary">
 				score: {challenge.scoreEvents.reduce((sum, event) => sum + event.change, 0)}
@@ -38,13 +47,34 @@
 		</div>
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-6">
-		{#each challenge.errors as message, index (index)}
+		{#if challenge.error}
 			<Alert.Root variant="destructive">
 				<AlertCircleIcon />
 				<Alert.Title>Challenge reported an error</Alert.Title>
-				<Alert.Description class="font-mono text-xs break-all">{message}</Alert.Description>
+				<Alert.Description class="font-mono text-xs break-all">{challenge.error}</Alert.Description>
 			</Alert.Root>
-		{/each}
+		{/if}
+
+		{#if challenge.description.length}
+			<div class="flex flex-col gap-2">
+				<Card.Title>Briefing</Card.Title>
+				<Markdown source={challenge.description.join('\n\n')} />
+			</div>
+		{/if}
+
+		{#if Object.keys(challenge.diagrams).length}
+			<Separator />
+
+			<div class="flex flex-col gap-3">
+				<Card.Title>Infrastructure</Card.Title>
+				{#each Object.entries(challenge.diagrams) as [name, diagram] (name)}
+					<figure class="flex flex-col gap-2">
+						<img class="max-h-96 rounded-md object-contain" src={jpegDataURL(diagram)} alt={name} />
+						<figcaption class="text-center text-xs text-muted-foreground">{name}</figcaption>
+					</figure>
+				{/each}
+			</div>
+		{/if}
 
 		<div class="flex flex-col gap-2">
 			<Card.Title>Team</Card.Title>
@@ -91,7 +121,10 @@
 						<Table.Row>
 							<Table.Head>Time</Table.Head>
 							<Table.Head>Event</Table.Head>
+							<Table.Head>Type</Table.Head>
+							<Table.Head>Result</Table.Head>
 							<Table.Head>Change</Table.Head>
+							{#if hasScoreReasons}<Table.Head>Explanation</Table.Head>{/if}
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
@@ -99,7 +132,10 @@
 							<Table.Row>
 								<Table.Cell>{event.timestamp ? timestampDate(event.timestamp).toLocaleString() : ''}</Table.Cell>
 								<Table.Cell>{event.text}</Table.Cell>
+								<Table.Cell>{scoreTypeName(event.type)}</Table.Cell>
+								<Table.Cell>{event.maximum ? `${event.score} / ${event.maximum}` : ''}</Table.Cell>
 								<Table.Cell>{event.change}</Table.Cell>
+								{#if hasScoreReasons}<Table.Cell>{event.reason}</Table.Cell>{/if}
 							</Table.Row>
 						{/each}
 					</Table.Body>

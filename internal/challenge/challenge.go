@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"math"
 
 	"codeberg.org/megakuul/cloudjam/internal/oltp"
 	"codeberg.org/megakuul/cloudjam/internal/provider"
@@ -101,6 +102,9 @@ func (c *Challenge) Start(ctx context.Context) (err error) {
 		RegisterInOutHost(api.UpdateMetaName, c.updateMeta, report),
 		RegisterInOutHost(api.ReadScoreName, c.readScore, report),
 		RegisterInOutHost(api.UpdateScoreName, c.updateScore, report),
+		RegisterInOutHost(api.RegisterScoreName, c.registerScore, report),
+		RegisterInOutHost(api.SubmitScoreName, c.submitScore, report),
+		RegisterInOutHost(api.SendHTTPName, c.sendHTTP, report),
 		RegisterOutHost(api.CreateAssetName, c.createAsset, report),
 		RegisterInOutHost(api.UpdateAssetName, c.updateAsset, report),
 		RegisterInOutHost(api.CreatePermissionName, c.createPermission, report),
@@ -142,6 +146,9 @@ func (c *Challenge) log(ctx context.Context, input *api.LogInput) (*api.LogOutpu
 }
 
 func (c *Challenge) createMeta(ctx context.Context, input *api.CreateMetaInput) (*api.CreateMetaOutput, error) {
+	if err := ValidateDiagrams(input.Diagrams); err != nil {
+		return nil, err
+	}
 	err := dynamitedb.Update(ctx, c.oltp, &oltp.Challenge{
 		GameID:      dynamitedb.Key(c.challenge.GameID.Value()),
 		ChallengeID: dynamitedb.Key(c.challenge.ChallengeID.Value()),
@@ -150,12 +157,32 @@ func (c *Challenge) createMeta(ctx context.Context, input *api.CreateMetaInput) 
 		Clues:       dynamitedb.Set(input.Clues),
 		CluePrices:  dynamitedb.Emplace(input.CluePrices),
 		Assets:      dynamitedb.Set(input.Assets),
+		Diagrams:    dynamitedb.Set(input.Diagrams),
 		Ready:       dynamitedb.Set(input.Ready),
 	})
 	return &api.CreateMetaOutput{}, err
 }
 
 func (c *Challenge) updateMeta(ctx context.Context, input *api.UpdateMetaInput) (*api.UpdateMetaOutput, error) {
+	if len(input.AdditionalDiagrams) > 0 {
+		challenge, err := dynamitedb.Get(ctx, c.oltp, &oltp.Challenge{
+			GameID:      dynamitedb.Key(c.challenge.GameID.Value()),
+			ChallengeID: dynamitedb.Key(c.challenge.ChallengeID.Value()),
+		})
+		if err != nil {
+			return nil, err
+		}
+		diagrams := challenge.Diagrams.Value()
+		if diagrams == nil {
+			diagrams = map[string][]byte{}
+		}
+		for name, diagram := range input.AdditionalDiagrams {
+			diagrams[name] = diagram
+		}
+		if err := ValidateDiagrams(diagrams); err != nil {
+			return nil, err
+		}
+	}
 	var ready dynamitedb.DataField[bool]
 	if input.Ready != nil {
 		ready = dynamitedb.Set(*input.Ready)
@@ -167,6 +194,7 @@ func (c *Challenge) updateMeta(ctx context.Context, input *api.UpdateMetaInput) 
 		Clues:       dynamitedb.Emplace(input.AdditionalClues),
 		CluePrices:  dynamitedb.Emplace(input.AdditionalCluePrices),
 		Assets:      dynamitedb.Emplace(input.AdditionalAssets),
+		Diagrams:    dynamitedb.Emplace(input.AdditionalDiagrams),
 		Ready:       ready,
 	})
 	return &api.UpdateMetaOutput{}, err
@@ -180,9 +208,33 @@ func (c *Challenge) readScore(ctx context.Context, input *api.ReadScoreInput) (*
 	if err != nil {
 		return nil, err
 	}
-	return &api.ReadScoreOutput{
-		Score: team.Score.Value(),
-	}, nil
+	challenge, err := dynamitedb.Get(ctx, c.oltp, &oltp.Challenge{
+		GameID:      dynamitedb.Key(c.challenge.GameID.Value()),
+		ChallengeID: dynamitedb.Key(c.challenge.ChallengeID.Value()),
+	})
+	if err != nil {
+		return nil, err
+	}
+	scores := make(map[api.ScoreType]api.Score, len(challenge.Scores.Value()))
+	for scoreType, score := range challenge.Scores.Value() {
+		if score == nil {
+			continue
+		}
+		scores[scoreType] = api.Score{Value: score.Value, Maximum: score.Maximum}
+	}
+	output := &api.ReadScoreOutput{Score: team.Score.Value(), Scores: scores}
+	if input.Type != api.ScoreTypeUnspecified {
+		output.Score = 0
+		if score, ok := scores[input.Type]; ok {
+			output.Score = score.Value
+			output.Maximum = score.Maximum
+		}
+		return output, nil
+	}
+	for _, score := range scores {
+		output.Maximum += score.Maximum
+	}
+	return output, nil
 }
 
 func (c *Challenge) updateScore(ctx context.Context, input *api.UpdateScoreInput) (*api.UpdateScoreOutput, error) {
@@ -204,6 +256,159 @@ func (c *Challenge) updateScore(ctx context.Context, input *api.UpdateScoreInput
 		}),
 	})
 	return &api.UpdateScoreOutput{}, err
+}
+
+func (c *Challenge) registerScore(ctx context.Context, input *api.RegisterScoreInput) (*api.RegisterScoreOutput, error) {
+	if input.Name == "" || input.Type == api.ScoreTypeUnspecified {
+		return nil, fmt.Errorf("score name and type cannot be empty")
+	}
+	if math.IsNaN(input.Maximum) || math.IsInf(input.Maximum, 0) || input.Maximum <= 0 {
+		return nil, fmt.Errorf("maximum score must be positive and finite")
+	}
+
+	challenge, err := dynamitedb.Get(ctx, c.oltp, &oltp.Challenge{
+		GameID:      dynamitedb.Key(c.challenge.GameID.Value()),
+		ChallengeID: dynamitedb.Key(c.challenge.ChallengeID.Value()),
+	})
+	if err != nil {
+		return nil, err
+	}
+	previous := challenge.ScoreItems.Value()[input.Name]
+	if previous != nil && previous.Type == input.Type && previous.Maximum == input.Maximum {
+		return &api.RegisterScoreOutput{}, nil
+	}
+	if previous != nil && previous.Score > input.Maximum {
+		return nil, fmt.Errorf("maximum score cannot be lower than its current score")
+	}
+
+	scores := challenge.Scores.Value()
+	updates := map[play.ScoreType]*play.Score{}
+	if previous != nil {
+		previousTotal := scores[previous.Type]
+		if previousTotal == nil {
+			previousTotal = &play.Score{}
+		}
+		updates[previous.Type] = &play.Score{
+			Type:    previous.Type,
+			Value:   previousTotal.Value - previous.Score,
+			Maximum: previousTotal.Maximum - previous.Maximum,
+		}
+	}
+	current := scores[input.Type]
+	if updated, ok := updates[input.Type]; ok {
+		current = updated
+	}
+	if current == nil {
+		current = &play.Score{}
+	}
+	item := &oltp.ScoreItem{Type: input.Type, Maximum: input.Maximum}
+	if previous != nil {
+		item.Score = previous.Score
+		item.Reason = previous.Reason
+	}
+	updates[input.Type] = &play.Score{
+		Type:    input.Type,
+		Value:   current.Value + item.Score,
+		Maximum: current.Maximum + input.Maximum,
+	}
+	err = dynamitedb.Update(ctx, c.oltp, &oltp.Challenge{
+		GameID:      dynamitedb.Key(c.challenge.GameID.Value()),
+		ChallengeID: dynamitedb.Key(c.challenge.ChallengeID.Value()),
+		Scores:      dynamitedb.Emplace(updates),
+		ScoreItems:  dynamitedb.Emplace(map[string]*oltp.ScoreItem{input.Name: item}),
+	})
+	return &api.RegisterScoreOutput{}, err
+}
+
+func (c *Challenge) submitScore(ctx context.Context, input *api.SubmitScoreInput) (*api.SubmitScoreOutput, error) {
+	if input.Name == "" {
+		return nil, fmt.Errorf("score name cannot be empty")
+	}
+	if input.Type == api.ScoreTypeUnspecified {
+		return nil, fmt.Errorf("score type cannot be empty")
+	}
+	if math.IsNaN(input.Score) || math.IsInf(input.Score, 0) || math.IsNaN(input.Maximum) || math.IsInf(input.Maximum, 0) {
+		return nil, fmt.Errorf("score values must be finite")
+	}
+	if input.Maximum <= 0 || input.Score < 0 || input.Score > input.Maximum {
+		return nil, fmt.Errorf("score must be between zero and its positive maximum")
+	}
+
+	challenge, err := dynamitedb.Get(ctx, c.oltp, &oltp.Challenge{
+		GameID:      dynamitedb.Key(c.challenge.GameID.Value()),
+		ChallengeID: dynamitedb.Key(c.challenge.ChallengeID.Value()),
+	})
+	if err != nil {
+		return nil, err
+	}
+	items := challenge.ScoreItems.Value()
+	previous := items[input.Name]
+	if previous != nil && previous.Type == input.Type && previous.Score == input.Score && previous.Maximum == input.Maximum && previous.Reason == input.Reason {
+		return &api.SubmitScoreOutput{}, nil
+	}
+
+	scores := challenge.Scores.Value()
+	updates := map[play.ScoreType]*play.Score{}
+	if previous != nil {
+		previousTotal := scores[previous.Type]
+		if previousTotal == nil {
+			previousTotal = &play.Score{}
+		}
+		updates[previous.Type] = &play.Score{
+			Type:    previous.Type,
+			Value:   previousTotal.Value - previous.Score,
+			Maximum: previousTotal.Maximum - previous.Maximum,
+		}
+	}
+	current := scores[input.Type]
+	if updated, ok := updates[input.Type]; ok {
+		current = updated
+	}
+	if current == nil {
+		current = &play.Score{}
+	}
+	updates[input.Type] = &play.Score{
+		Type:    input.Type,
+		Value:   current.Value + input.Score,
+		Maximum: current.Maximum + input.Maximum,
+	}
+
+	delta := input.Score
+	if previous != nil {
+		delta -= previous.Score
+	}
+	if delta != 0 {
+		if err := dynamitedb.Update(ctx, c.oltp, &oltp.Team{
+			GameID: dynamitedb.Key(c.team.GameID.Value()),
+			TeamID: dynamitedb.Key(c.team.TeamID.Value()),
+			Score:  dynamitedb.Increment(delta),
+		}); err != nil {
+			return nil, err
+		}
+	}
+	err = dynamitedb.Update(ctx, c.oltp, &oltp.Challenge{
+		GameID:      dynamitedb.Key(c.challenge.GameID.Value()),
+		ChallengeID: dynamitedb.Key(c.challenge.ChallengeID.Value()),
+		Scores:      dynamitedb.Emplace(updates),
+		ScoreItems: dynamitedb.Emplace(map[string]*oltp.ScoreItem{
+			input.Name: {
+				Type:    input.Type,
+				Score:   input.Score,
+				Maximum: input.Maximum,
+				Reason:  input.Reason,
+			},
+		}),
+		ScoreEvents: dynamitedb.Append(&play.ScoreEvent{
+			Timestamp: timestamppb.Now(),
+			Text:      input.Name,
+			Change:    delta,
+			Type:      input.Type,
+			Score:     input.Score,
+			Maximum:   input.Maximum,
+			Reason:    input.Reason,
+		}),
+	})
+	return &api.SubmitScoreOutput{}, err
 }
 
 func (c *Challenge) createAsset(ctx context.Context, input api.CreateAssetInput) (*api.CreateAssetOutput, error) {
@@ -272,6 +477,6 @@ func (c *Challenge) deleteResource(ctx context.Context, input *api.DeleteResourc
 }
 
 func (c *Challenge) listResource(ctx context.Context, input *api.ListResourceInput) (*api.ListResourceOutput, error) {
-	resources, err := c.resources.List(ctx, input.Type)
+	resources, err := c.resources.List(ctx, input.Type, input.ResourceModel)
 	return &api.ListResourceOutput{Resources: resources}, err
 }

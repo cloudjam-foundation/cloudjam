@@ -8,10 +8,26 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "codeberg.org/megakuul/cloudjam/pkg/api/v1/play";
 
+enum ScoreType {
+  Unspecified = 0;
+  Design = 1;
+  Operational = 2;
+}
+
 message ScoreEvent {
   google.protobuf.Timestamp timestamp = 1;
   string text = 2;
   double change = 3;
+  ScoreType type = 4;
+  double score = 5;
+  double maximum = 6;
+  string reason = 7;
+}
+
+message Score {
+  ScoreType type = 1;
+  double value = 2;
+  double maximum = 3;
 }
 
 message Challenge {
@@ -29,4 +45,14 @@ message Challenge {
   string error = 11;
   repeated ScoreEvent score_events = 12;
   bool ready = 13;
+  repeated Score scores = 14;
+  map<string, bytes> diagrams = 15 [
+    (buf.validate.field).map.max_pairs = 4,
+    (buf.validate.field).map.keys.string = {
+      min_len: 1
+      max_len: 100
+    },
+    (buf.validate.field).map.values.bytes.max_len = 65536
+  ];
+  map<string, double> clue_prices = 16;
 }

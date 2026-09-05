@@ -90,6 +90,6 @@ type ResourceController interface {
 	Update(ctx context.Context, resourceType, resourceID, resourceState string) error
 	// Deletes a resource and returns (does not wait for resource deletion).
 	Delete(ctx context.Context, resourceType, resourceID string) error
-	// Lists all resources from the specified type.
-	List(ctx context.Context, resourceType string) (map[string]string, error)
+	// Lists resources from the specified type, optionally selected by a partial resource model.
+	List(ctx context.Context, resourceType, resourceModel string) (map[string]string, error)
 }

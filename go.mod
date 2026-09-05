@@ -7,8 +7,11 @@ require (
 	connectrpc.com/connect v1.19.1
 	connectrpc.com/validate v0.6.0
 	github.com/alexedwards/argon2id v1.0.0
+	github.com/aws/aws-lambda-go v1.55.0
 	github.com/aws/aws-sdk-go-v2 v1.45.1
 	github.com/aws/aws-sdk-go-v2/config v1.33.1
+	github.com/aws/aws-sdk-go-v2/service/appconfigdata v1.29.0
+	github.com/aws/aws-sdk-go-v2/service/athena v1.64.0
 	github.com/aws/aws-sdk-go-v2/credentials v1.20.1
 	github.com/aws/aws-sdk-go-v2/service/acmpca v1.47.8
 	github.com/aws/aws-sdk-go-v2/service/cloudcontrol v1.30.5
@@ -18,9 +21,11 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/costexplorer v1.65.3
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.311.0
 	github.com/aws/aws-sdk-go-v2/service/iam v1.54.7
+	github.com/aws/aws-sdk-go-v2/service/iotdataplane v1.38.0
 	github.com/aws/aws-sdk-go-v2/service/organizations v1.51.12
 	github.com/aws/aws-sdk-go-v2/service/rds v1.119.5
 	github.com/aws/aws-sdk-go-v2/service/resourcegroupstaggingapi v1.33.5
+	github.com/aws/aws-sdk-go-v2/service/sfn v1.48.1
 	github.com/aws/aws-sdk-go-v2/service/sts v1.47.1
 	github.com/ekristen/aws-nuke/v3 v3.66.0
 	github.com/ekristen/libnuke v1.3.0
@@ -30,6 +35,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/uuid v1.6.0
 	github.com/gruntwork-io/cloud-nuke v0.52.0
+	github.com/lib/pq v1.10.9
 	github.com/lmittmann/tint v1.1.3
 	github.com/megakuul/dynamitedb v0.6.1
 	github.com/megakuul/lake v0.5.0

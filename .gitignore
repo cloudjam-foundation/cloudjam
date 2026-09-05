@@ -4,3 +4,4 @@
 *.sock
 .idea
 *.wasm
+delete_me/**
