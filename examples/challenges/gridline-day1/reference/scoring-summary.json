@@ -1,0 +1,24 @@
+{
+  "scope": {
+    "mode": "country",
+    "country": "CH",
+    "competitors": []
+  },
+  "competitorCount": 1,
+  "eventCount": 3835,
+  "checkCount": 13,
+  "earliestEvent": "2026-08-31T07:10:47.743Z",
+  "latestEvent": "2026-08-31T12:59:47.865Z",
+  "competitors": [
+    {
+      "username": "linus.moser",
+      "sub": "13048882-1081-70a5-70e8-9fa2f0fa2721",
+      "total": 11310,
+      "updatedAt": "2026-08-31T12:59:47.865Z",
+      "checkCount": 13,
+      "eventCount": 3835,
+      "passedEvents": 1557,
+      "failedEvents": 2278
+    }
+  ]
+}

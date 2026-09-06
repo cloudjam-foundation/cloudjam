@@ -13,15 +13,29 @@
 		StartRequestSchema,
 		UncoverClueRequestSchema
 	} from '$lib/sdk/v1/play/challenge/challenge_pb';
-	import { ScoreType, ScoreTypeSchema, type Challenge } from '$lib/sdk/v1/play/challenge_pb';
+	import { ScoreType, ScoreTypeSchema, type Challenge, type ScoreEvent } from '$lib/sdk/v1/play/challenge_pb';
 	import { jpegDataURL } from '$lib/utils';
-	import { create, enumToJson } from '@bufbuild/protobuf';
+	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import { BadgeCheckIcon, KeyRoundIcon, SquareArrowOutUpRightIcon } from '@lucide/svelte';
+	import {
+		BadgeCheckIcon,
+		DraftingCompassIcon,
+		KeyRoundIcon,
+		LayersIcon,
+		SquareArrowOutUpRightIcon,
+		ZapIcon
+	} from '@lucide/svelte';
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import LightbulbIcon from '@lucide/svelte/icons/lightbulb';
 	import PlayIcon from '@lucide/svelte/icons/play';
+	import { flip } from 'svelte/animate';
+
+	const kitchenFmt = Intl.DateTimeFormat(undefined, {
+		hour: '2-digit',
+		minute: '2-digit',
+		hour12: false
+	});
 
 	let {
 		challenge,
@@ -46,11 +60,31 @@
 	let credsState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let clueState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let hasScoreReasons = $derived(challenge.scoreEvents.some((event) => event.reason));
-	const scoreTypeName = (type: ScoreType) =>
-		type === ScoreType.Unspecified ? '' : enumToJson(ScoreTypeSchema, type)?.toString().toLowerCase();
 
 	let adhsTimeout: ReturnType<typeof setTimeout>;
 	let adhsSpinner: boolean = $state(false);
+
+	function group(events: ScoreEvent[]): Record<string, ScoreEvent[]> {
+		const groups: Record<string, ScoreEvent[]> = {};
+		for (const event of events.toReversed()) {
+			if (!groups[event.text]) groups[event.text] = [event];
+			else groups[event.text].push(event);
+		}
+		return groups;
+	}
+
+	function getEventColor(event: ScoreEvent): string {
+		switch (event.score) {
+			case 0:
+				return 'text-red-500/70';
+			case event.maximum:
+				return 'text-emerald-500/70';
+			default:
+				return 'text-amber-500/70';
+		}
+	}
+
+	let expandedEvent = $state('');
 </script>
 
 <Card.Root class="w-full">
@@ -71,11 +105,15 @@
 			{/if}
 		</Card.Title>
 		<Card.Description>
-			<Badge variant="secondary">
-				score: {challenge.scoreEvents.reduce((sum, event) => sum + event.change, 0)}
-			</Badge>
 			{#each challenge.scores as score (score.type)}
-				<Badge variant="outline">{scoreTypeName(score.type)}: {score.value} / {score.maximum}</Badge>
+				<Badge variant="outline">
+					{#if score.type === ScoreType.Operational}
+						<ZapIcon />
+					{:else if score.type === ScoreType.Design}
+						<DraftingCompassIcon />
+					{/if}
+					<span>{score.value} / {score.maximum}</span>
+				</Badge>
 			{/each}
 			{#if !challenge.title}
 				<Badge variant="default">not started yet</Badge>
@@ -181,7 +219,7 @@
 				{#each Object.entries(challenge.diagrams) as [name, diagram] (name)}
 					<figure class="flex flex-col gap-2">
 						<img class="max-h-96 rounded-md object-contain" src={jpegDataURL(diagram)} alt={name} />
-						<figcaption class="text-center text-xs text-muted-foreground">{name}</figcaption>
+						<figcaption class="text-muted-foreground text-center text-xs">{name}</figcaption>
 					</figure>
 				{/each}
 			</div>
@@ -230,8 +268,9 @@
 										refresh();
 									}, clueState)}
 							>
-								<LightbulbIcon /> Uncover
-								({challenge.cluePrices[name] === undefined ? 'price unavailable' : `${-challenge.cluePrices[name]} points`})
+								<LightbulbIcon /> Uncover ({challenge.cluePrices[name] === undefined
+									? 'price unavailable'
+									: `${-challenge.cluePrices[name]} points`})
 							</Button>
 						{/if}
 					</div>
@@ -246,28 +285,53 @@
 			<Separator />
 
 			<div class="flex flex-col gap-2">
-				<Card.Title>Activity</Card.Title>
+				<Card.Title>System Status</Card.Title>
 				<Table.Root>
-					<Table.Header>
-						<Table.Row>
-							<Table.Head>Time</Table.Head>
-							<Table.Head>Event</Table.Head>
-							<Table.Head>Type</Table.Head>
-							<Table.Head>Result</Table.Head>
-							<Table.Head>Change</Table.Head>
-							{#if hasScoreReasons}<Table.Head>Explanation</Table.Head>{/if}
-						</Table.Row>
-					</Table.Header>
 					<Table.Body>
-						{#each challenge.scoreEvents as event, index (index)}
-							<Table.Row>
-								<Table.Cell>{event.timestamp ? timestampDate(event.timestamp).toLocaleString() : ''}</Table.Cell>
-								<Table.Cell>{event.text}</Table.Cell>
-								<Table.Cell>{scoreTypeName(event.type)}</Table.Cell>
-								<Table.Cell>{event.maximum ? `${event.score} / ${event.maximum}` : ''}</Table.Cell>
-								<Table.Cell>{event.change}</Table.Cell>
-								{#if hasScoreReasons}<Table.Cell>{event.reason}</Table.Cell>{/if}
+						{#each Object.entries(group(challenge.scoreEvents)) as [key, events] (key)}
+							{@const topEvent = events[0]}
+							<Table.Row
+								class="cursor-pointer"
+								onclick={() => {
+									if (expandedEvent === key) expandedEvent = '';
+									else expandedEvent = key;
+								}}
+							>
+								<Table.Cell>
+									{#if topEvent.type === ScoreType.Operational}
+										<ZapIcon class={getEventColor(topEvent)} />
+									{:else if topEvent.type === ScoreType.Design}
+										<DraftingCompassIcon />
+									{/if}
+								</Table.Cell>
+								<Table.Cell class="text-muted-foreground font-bold">
+									{kitchenFmt.format(timestampDate(topEvent.timestamp!))}
+								</Table.Cell>
+								<Table.Cell>{topEvent.text}</Table.Cell>
+								<Table.Cell>{topEvent.maximum ? `${topEvent.score} / ${topEvent.maximum}` : ''}</Table.Cell>
+								<Table.Cell>{topEvent.change}</Table.Cell>
+								{#if hasScoreReasons}<Table.Cell>{topEvent.reason}</Table.Cell>{/if}
 							</Table.Row>
+							{#if expandedEvent === key}
+								{#each events as event (event)}
+									<Table.Row class="opacity-50">
+										<Table.Cell>
+											{#if event.type === ScoreType.Operational}
+												<ZapIcon class={getEventColor(event)} />
+											{:else if event.type === ScoreType.Design}
+												<DraftingCompassIcon />
+											{/if}
+										</Table.Cell>
+										<Table.Cell class="text-muted-foreground font-bold">
+											{kitchenFmt.format(timestampDate(event.timestamp!))}
+										</Table.Cell>
+										<Table.Cell>{event.text}</Table.Cell>
+										<Table.Cell>{event.maximum ? `${event.score} / ${event.maximum}` : ''}</Table.Cell>
+										<Table.Cell>{event.change}</Table.Cell>
+										{#if hasScoreReasons}<Table.Cell>{event.reason}</Table.Cell>{/if}
+									</Table.Row>
+								{/each}
+							{/if}
 						{/each}
 					</Table.Body>
 				</Table.Root>

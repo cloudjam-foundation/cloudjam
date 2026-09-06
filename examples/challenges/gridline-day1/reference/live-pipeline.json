@@ -1,0 +1,126 @@
+{
+  "heat_id": "4ba08474-d9d0-4b1b-a847-8e4df4390093",
+  "telemetry": {
+    "heat_id": "4ba08474-d9d0-4b1b-a847-8e4df4390093",
+    "track_id": "track-01",
+    "label": "CloudJam full solve",
+    "started_at": "2026-09-05T22:57:30.571802Z",
+    "finished_at": "2026-09-05T23:00:30.77010775Z",
+    "lap_count": 6,
+    "rules_version": "wet-track-2026",
+    "podium": [
+      {
+        "position": 1,
+        "transponder_id": "T-0001",
+        "best_lap_ms": 60000
+      },
+      {
+        "position": 2,
+        "transponder_id": "T-0002",
+        "best_lap_ms": 60000
+      },
+      {
+        "position": 3,
+        "transponder_id": "T-0003",
+        "best_lap_ms": 60000
+      }
+    ]
+  },
+  "notification": {
+    "event": "heat.finished",
+    "heat_id": "4ba08474-d9d0-4b1b-a847-8e4df4390093",
+    "label": "CloudJam full solve",
+    "lap_count": 6,
+    "status": "FINISHED",
+    "track_id": "track-01",
+    "ts": "2026-09-05T23:00:30Z"
+  },
+  "lap_records": [
+    {
+      "heat_id": "4ba08474-d9d0-4b1b-a847-8e4df4390093",
+      "transponder_id": "T-0001",
+      "lap_number": 1,
+      "lap_time_ms": 60000,
+      "crossed_at": "2026-09-05T22:58:30.571802Z",
+      "rules_version": "baseline-2026",
+      "track_id": "track-01"
+    },
+    {
+      "heat_id": "4ba08474-d9d0-4b1b-a847-8e4df4390093",
+      "transponder_id": "T-0002",
+      "lap_number": 1,
+      "lap_time_ms": 60000,
+      "crossed_at": "2026-09-05T22:58:30.571802Z",
+      "rules_version": "baseline-2026",
+      "track_id": "track-01"
+    },
+    {
+      "heat_id": "4ba08474-d9d0-4b1b-a847-8e4df4390093",
+      "transponder_id": "T-0003",
+      "lap_number": 1,
+      "lap_time_ms": 60000,
+      "crossed_at": "2026-09-05T22:58:30.571802Z",
+      "rules_version": "baseline-2026",
+      "track_id": "track-01"
+    },
+    {
+      "heat_id": "4ba08474-d9d0-4b1b-a847-8e4df4390093",
+      "transponder_id": "T-0001",
+      "lap_number": 2,
+      "lap_time_ms": 60000,
+      "crossed_at": "2026-09-05T22:59:30.571802Z",
+      "rules_version": "wet-track-2026",
+      "track_id": "track-01"
+    },
+    {
+      "heat_id": "4ba08474-d9d0-4b1b-a847-8e4df4390093",
+      "transponder_id": "T-0002",
+      "lap_number": 2,
+      "lap_time_ms": 65000,
+      "crossed_at": "2026-09-05T22:59:35.571802Z",
+      "rules_version": "wet-track-2026",
+      "track_id": "track-01"
+    },
+    {
+      "heat_id": "4ba08474-d9d0-4b1b-a847-8e4df4390093",
+      "transponder_id": "T-0003",
+      "lap_number": 2,
+      "lap_time_ms": 70000,
+      "crossed_at": "2026-09-05T22:59:40.571802Z",
+      "rules_version": "wet-track-2026",
+      "track_id": "track-01"
+    }
+  ],
+  "standings": [
+    {
+      "transponder_id": "T-0001",
+      "display_name": "Alex Mercer",
+      "team": "Velocity Crew",
+      "position": 1,
+      "best_lap_ms": 60000,
+      "last_lap_ms": 60000,
+      "gap_ms": 0,
+      "updated_at": "2026-09-05T22:59:41.51777Z"
+    },
+    {
+      "transponder_id": "T-0002",
+      "display_name": "Blake Chen",
+      "team": "Velocity Crew",
+      "position": 2,
+      "best_lap_ms": 60000,
+      "last_lap_ms": 65000,
+      "gap_ms": 0,
+      "updated_at": "2026-09-05T22:59:41.51777Z"
+    },
+    {
+      "transponder_id": "T-0003",
+      "display_name": "Casey Ortiz",
+      "team": "Grid Racers",
+      "position": 3,
+      "best_lap_ms": 60000,
+      "last_lap_ms": 70000,
+      "gap_ms": 0,
+      "updated_at": "2026-09-05T22:59:41.51777Z"
+    }
+  ]
+}

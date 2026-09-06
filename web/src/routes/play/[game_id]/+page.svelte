@@ -65,7 +65,6 @@
 	$effect(() => {
 		const id = getSubject();
 		for (const team of teams) {
-			console.log(team.players);
 			if (id in team.players) {
 				userTeam = team;
 				return;

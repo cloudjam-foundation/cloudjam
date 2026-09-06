@@ -17,6 +17,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	iamtypes "github.com/aws/aws-sdk-go-v2/service/iam/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	s3types "github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
@@ -49,6 +50,7 @@ type Options struct {
 	fakeVersion string
 	fakePort    int
 	region      string
+	name        string
 }
 
 func NewOptions(gFlags *flags.GlobalFlags) *Options {
@@ -62,6 +64,7 @@ func (r *Options) AttachFlags(flagSet *pflag.FlagSet) {
 	flagSet.StringVar(&r.fakeVersion, "fakecloud-version", "latest", "fakecloud release to download and run (only used if --fake is true)")
 	flagSet.IntVar(&r.fakePort, "port", 4566, "host port for the fakecloud endpoint (only used if --fake is true)")
 	flagSet.StringVar(&r.region, "region", "us-east-1", "region to deploy to")
+	flagSet.StringVar(&r.name, "name", "cloudjam", "prefix for the sandbox role and permissions boundary")
 }
 
 func (r *Options) Run(ctx context.Context, args []string) error {
@@ -103,9 +106,15 @@ func (r *Options) Run(ctx context.Context, args []string) error {
 		return fmt.Errorf("failed to retrieve account id: %w", err)
 	}
 	s3Client, assetBucket := s3.NewFromConfig(awsConfig), fmt.Sprintf("asset-bucket-%s", uuid.NewString())
-	_, err = s3Client.CreateBucket(ctx, &s3.CreateBucketInput{
+	bucketInput := &s3.CreateBucketInput{
 		Bucket: &assetBucket,
-	})
+	}
+	if r.region != "us-east-1" {
+		bucketInput.CreateBucketConfiguration = &s3types.CreateBucketConfiguration{
+			LocationConstraint: s3types.BucketLocationConstraint(r.region),
+		}
+	}
+	_, err = s3Client.CreateBucket(ctx, bucketInput)
 	if err != nil {
 		return fmt.Errorf("failed to create asset bucket: %w", err)
 	}
@@ -141,7 +150,7 @@ func (r *Options) Run(ctx context.Context, args []string) error {
 					]
 				}
 			`, *identity.UserId, *identity.Arn)
-	roleName := "cloudjam-sandbox"
+	roleName := r.name + "-sandbox"
 	createdRole, err := iamClient.CreateRole(ctx, &iam.CreateRoleInput{
 		RoleName:                 &roleName,
 		AssumeRolePolicyDocument: &trust,
@@ -192,7 +201,7 @@ func (r *Options) Run(ctx context.Context, args []string) error {
 		providerEndpoint, *credentials.Credentials.AccessKeyId, *credentials.Credentials.SecretAccessKey, *credentials.Credentials.SessionToken,
 	))
 	return plugin.Run(ctx, args[0],
-		aws.NewAccessController(iamClient, *identity.Account, roleName, "cloudjam-boundary"),
+		aws.NewAccessController(iamClient, *identity.Account, roleName, r.name+"-boundary"),
 		aws.NewAssetController(s3Client, assetBucket),
 		aws.NewResourceController(cloudcontrol.NewFromConfig(awsConfig)),
 	)

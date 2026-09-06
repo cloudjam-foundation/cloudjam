@@ -1,7 +1,6 @@
 package challenge
 
 import (
-	"cmp"
 	"context"
 	"errors"
 	"fmt"
@@ -147,6 +146,18 @@ func (s *Server) List(ctx context.Context, req *connect.Request[challenge.ListRe
 				coveredClues[clue] = "<hidden>"
 			}
 		}
+		visibleScores := []*play.Score{}
+		for _, score := range challenge.Scores.Value() {
+			if ended || score.Type == play.ScoreType_Operational {
+				visibleScores = append(visibleScores, score)
+			}
+		}
+		visibleScoreEvents := []*play.ScoreEvent{}
+		for _, event := range challenge.ScoreEvents.Value() {
+			if ended || event.Type == play.ScoreType_Operational {
+				visibleScoreEvents = append(visibleScoreEvents, event)
+			}
+		}
 		challengesOutput = append(challengesOutput, &play.Challenge{
 			GameId:               challenge.GameID.Value(),
 			Id:                   challenge.ChallengeID.Value(),
@@ -160,8 +171,8 @@ func (s *Server) List(ctx context.Context, req *connect.Request[challenge.ListRe
 			Clues:                coveredClues,
 			CluePrices:           challenge.CluePrices.Value(),
 			Error:                challenge.Error.Value(),
-			Scores:               visibleScores(challenge.Scores.Value(), ended),
-			ScoreEvents:          visibleScoreEvents(challenge.ScoreEvents.Value(), ended),
+			Scores:               visibleScores,
+			ScoreEvents:          visibleScoreEvents,
 			Ready:                challenge.Ready.Value(),
 			Scope:                challenge.Scope.Value(),
 		})
@@ -170,38 +181,6 @@ func (s *Server) List(ctx context.Context, req *connect.Request[challenge.ListRe
 	return &connect.Response[challenge.ListResponse]{Msg: &challenge.ListResponse{
 		Challenges: challengesOutput,
 	}}, nil
-}
-
-func visibleScoreEvents(events []*play.ScoreEvent, ended bool) []*play.ScoreEvent {
-	if ended {
-		return events
-	}
-	visible := make([]*play.ScoreEvent, 0, len(events))
-	for _, event := range events {
-		if event == nil || !ended && event.Type != play.ScoreType_Operational {
-			continue
-		}
-		cloned := *event
-		cloned.Reason = ""
-		visible = append(visible, &cloned)
-	}
-	return visible
-}
-
-func visibleScores(scores map[play.ScoreType]*play.Score, ended bool) []*play.Score {
-	result := make([]*play.Score, 0, len(scores))
-	for scoreType, score := range scores {
-		if score == nil || !ended && scoreType != play.ScoreType_Operational {
-			continue
-		}
-		cloned := *score
-		cloned.Type = scoreType
-		result = append(result, &cloned)
-	}
-	slices.SortFunc(result, func(a, b *play.Score) int {
-		return cmp.Compare(a.Type, b.Type)
-	})
-	return result
 }
 
 func (s *Server) Create(ctx context.Context, req *connect.Request[challenge.CreateRequest]) (*connect.Response[challenge.CreateResponse], error) {
@@ -447,8 +426,8 @@ func (s *Server) Start(ctx context.Context, req *connect.Request[challenge.Start
 		s.pluginCache, s.oltp, s.olap, access, assets, resources,
 	)
 
-	s.scheduler.Schedule(func(challengeCtx context.Context) error {
-		challengeCtx, cancel := context.WithDeadline(challengeCtx, gameMeta.To.Value())
+	s.scheduler.Schedule(func(ctx context.Context) error {
+		challengeCtx, cancel := context.WithDeadline(ctx, gameMeta.To.Value())
 		defer cancel()
 		if err := challengeRunner.Start(challengeCtx); err != nil {
 			if !errors.Is(err, context.Canceled) && !errors.Is(err, context.DeadlineExceeded) {
