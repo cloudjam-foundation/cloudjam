@@ -1,0 +1,242 @@
+{
+  "A1-01": {
+    "score": 1240.0,
+    "maximum": 1240.0,
+    "detail": "On-demand application tables: 4/4"
+  },
+  "A1-02": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "applications=['analytics-engine', 'wellness-api'], ARM64 pods=8; ; node types=[['t4g.medium']]"
+  },
+  "A1-03": {
+    "score": 1240.0,
+    "maximum": 1240.0,
+    "detail": "Submitted CloudFront distribution: d1uxac7vs4dlk.cloudfront.net"
+  },
+  "A1-04": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "app VPCs=['vpc-0bef01f554a911101'], files VPCs=['vpc-0ee20d0cd34f4d42b'], active peerings=1"
+  },
+  "A1-05": {
+    "score": 1240.0,
+    "maximum": 1240.0,
+    "detail": "Application Lambda memory/timeouts=[('cloudjam-vitalforge-validation-sleep-ingest', 256, 30), ('cloudjam-vitalforge-validation-daily-export', 256, 30)]"
+  },
+  "A1-06": {
+    "score": 1240.0,
+    "maximum": 1240.0,
+    "detail": "Console buckets with active lifecycle: 1/1"
+  },
+  "B1-01": {
+    "score": 1240.0,
+    "maximum": 1240.0,
+    "detail": "Application VPCs=['vpc-0bef01f554a911101']; EFS VPCs=['vpc-0ee20d0cd34f4d42b']"
+  },
+  "B1-02": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "Peering routes=2, NFS restricted to app security groups=True"
+  },
+  "B1-03": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "Exact DynamoDB keys=True, seed users=['member-demo-1', 'member-demo-2', 'member-demo-3']"
+  },
+  "B1-04": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "applications=['analytics-engine', 'wellness-api'], ARM64 pods=8; "
+  },
+  "B1-05": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "Cognito pool must contain both coach and member groups"
+  },
+  "B1-06": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "Console/API/sleep routing=True, associated WAF=True"
+  },
+  "B1-07": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "SSM active=cut-phase-2026, dashboard runtime=cut-phase-2026, observed versions=['baseline-2026', 'cut-phase-2026']"
+  },
+  "B1-08": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "Linked Lattice services=1, healthy analytics targets=4"
+  },
+  "B1-09": {
+    "score": 1240.0,
+    "maximum": 1240.0,
+    "detail": "Private analytics.vitalforge.internal must resolve to the associated Lattice service in app-vpc"
+  },
+  "B1-10": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "Original sleep Lambda integration=True; 202/400/422 contract and unknown-user rejection"
+  },
+  "B1-11": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "Scheduled original daily-export=True; EFS mounts=1; observed export replacement=True"
+  },
+  "B1-12": {
+    "score": 1240.0,
+    "maximum": 1240.0,
+    "detail": "Active management trails with successful S3 delivery=1"
+  },
+  "B1-13": {
+    "score": 1240.0,
+    "maximum": 1240.0,
+    "detail": "Successful console.zip deployment and CloudFront invalidation=True"
+  },
+  "C1-01": {
+    "score": 2867.5,
+    "maximum": 2867.5,
+    "detail": "API Gateway forwards protected routes without JWT authorizers; application rejects anonymous/cross-member requests"
+  },
+  "C1-02": {
+    "score": 2867.5,
+    "maximum": 2867.5,
+    "detail": "Healthy private Lattice analytics=True, analytics exposed through ALB/API=False"
+  },
+  "C1-03": {
+    "score": 2867.5,
+    "maximum": 2867.5,
+    "detail": "All console origins require public access blocks and OAC/OAI"
+  },
+  "C1-04": {
+    "score": 2867.5,
+    "maximum": 2867.5,
+    "detail": "EFS isolated in files-vpc=True, approved SG-only NFS=True"
+  },
+  "C1-05": {
+    "score": 2867.5,
+    "maximum": 2867.5,
+    "detail": "CloudFront WebACLId=arn:aws:wafv2:us-east-1:202720548515:global/webacl/cloudjam-vitalforge-validation/ac5376e3-06cc-4bd1-a992-0988d6d0d575"
+  },
+  "C1-06": {
+    "score": 2867.5,
+    "maximum": 2867.5,
+    "detail": "Application pod/Lambda roles=2, broad or unreadable roles=[]"
+  },
+  "C1-07": {
+    "score": 1441.5,
+    "maximum": 1441.5,
+    "detail": "World-open SSH groups=[]"
+  },
+  "C1-08": {
+    "score": 1441.5,
+    "maximum": 1441.5,
+    "detail": "CloudTrail destination buckets block public access"
+  },
+  "C1-09": {
+    "score": 1441.5,
+    "maximum": 1441.5,
+    "detail": "Original Lambda ZIP hashes match; named EKS applications run and console.zip pipeline succeeded. Container payload and deployed console bytes require manual checksum verification."
+  },
+  "C1-10": {
+    "score": 2867.5,
+    "maximum": 2867.5,
+    "detail": "EKS EFS access-point volumes with tls+iam=True; Lambda access points=1"
+  },
+  "C1-11": {
+    "score": 1441.5,
+    "maximum": 1441.5,
+    "detail": "Application data in DynamoDB; no RDS/Aurora in marking region"
+  },
+  "C1-12": {
+    "score": 1441.5,
+    "maximum": 1441.5,
+    "detail": "Regional application APIs use eu-central-1; console/audit bucket regions=['eu-central-1']. IAM, CloudFront and its WAF are global."
+  },
+  "D1-01": {
+    "score": 3627.0,
+    "maximum": 3627.0,
+    "detail": "Application AZs=['eu-central-1a', 'eu-central-1b'], available replicas=[4, 4]"
+  },
+  "D1-02": {
+    "score": 3627.0,
+    "maximum": 3627.0,
+    "detail": "Latest acknowledged meal/workout/sleep IDs found with consistent reads=['meal-create', 'workout-create', 'sleep-ingest']"
+  },
+  "D1-03": {
+    "score": 3627.0,
+    "maximum": 3627.0,
+    "detail": "Dashboard analytics via healthy Lattice and private DNS=True"
+  },
+  "D1-04": {
+    "score": 3627.0,
+    "maximum": 3627.0,
+    "detail": "New generated_at observed at existing member export path=True"
+  },
+  "D1-05": {
+    "score": 3627.0,
+    "maximum": 3627.0,
+    "detail": "Pod log collector/groups=True, application Lambda groups=True"
+  },
+  "D1-06": {
+    "score": 1797.9999999999998,
+    "maximum": 1797.9999999999998,
+    "detail": "Encrypted application EFS systems=1"
+  },
+  "D1-07": {
+    "score": 3627.0,
+    "maximum": 3627.0,
+    "detail": "Coach export accepted; subsequent reads observe regenerated export"
+  },
+  "E1-01": {
+    "score": 5456.0,
+    "maximum": 5456.0,
+    "detail": "Single submitted HTTPS entry=d1uxac7vs4dlk.cloudfront.net"
+  },
+  "E1-02": {
+    "score": 5456.0,
+    "maximum": 5456.0,
+    "detail": "Active application HPAs=['analytics-engine', 'wellness-api']"
+  },
+  "E1-03": {
+    "score": 2728.0,
+    "maximum": 2728.0,
+    "detail": "Console cache default TTL=86400"
+  },
+  "F1-01": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "Console lifecycle transitions objects or versions toward IA/archive"
+  },
+  "F1-02": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "Application HPA scale-down enabled=True"
+  },
+  "F1-03": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "Application clusters=1, deployments=2, EFS=1, sleep/export Lambdas=1/1"
+  },
+  "F1-04": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "All four application tables use on-demand billing"
+  },
+  "F1-05": {
+    "score": 2480.0,
+    "maximum": 2480.0,
+    "detail": "Export reserved/account concurrency=[(None, 10)]"
+  },
+  "G1-01": {
+    "score": 4960.0,
+    "maximum": 4960.0,
+    "detail": "Current writes persist, dashboard includes Lattice analytics, and export is regenerated/readable"
+  },
+  "G1-02": {
+    "score": 4960.0,
+    "maximum": 4960.0,
+    "detail": "Submitted CloudFront endpoint serves console, health, authenticated APIs and sleep"
+  }
+}

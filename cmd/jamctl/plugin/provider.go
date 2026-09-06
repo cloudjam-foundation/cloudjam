@@ -186,8 +186,13 @@ func (p *localProvider) submitScore(ctx context.Context, in *api.SubmitScoreInpu
 		return nil, fmt.Errorf("invalid score submission")
 	}
 	previous, exists := p.scoreItems[in.Name]
-	if exists && previous.Type == in.Type && previous.Score == in.Score && previous.Maximum == in.Maximum && previous.Reason == in.Reason {
+	if !in.Accumulate && exists && previous.Type == in.Type && previous.Score == in.Score && previous.Maximum == in.Maximum && previous.Reason == in.Reason {
 		return &api.SubmitScoreOutput{}, nil
+	}
+	item := *in
+	if in.Accumulate && exists && previous.Type == in.Type {
+		item.Score += previous.Score
+		item.Maximum += previous.Maximum
 	}
 	if exists {
 		total := p.scores[previous.Type]
@@ -196,12 +201,12 @@ func (p *localProvider) submitScore(ctx context.Context, in *api.SubmitScoreInpu
 		p.scores[previous.Type] = total
 	}
 	total := p.scores[in.Type]
-	total.Value += in.Score
-	total.Maximum += in.Maximum
+	total.Value += item.Score
+	total.Maximum += item.Maximum
 	p.scores[in.Type] = total
-	delta := in.Score - previous.Score
+	delta := item.Score - previous.Score
 	p.score += delta
-	p.scoreItems[in.Name] = *in
+	p.scoreItems[in.Name] = item
 	slog.Info(fmt.Sprintf("%+g points — %s", delta, in.Name), "type", in.Type, "score", in.Score, "maximum", in.Maximum, "reason", in.Reason)
 	return &api.SubmitScoreOutput{}, nil
 }

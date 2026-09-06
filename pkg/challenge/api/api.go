@@ -106,11 +106,12 @@ type RegisterScoreOutput struct{}
 const SubmitScoreName = "submit_score"
 
 type SubmitScoreInput struct {
-	Name    string    `json:"name,omitempty"`
-	Type    ScoreType `json:"type,omitempty"`
-	Score   float64   `json:"score,omitempty"`
-	Maximum float64   `json:"maximum,omitempty"`
-	Reason  string    `json:"reason,omitempty"`
+	Name       string    `json:"name,omitempty"`
+	Type       ScoreType `json:"type,omitempty"`
+	Score      float64   `json:"score,omitempty"`
+	Maximum    float64   `json:"maximum,omitempty"`
+	Reason     string    `json:"reason,omitempty"`
+	Accumulate bool      `json:"accumulate,omitempty"`
 }
 
 type SubmitScoreOutput struct{}

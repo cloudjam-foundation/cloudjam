@@ -9,14 +9,14 @@ import (
 	"strings"
 	"time"
 
-	"codeberg.org/megakuul/cloudjam/examples/challenges/gridline-day1/internal/scoring"
+	"codeberg.org/megakuul/cloudjam/examples/challenges/vitalforge-day2/internal/scoring"
 	"codeberg.org/megakuul/cloudjam/pkg/challenge"
 	"codeberg.org/megakuul/cloudjam/pkg/challenge/api"
 	"codeberg.org/megakuul/cloudjam/pkg/challenge/aws"
 	"codeberg.org/megakuul/cloudjam/pkg/challenge/aws/services/ssm"
 )
 
-const endpointParameter = "/cloudjam/gridline/day1/endpoint-url"
+const endpointParameter = "/cloudjam/vitalforge/day2/endpoint-url"
 
 func bootstrap(s *challenge.Scenario) error {
 	started := time.Now()
@@ -24,7 +24,7 @@ func bootstrap(s *challenge.Scenario) error {
 	if err != nil {
 		return err
 	}
-	s.AddEvent("GridLine live evaluation", challenge.Event{
+	s.AddEvent("VitalForge live evaluation", challenge.Event{
 		Trigger: func() (bool, error) { return true, nil },
 		Event: func(ctx context.Context, s *challenge.Scenario) error {
 			select {
@@ -55,7 +55,7 @@ func bootstrap(s *challenge.Scenario) error {
 						return api.SendHTTPOutput{}, fmt.Errorf("read endpoint: %w", configurationError)
 					}
 					if base == "" {
-						return api.SendHTTPOutput{}, fmt.Errorf("waiting for %s in eu-central-1; no request sent", endpointParameter)
+						return api.SendHTTPOutput{}, fmt.Errorf("waiting for %s in the game region; no request sent", endpointParameter)
 					}
 					request.URL = base + request.URL
 					return s.SendHTTP(request)
@@ -63,10 +63,6 @@ func bootstrap(s *challenge.Scenario) error {
 				design.lock.Lock()
 				for _, result := range results {
 					design.evidence.Checks[result.Check.ID] = result
-					if strings.Contains(result.Detail, " | HTTP ") && !strings.Contains(result.Detail, " | HTTP 0 |") {
-						latencies := append(design.evidence.Latencies[result.Check.ID], result.Latency)
-						design.evidence.Latencies[result.Check.ID] = latencies[max(0, len(latencies)-20):]
-					}
 				}
 				design.lock.Unlock()
 				for _, result := range results {

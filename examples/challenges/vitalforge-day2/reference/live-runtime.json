@@ -1,0 +1,131 @@
+{
+  "pods_before": [
+    "0465f856-ffb4-4a54-85f4-fe8a43b305f0",
+    "250e53aa-e4dd-49c4-8823-1071f02caa58",
+    "6abf1065-9963-4bf7-9c83-fc4de496b6b4",
+    "76f6b4b1-4f77-4431-b76b-70b31c0c4436",
+    "9a6c837a-6c87-444d-9961-58f826344d6b",
+    "acfaadac-2014-46bf-a189-fa7cfacd5620",
+    "c0df2135-4a22-4341-a6f6-5d00db4bcd0d",
+    "f094b7c4-8b5f-491e-a688-102623343430"
+  ],
+  "baseline_dashboard": {
+    "status": 200,
+    "body": {
+      "analytics": {
+        "calorie_balance": -160,
+        "protein_progress_pct": 33,
+        "sleep_score": 96,
+        "thresholds_version": "baseline-2026",
+        "user_id": "member-demo-1"
+      },
+      "display_name": "Alex Rivera",
+      "meals_today": 8,
+      "user_id": "member-demo-1",
+      "workouts_today": 8
+    }
+  },
+  "baseline_sleep": {
+    "status": 202,
+    "body": {
+      "duration_hours": 6.5,
+      "session_id": "7c2662ad-7d15-43f1-97aa-6003e61fe830",
+      "thresholds_version": "baseline-2026",
+      "user_id": "member-demo-1"
+    }
+  },
+  "cut_dashboard": {
+    "status": 200,
+    "body": {
+      "analytics": {
+        "calorie_balance": -1210,
+        "protein_progress_pct": 27,
+        "sleep_score": 95,
+        "thresholds_version": "cut-phase-2026",
+        "user_id": "member-demo-1"
+      },
+      "display_name": "Alex Rivera",
+      "meals_today": 8,
+      "user_id": "member-demo-1",
+      "workouts_today": 8
+    }
+  },
+  "cut_sleep": {
+    "status": 422,
+    "body": {
+      "error": "duration below minimum"
+    }
+  },
+  "valid_cut_sleep": {
+    "status": 202,
+    "body": {
+      "duration_hours": 8,
+      "session_id": "7ebb77bb-c4a1-4fd2-94f8-3cfe84761494",
+      "thresholds_version": "cut-phase-2026",
+      "user_id": "member-demo-1"
+    }
+  },
+  "sleep_persisted_version": "cut-phase-2026",
+  "coach_export": {
+    "status": 202,
+    "body": {
+      "status": "queued",
+      "user_id": "member-demo-1"
+    }
+  },
+  "export_before": {
+    "status": 200,
+    "body": {
+      "user_id": "member-demo-1",
+      "generated_at": "2026-09-06T20:52:59Z",
+      "meals_count": 8,
+      "workouts_count": 8,
+      "avg_sleep_hours": 7.8,
+      "thresholds_version": "baseline-2026"
+    }
+  },
+  "lambda_export": {
+    "status": 200,
+    "error": null,
+    "body": {
+      "status": "written",
+      "user_id": "member-demo-1"
+    }
+  },
+  "export_after": {
+    "status": 200,
+    "body": {
+      "user_id": "member-demo-1",
+      "generated_at": "2026-09-06T20:53:20Z",
+      "meals_count": 8,
+      "workouts_count": 8,
+      "avg_sleep_hours": 7.7,
+      "thresholds_version": "cut-phase-2026"
+    }
+  },
+  "pods_after": [
+    "0465f856-ffb4-4a54-85f4-fe8a43b305f0",
+    "250e53aa-e4dd-49c4-8823-1071f02caa58",
+    "6abf1065-9963-4bf7-9c83-fc4de496b6b4",
+    "76f6b4b1-4f77-4431-b76b-70b31c0c4436",
+    "9a6c837a-6c87-444d-9961-58f826344d6b",
+    "acfaadac-2014-46bf-a189-fa7cfacd5620",
+    "c0df2135-4a22-4341-a6f6-5d00db4bcd0d",
+    "f094b7c4-8b5f-491e-a688-102623343430"
+  ],
+  "console_source_unchanged": true,
+  "console_files": {
+    "index.html": true,
+    "styles.css": true,
+    "app.js": true
+  },
+  "efs_matches_http": true,
+  "efs_export": {
+    "user_id": "member-demo-1",
+    "generated_at": "2026-09-06T20:56:59Z",
+    "meals_count": 11,
+    "workouts_count": 11,
+    "avg_sleep_hours": 7.7,
+    "thresholds_version": "cut-phase-2026"
+  }
+}

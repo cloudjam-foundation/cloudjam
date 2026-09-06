@@ -343,8 +343,13 @@ func (c *Challenge) submitScore(ctx context.Context, input *api.SubmitScoreInput
 	}
 	items := challenge.ScoreItems.Value()
 	previous := items[input.Name]
-	if previous != nil && previous.Type == input.Type && previous.Score == input.Score && previous.Maximum == input.Maximum && previous.Reason == input.Reason {
+	if !input.Accumulate && previous != nil && previous.Type == input.Type && previous.Score == input.Score && previous.Maximum == input.Maximum && previous.Reason == input.Reason {
 		return &api.SubmitScoreOutput{}, nil
+	}
+	score, maximum := input.Score, input.Maximum
+	if input.Accumulate && previous != nil && previous.Type == input.Type {
+		score += previous.Score
+		maximum += previous.Maximum
 	}
 
 	scores := challenge.Scores.Value()
@@ -369,11 +374,11 @@ func (c *Challenge) submitScore(ctx context.Context, input *api.SubmitScoreInput
 	}
 	updates[input.Type] = &play.Score{
 		Type:    input.Type,
-		Value:   current.Value + input.Score,
-		Maximum: current.Maximum + input.Maximum,
+		Value:   current.Value + score,
+		Maximum: current.Maximum + maximum,
 	}
 
-	delta := input.Score
+	delta := score
 	if previous != nil {
 		delta -= previous.Score
 	}
@@ -393,8 +398,8 @@ func (c *Challenge) submitScore(ctx context.Context, input *api.SubmitScoreInput
 		ScoreItems: dynamitedb.Emplace(map[string]*oltp.ScoreItem{
 			input.Name: {
 				Type:    input.Type,
-				Score:   input.Score,
-				Maximum: input.Maximum,
+				Score:   score,
+				Maximum: maximum,
 				Reason:  input.Reason,
 			},
 		}),

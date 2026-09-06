@@ -1,0 +1,23 @@
+[
+  {
+    "user_id": "member-demo-1",
+    "display_name": "Alex Rivera",
+    "coach_id": "coach-demo",
+    "weight_kg": 78.5,
+    "status": "ACTIVE"
+  },
+  {
+    "user_id": "member-demo-2",
+    "display_name": "Sam Chen",
+    "coach_id": "coach-demo",
+    "weight_kg": 65.0,
+    "status": "ACTIVE"
+  },
+  {
+    "user_id": "member-demo-3",
+    "display_name": "Jordan Lee",
+    "coach_id": "coach-demo",
+    "weight_kg": 82.0,
+    "status": "ACTIVE"
+  }
+]

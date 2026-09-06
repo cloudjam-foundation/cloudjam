@@ -18,6 +18,12 @@ infrastructure. The asset bucket and sandbox access
 are managed by CloudJam. Participants create all resources and IAM roles
 described in the original README.
 
+CloudJam additionally provisions a small assessment Lambda, its execution role,
+and an authenticated assessment URL. These use the `cloudjam-gridline-assessor-`
+prefix and are excluded from application marking. The sandbox boundary protects
+the assessment function and role. The function reads AWS configuration and
+runtime evidence; it does not provision any part of the participant's solution.
+
 After deploying the CloudFront distribution, submit its HTTPS base URL:
 
 ```sh
@@ -31,13 +37,23 @@ by the original brief. The evaluator uses `scoring-director` and
 with application and API access logs.
 
 The 13 check IDs, names, and point values are copied from the captured scoring
-data. Successful checks earn their original points every minute, up to 100
-points per round. Failed checks do not subtract previously earned points.
-The operational maximum reflects the rounds attempted, including rounds before
-an endpoint is submitted. Evaluation ends after 360 rounds. Every result appears
-in Activity and in `jamctl` output with its round, HTTP method, path, response
-status, latency, and assertion failure or success. A prerequisite failure is
-identified as a request that was not sent.
+data. Evaluation starts 50 minutes after the challenge starts. No requests or
+operational score events are emitted during this setup period. Checks then run
+every minute for the remaining 310 minutes of the six-hour module, earning up to
+100 points per round (31,000 maximum over the module).
+
+Each Activity event and `jamctl` result contains only that attempt's score and
+maximum: for example, health reports `5/5` for success or `0/5` for failure.
+Consecutive successes and failures each produce their own event. The round,
+HTTP method, path, response status, latency, and assertion details are included.
+A prerequisite failure is identified as a request that was not sent.
+
+The SDK submission uses `Accumulate: true`: the host adds each attempt to the
+overall score and maximum while keeping the event's values unchanged. Failed
+checks do not subtract previously earned points. Score items are created by the
+first submission; no unattempted round is added during registration. The
+operational maximum reflects all attempted rounds after the setup period,
+including rounds before an endpoint is submitted.
 
 The capture includes scoring results, not the original evaluator source.
 Recorded failures establish 800 ms for health, 1,000 ms for start, 300 ms for
@@ -46,8 +62,24 @@ leaderboard, and 500 ms for rules and RUNNING. Other APIs use the README's
 transponder rejection, and leaderboard checks use the same newly created heat.
 The RUNNING check allows up to ten seconds for the asynchronous workflow.
 Unrecorded request fixtures and retry behavior cannot be recovered exactly.
-The captured scoring has no design-point rubric; no additional weighted
-criteria are invented for the architectural requirements in the README.
+The subsequently supplied `results-linus.moser.pdf` provides all 59 day 1 marking
+criteria, totaling 80 marks. Their names and weights are preserved in
+[the marking scheme](MARKING.md); personal results are not part of the plugin.
+Multiplying each original mark by 1,550 gives 124,000 design points alongside the
+31,000 operational maximum, preserving an 80% design / 20% operational split.
+
+Design marks reflect the latest assessment, including regressions. The assessor
+runs every 30 seconds and caches AWS configuration for two minutes. It reuses the
+current operational checks for the PDF's functional and success-rate criteria.
+Latency criteria use p95 over the latest 20 recorded responses, with at least
+three observations per path. Design visibility follows CloudJam's existing rules.
+
+Additional functional probes start after the same 50-minute setup period. They
+create a three-minute heat, send six real-time crossings from three drivers,
+check both lap-time bounds, inspect standings, and verify completion and the
+matching S3 telemetry object. SNS-to-SQS messages are observed without deletion.
+These probes stop starting new heats during the last four minutes of the module.
+Assessment details and the few original evidence proxies are listed in MARKING.md.
 
 Run the same evaluator directly against a deployed solution:
 

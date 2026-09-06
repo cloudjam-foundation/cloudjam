@@ -1,0 +1,30 @@
+{
+  "verified_at": "2026-09-06T21:30:41.916348+00:00",
+  "region": "eu-central-1",
+  "stacks": {
+    "cloudjam-vitalforge-validation-pipeline": "DELETE_COMPLETE",
+    "cloudjam-vitalforge-validation-app": "DELETE_COMPLETE",
+    "cloudjam-vitalforge-validation-audit": "DELETE_COMPLETE",
+    "cloudjam-vitalforge-validation": "DELETE_COMPLETE"
+  },
+  "remaining_validation_resources": {
+    "functions": [],
+    "roles": [],
+    "buckets": [],
+    "vpcs": [],
+    "clusters": [],
+    "lattice": [],
+    "hosted_zones": [],
+    "waf": [],
+    "parameters": []
+  },
+  "preserved_existing_resources": {
+    "eks_cluster": "confused-alternative-seal",
+    "vpc": "vpc-0a4b6ca6baf816310"
+  },
+  "vpc_dependencies": {
+    "subnets": [],
+    "interfaces": [],
+    "lattice_associations": []
+  }
+}

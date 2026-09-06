@@ -1,0 +1,290 @@
+[
+  {
+    "aspect": "A1",
+    "points": 0.8,
+    "name": "DynamoDB tables use on-demand billing",
+    "id": "A1-01"
+  },
+  {
+    "aspect": "A1",
+    "points": 1.6,
+    "name": "EKS node group right-sized for wellness-api and analytics-engine",
+    "id": "A1-02"
+  },
+  {
+    "aspect": "A1",
+    "points": 0.8,
+    "name": "Single CloudFront distribution for console and APIs",
+    "id": "A1-03"
+  },
+  {
+    "aspect": "A1",
+    "points": 1.6,
+    "name": "VPC peering connects app-vpc to files-vpc for EFS (not Transit Gateway)",
+    "id": "A1-04"
+  },
+  {
+    "aspect": "A1",
+    "points": 0.8,
+    "name": "Lambda memory and timeout sized for sleep-ingest and daily-export",
+    "id": "A1-05"
+  },
+  {
+    "aspect": "A1",
+    "points": 0.8,
+    "name": "S3 lifecycle configured on console origin bucket",
+    "id": "A1-06"
+  },
+  {
+    "aspect": "B1",
+    "points": 0.8,
+    "name": "app-vpc and files-vpc exist with documented separation",
+    "id": "B1-01"
+  },
+  {
+    "aspect": "B1",
+    "points": 1.6,
+    "name": "VPC peering enables EFS NFS from approved app-vpc security groups",
+    "id": "B1-02"
+  },
+  {
+    "aspect": "B1",
+    "points": 1.6,
+    "name": "DynamoDB tables per §9.3 with seed-users.json loaded",
+    "id": "B1-03"
+  },
+  {
+    "aspect": "B1",
+    "points": 1.6,
+    "name": "EKS linux/arm64 runs wellness-api and analytics-engine",
+    "id": "B1-04"
+  },
+  {
+    "aspect": "B1",
+    "points": 1.6,
+    "name": "Cognito user pool with coach and member groups (console identity only; §9.1)",
+    "id": "B1-05"
+  },
+  {
+    "aspect": "B1",
+    "points": 1.6,
+    "name": "CloudFront and WAF cover /, /console/*, /api/*, /health, and /sleep",
+    "id": "B1-06"
+  },
+  {
+    "aspect": "B1",
+    "points": 1.6,
+    "name": "SSM /vitalforge/thresholds/active read at runtime without redeploy",
+    "id": "B1-07"
+  },
+  {
+    "aspect": "B1",
+    "points": 1.6,
+    "name": "VPC Lattice service network connects wellness-api to analytics-engine",
+    "id": "B1-08"
+  },
+  {
+    "aspect": "B1",
+    "points": 0.8,
+    "name": "Route 53 private zone analytics.vitalforge.internal resolves Lattice hostname",
+    "id": "B1-09"
+  },
+  {
+    "aspect": "B1",
+    "points": 1.6,
+    "name": "sleep-ingest Lambda on POST /sleep (202/400/422 contract)",
+    "id": "B1-10"
+  },
+  {
+    "aspect": "B1",
+    "points": 1.6,
+    "name": "EventBridge schedule invokes daily-export to EFS exports/{user_id}/latest.json",
+    "id": "B1-11"
+  },
+  {
+    "aspect": "B1",
+    "points": 0.8,
+    "name": "audit-bootstrap.yaml CloudTrail delivers management events to S3",
+    "id": "B1-12"
+  },
+  {
+    "aspect": "B1",
+    "points": 0.8,
+    "name": "Uploading console.zip alone completes deploy with CloudFront invalidation",
+    "id": "B1-13"
+  },
+  {
+    "aspect": "C1",
+    "points": 1.85,
+    "name": "API Gateway HTTP API has no JWT authorizer on /api/* (auth enforced in wellness-api per §8.13)",
+    "id": "C1-01"
+  },
+  {
+    "aspect": "C1",
+    "points": 1.85,
+    "name": "analytics-engine not exposed on public ALB, API Gateway, or CloudFront",
+    "id": "C1-02"
+  },
+  {
+    "aspect": "C1",
+    "points": 1.85,
+    "name": "Console S3 origin not publicly readable (OAC or equivalent)",
+    "id": "C1-03"
+  },
+  {
+    "aspect": "C1",
+    "points": 1.85,
+    "name": "EFS only in files-vpc; NFS port 2049 restricted to approved security groups",
+    "id": "C1-04"
+  },
+  {
+    "aspect": "C1",
+    "points": 1.85,
+    "name": "AWS WAF web ACL associated with CloudFront distribution",
+    "id": "C1-05"
+  },
+  {
+    "aspect": "C1",
+    "points": 1.85,
+    "name": "EKS and Lambda task roles follow least-privilege IAM",
+    "id": "C1-06"
+  },
+  {
+    "aspect": "C1",
+    "points": 0.93,
+    "name": "No security group allows inbound 0.0.0.0/0 on port 22",
+    "id": "C1-07"
+  },
+  {
+    "aspect": "C1",
+    "points": 0.93,
+    "name": "CloudTrail S3 bucket blocks public access",
+    "id": "C1-08"
+  },
+  {
+    "aspect": "C1",
+    "points": 0.93,
+    "name": "Provided wellness-api, analytics-engine, Lambdas, and console.zip unmodified",
+    "id": "C1-09"
+  },
+  {
+    "aspect": "C1",
+    "points": 1.85,
+    "name": "EFS access points with IAM authorization and encryption in transit on mounts",
+    "id": "C1-10"
+  },
+  {
+    "aspect": "C1",
+    "points": 0.93,
+    "name": "Data store is DynamoDB only (not Aurora or RDS)",
+    "id": "C1-11"
+  },
+  {
+    "aspect": "C1",
+    "points": 0.93,
+    "name": "All marked resources deployed in one chosen AWS Region",
+    "id": "C1-12"
+  },
+  {
+    "aspect": "D1",
+    "points": 2.34,
+    "name": "EKS workloads span multiple AZs or maintain min replicas >= 2",
+    "id": "D1-01"
+  },
+  {
+    "aspect": "D1",
+    "points": 2.34,
+    "name": "Meal, workout, and sleep sessions persisted before HTTP success",
+    "id": "D1-02"
+  },
+  {
+    "aspect": "D1",
+    "points": 2.34,
+    "name": "Dashboard analytics block populated via VPC Lattice (not public edge)",
+    "id": "D1-03"
+  },
+  {
+    "aspect": "D1",
+    "points": 2.34,
+    "name": "daily-export overwrites exports/{user_id}/latest.json on EFS",
+    "id": "D1-04"
+  },
+  {
+    "aspect": "D1",
+    "points": 2.34,
+    "name": "CloudWatch logs enabled for EKS pods and Lambda functions",
+    "id": "D1-05"
+  },
+  {
+    "aspect": "D1",
+    "points": 1.16,
+    "name": "EFS file system encrypted at rest",
+    "id": "D1-06"
+  },
+  {
+    "aspect": "D1",
+    "points": 2.34,
+    "name": "Coach POST /api/members/{id}/export triggers or queues daily-export",
+    "id": "D1-07"
+  },
+  {
+    "aspect": "E1",
+    "points": 3.52,
+    "name": "CloudFront is the single public HTTPS entry point",
+    "id": "E1-01"
+  },
+  {
+    "aspect": "E1",
+    "points": 3.52,
+    "name": "EKS horizontal pod autoscaling or equivalent capacity configured",
+    "id": "E1-02"
+  },
+  {
+    "aspect": "E1",
+    "points": 1.76,
+    "name": "CloudFront caches static console assets at /",
+    "id": "E1-03"
+  },
+  {
+    "aspect": "F1",
+    "points": 1.6,
+    "name": "S3 lifecycle transitions console artifacts toward IA or archive",
+    "id": "F1-01"
+  },
+  {
+    "aspect": "F1",
+    "points": 1.6,
+    "name": "EKS scales in when traffic subsides",
+    "id": "F1-02"
+  },
+  {
+    "aspect": "F1",
+    "points": 1.6,
+    "name": "No wasteful duplicate always-on stacks beyond brief scope",
+    "id": "F1-03"
+  },
+  {
+    "aspect": "F1",
+    "points": 1.6,
+    "name": "DynamoDB on-demand avoids idle provisioned RCU/WCU",
+    "id": "F1-04"
+  },
+  {
+    "aspect": "F1",
+    "points": 1.6,
+    "name": "Lambda reserved concurrency or limits avoid runaway export cost",
+    "id": "F1-05"
+  },
+  {
+    "aspect": "G1",
+    "points": 3.2,
+    "name": "End-to-end: log meal, workout, sleep, dashboard, and export readable",
+    "id": "G1-01"
+  },
+  {
+    "aspect": "G1",
+    "points": 3.2,
+    "name": "Submitted CloudFront URL serves /, /health, /api/*, and /sleep",
+    "id": "G1-02"
+  }
+]
