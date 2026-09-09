@@ -1,9 +1,0 @@
-{
-  "version": "cut-phase-2026",
-  "min_sleep_hours": 7.0,
-  "protein_g_per_kg": 2.2,
-  "calorie_deficit_target": 550,
-  "flags": {
-    "cut_phase": true
-  }
-}

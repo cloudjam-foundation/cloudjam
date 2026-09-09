@@ -198,6 +198,49 @@ func (s *Server) Create(ctx context.Context, req *connect.Request[account.Create
 	}}, nil
 }
 
+func (s *Server) Credentials(ctx context.Context, req *connect.Request[account.CredentialsRequest]) (*connect.Response[account.CredentialsResponse], error) {
+	l := s.logger.With("proc", req.Spec().Procedure)
+
+	providerMeta, err := dynamitedb.Get(ctx, s.oltp, &oltp.Provider{
+		ProviderID: dynamitedb.Key(req.Msg.ProviderId),
+		Scope:      dynamitedb.In(auth.Scopes(ctx)...),
+	})
+	if err != nil {
+		if errors.Is(err, dynamitedb.ErrNotFound) {
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("provider does not exist"))
+		}
+		l.Error(fmt.Sprintf("failed to fetch account provider: %v", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch account provider"))
+	}
+
+	provider, err := s.providers.Load(ctx, providerMeta)
+	if err != nil {
+		l.Error(fmt.Sprintf("failed to load account provider: %v", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to load account provider"))
+	}
+
+	accountMeta, err := dynamitedb.Get(ctx, s.oltp, &oltp.Account{
+		ProviderID: dynamitedb.Key(providerMeta.ProviderID.Value()),
+		AccountID:  dynamitedb.Key(req.Msg.Id),
+		Scope:      dynamitedb.In(auth.Scopes(ctx)...),
+	})
+	if err != nil {
+		l.Error(fmt.Sprintf("failed to fetch account: %v", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch account"))
+	}
+
+	// TODO add configurable duration
+	credentials, err := provider.Credentials(ctx, accountMeta.TargetID.Value(), true, time.Hour)
+	if err != nil {
+		l.Error(fmt.Sprintf("failed to generate account credentials: %v", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to generate account credentials"))
+	}
+
+	return &connect.Response[account.CredentialsResponse]{Msg: &account.CredentialsResponse{
+		Credentials: credentials,
+	}}, nil
+}
+
 func (s *Server) Update(ctx context.Context, req *connect.Request[account.UpdateRequest]) (*connect.Response[account.UpdateResponse], error) {
 	l := s.logger.With("proc", req.Spec().Procedure)
 

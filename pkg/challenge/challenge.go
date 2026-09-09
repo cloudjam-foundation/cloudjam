@@ -90,6 +90,7 @@ func NewHTTPRequest(method, url string, body []byte) HTTPRequest {
 // Scenario is the main challenge subject, per challenge there should only be one scenario.
 type Scenario struct {
 	interval time.Duration // round check speed, defaults to 10s
+	duration time.Duration
 
 	bootstrap func(s *Scenario) error
 
@@ -130,6 +131,16 @@ func New(title string, interval time.Duration, boostrap func(s *Scenario) error)
 		events:         map[string]Event{},
 		activeEvents:   map[string]context.CancelFunc{},
 	}
+}
+
+// SetDuration limits the scenario lifetime starting at bootstrap. Zero leaves it unlimited.
+// An in-flight check may finish before Start returns.
+func (c *Scenario) SetDuration(duration time.Duration) *Scenario {
+	if c.init.Load() || duration < 0 {
+		panic("scenario duration must be non-negative and set before Start")
+	}
+	c.duration = duration
+	return c
 }
 
 // SendHTTP asks the challenge host to send an HTTP request and returns its response.
@@ -402,6 +413,12 @@ func (c *Scenario) Start() {
 		return
 	}
 
+	ctx := context.Background()
+	if c.duration > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, c.duration)
+		defer cancel()
+	}
 	if err := c.bootstrap(c); err != nil {
 		_, err := api.Cancel(api.CancelInput{
 			Error:       "challenge infrastructure is defect",
@@ -425,19 +442,26 @@ func (c *Scenario) Start() {
 		return
 	}
 
-	for {
-		c.evaluateChecks()
-		c.orchestrateEvents()
+	for ctx.Err() == nil {
+		c.evaluateChecks(ctx)
+		c.orchestrateEvents(ctx)
 
-		time.Sleep(c.interval)
+		select {
+		case <-ctx.Done():
+			return
+		case <-time.After(c.interval):
+		}
 	}
 }
 
 // orchestrateEvents checks all event triggers and starts / stops them accordingly.
-func (c *Scenario) orchestrateEvents() {
+func (c *Scenario) orchestrateEvents(ctx context.Context) {
 	c.eventsLock.Lock()
 	defer c.eventsLock.Unlock()
 	for name, event := range c.events {
+		if ctx.Err() != nil {
+			return
+		}
 		active, err := event.Trigger()
 		if err != nil {
 			slog.Error(fmt.Sprintf("event start trigger %q: %v", name, err))
@@ -448,8 +472,8 @@ func (c *Scenario) orchestrateEvents() {
 				cancel()
 			}
 		} else {
-			if active {
-				ctx, cancel := context.WithCancel(context.Background())
+			if active && ctx.Err() == nil {
+				ctx, cancel := context.WithCancel(ctx)
 				c.activeEvents[name] = cancel
 				go func() {
 					if err := event.Event(ctx, c); err != nil {
@@ -462,11 +486,14 @@ func (c *Scenario) orchestrateEvents() {
 }
 
 // evaluateChecks evaluates all checks and awards points accordingly.
-func (c *Scenario) evaluateChecks() {
+func (c *Scenario) evaluateChecks(ctx context.Context) {
 	c.checksLock.Lock()
 	defer c.checksLock.Unlock()
 	now := time.Now()
 	for name, check := range c.checks {
+		if ctx.Err() != nil {
+			return
+		}
 		if check.retired || check.Trigger == nil {
 			continue
 		}

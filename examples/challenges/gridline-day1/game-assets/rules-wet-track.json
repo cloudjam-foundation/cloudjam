@@ -1,9 +1,0 @@
-{
-  "version": "wet-track-2026",
-  "min_lap_ms": 55000,
-  "max_lap_ms": 150000,
-  "reject_unknown_transponder": true,
-  "flags": {
-    "wet_track": true
-  }
-}

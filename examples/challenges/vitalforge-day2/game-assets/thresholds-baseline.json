@@ -1,9 +1,0 @@
-{
-  "version": "baseline-2026",
-  "min_sleep_hours": 6.0,
-  "protein_g_per_kg": 1.8,
-  "calorie_deficit_target": 400,
-  "flags": {
-    "cut_phase": false
-  }
-}

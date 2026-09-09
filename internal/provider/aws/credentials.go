@@ -9,8 +9,12 @@ import (
 	"time"
 )
 
-func (p *Provider) Credentials(ctx context.Context, id string, lifetime time.Duration) (string, error) {
-	config, err := p.assume(ctx, id, p.sandboxRole, lifetime)
+func (p *Provider) Credentials(ctx context.Context, id string, admin bool, lifetime time.Duration) (string, error) {
+	role := p.sandboxRole
+	if admin {
+		role = p.adminRole
+	}
+	config, err := p.assume(ctx, id, role, lifetime)
 	if err != nil {
 		return "", err
 	}

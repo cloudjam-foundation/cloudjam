@@ -5,3 +5,5 @@
 .idea
 *.wasm
 delete_me/**
+# only temporary
+examples/

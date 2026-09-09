@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"maps"
 	"math"
 
 	"codeberg.org/megakuul/cloudjam/internal/oltp"
@@ -176,9 +177,7 @@ func (c *Challenge) updateMeta(ctx context.Context, input *api.UpdateMetaInput) 
 		if diagrams == nil {
 			diagrams = map[string][]byte{}
 		}
-		for name, diagram := range input.AdditionalDiagrams {
-			diagrams[name] = diagram
-		}
+		maps.Copy(diagrams, input.AdditionalDiagrams)
 		if err := ValidateDiagrams(diagrams); err != nil {
 			return nil, err
 		}

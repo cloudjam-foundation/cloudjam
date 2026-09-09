@@ -41,6 +41,9 @@ const (
 	AccountServiceCreateProcedure = "/v1.cloud.account.AccountService/Create"
 	// AccountServiceUpdateProcedure is the fully-qualified name of the AccountService's Update RPC.
 	AccountServiceUpdateProcedure = "/v1.cloud.account.AccountService/Update"
+	// AccountServiceCredentialsProcedure is the fully-qualified name of the AccountService's
+	// Credentials RPC.
+	AccountServiceCredentialsProcedure = "/v1.cloud.account.AccountService/Credentials"
 	// AccountServiceResetProcedure is the fully-qualified name of the AccountService's Reset RPC.
 	AccountServiceResetProcedure = "/v1.cloud.account.AccountService/Reset"
 	// AccountServiceFixProcedure is the fully-qualified name of the AccountService's Fix RPC.
@@ -59,6 +62,8 @@ type AccountServiceClient interface {
 	Create(context.Context, *connect.Request[account.CreateRequest]) (*connect.Response[account.CreateResponse], error)
 	// Update updates teh cloudjam account metadata.
 	Update(context.Context, *connect.Request[account.UpdateRequest]) (*connect.Response[account.UpdateResponse], error)
+	// Credentials generates short lived credentials for the specified account (e.g. for maintenance).
+	Credentials(context.Context, *connect.Request[account.CredentialsRequest]) (*connect.Response[account.CredentialsResponse], error)
 	// Reset applies the nuke scripts to the account to clean it up and bring it back to ready state.
 	Reset(context.Context, *connect.Request[account.ResetRequest]) (*connect.Response[account.ResetResponse], error)
 	// Fix sets the account state forcefully to READY unbinds it from running Games.
@@ -106,6 +111,12 @@ func NewAccountServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(accountServiceMethods.ByName("Update")),
 			connect.WithClientOptions(opts...),
 		),
+		credentials: connect.NewClient[account.CredentialsRequest, account.CredentialsResponse](
+			httpClient,
+			baseURL+AccountServiceCredentialsProcedure,
+			connect.WithSchema(accountServiceMethods.ByName("Credentials")),
+			connect.WithClientOptions(opts...),
+		),
 		reset: connect.NewClient[account.ResetRequest, account.ResetResponse](
 			httpClient,
 			baseURL+AccountServiceResetProcedure,
@@ -129,13 +140,14 @@ func NewAccountServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 
 // accountServiceClient implements AccountServiceClient.
 type accountServiceClient struct {
-	get    *connect.Client[account.GetRequest, account.GetResponse]
-	list   *connect.Client[account.ListRequest, account.ListResponse]
-	create *connect.Client[account.CreateRequest, account.CreateResponse]
-	update *connect.Client[account.UpdateRequest, account.UpdateResponse]
-	reset  *connect.Client[account.ResetRequest, account.ResetResponse]
-	fix    *connect.Client[account.FixRequest, account.FixResponse]
-	delete *connect.Client[account.DeleteRequest, account.DeleteResponse]
+	get         *connect.Client[account.GetRequest, account.GetResponse]
+	list        *connect.Client[account.ListRequest, account.ListResponse]
+	create      *connect.Client[account.CreateRequest, account.CreateResponse]
+	update      *connect.Client[account.UpdateRequest, account.UpdateResponse]
+	credentials *connect.Client[account.CredentialsRequest, account.CredentialsResponse]
+	reset       *connect.Client[account.ResetRequest, account.ResetResponse]
+	fix         *connect.Client[account.FixRequest, account.FixResponse]
+	delete      *connect.Client[account.DeleteRequest, account.DeleteResponse]
 }
 
 // Get calls v1.cloud.account.AccountService.Get.
@@ -156,6 +168,11 @@ func (c *accountServiceClient) Create(ctx context.Context, req *connect.Request[
 // Update calls v1.cloud.account.AccountService.Update.
 func (c *accountServiceClient) Update(ctx context.Context, req *connect.Request[account.UpdateRequest]) (*connect.Response[account.UpdateResponse], error) {
 	return c.update.CallUnary(ctx, req)
+}
+
+// Credentials calls v1.cloud.account.AccountService.Credentials.
+func (c *accountServiceClient) Credentials(ctx context.Context, req *connect.Request[account.CredentialsRequest]) (*connect.Response[account.CredentialsResponse], error) {
+	return c.credentials.CallUnary(ctx, req)
 }
 
 // Reset calls v1.cloud.account.AccountService.Reset.
@@ -183,6 +200,8 @@ type AccountServiceHandler interface {
 	Create(context.Context, *connect.Request[account.CreateRequest]) (*connect.Response[account.CreateResponse], error)
 	// Update updates teh cloudjam account metadata.
 	Update(context.Context, *connect.Request[account.UpdateRequest]) (*connect.Response[account.UpdateResponse], error)
+	// Credentials generates short lived credentials for the specified account (e.g. for maintenance).
+	Credentials(context.Context, *connect.Request[account.CredentialsRequest]) (*connect.Response[account.CredentialsResponse], error)
 	// Reset applies the nuke scripts to the account to clean it up and bring it back to ready state.
 	Reset(context.Context, *connect.Request[account.ResetRequest]) (*connect.Response[account.ResetResponse], error)
 	// Fix sets the account state forcefully to READY unbinds it from running Games.
@@ -226,6 +245,12 @@ func NewAccountServiceHandler(svc AccountServiceHandler, opts ...connect.Handler
 		connect.WithSchema(accountServiceMethods.ByName("Update")),
 		connect.WithHandlerOptions(opts...),
 	)
+	accountServiceCredentialsHandler := connect.NewUnaryHandler(
+		AccountServiceCredentialsProcedure,
+		svc.Credentials,
+		connect.WithSchema(accountServiceMethods.ByName("Credentials")),
+		connect.WithHandlerOptions(opts...),
+	)
 	accountServiceResetHandler := connect.NewUnaryHandler(
 		AccountServiceResetProcedure,
 		svc.Reset,
@@ -254,6 +279,8 @@ func NewAccountServiceHandler(svc AccountServiceHandler, opts ...connect.Handler
 			accountServiceCreateHandler.ServeHTTP(w, r)
 		case AccountServiceUpdateProcedure:
 			accountServiceUpdateHandler.ServeHTTP(w, r)
+		case AccountServiceCredentialsProcedure:
+			accountServiceCredentialsHandler.ServeHTTP(w, r)
 		case AccountServiceResetProcedure:
 			accountServiceResetHandler.ServeHTTP(w, r)
 		case AccountServiceFixProcedure:
@@ -283,6 +310,10 @@ func (UnimplementedAccountServiceHandler) Create(context.Context, *connect.Reque
 
 func (UnimplementedAccountServiceHandler) Update(context.Context, *connect.Request[account.UpdateRequest]) (*connect.Response[account.UpdateResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("v1.cloud.account.AccountService.Update is not implemented"))
+}
+
+func (UnimplementedAccountServiceHandler) Credentials(context.Context, *connect.Request[account.CredentialsRequest]) (*connect.Response[account.CredentialsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("v1.cloud.account.AccountService.Credentials is not implemented"))
 }
 
 func (UnimplementedAccountServiceHandler) Reset(context.Context, *connect.Request[account.ResetRequest]) (*connect.Response[account.ResetResponse], error) {

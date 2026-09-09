@@ -1,9 +1,0 @@
-{
-  "version": "baseline-2026",
-  "min_lap_ms": 45000,
-  "max_lap_ms": 120000,
-  "reject_unknown_transponder": true,
-  "flags": {
-    "wet_track": false
-  }
-}

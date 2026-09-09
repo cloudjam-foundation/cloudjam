@@ -61,7 +61,6 @@ func guardControlPolicy(adminRole, sandboxRole, boundaryPolicy string) ([]byte, 
 					"arn:aws:iam::*:role/service-role/*",
 					"arn:aws:iam::*:role/OrganizationAccountAccessRole",
 					"arn:aws:iam::*:role/AWSControlTowerExecution",
-					"arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*",
 				},
 				Condition: map[string]map[string]any{
 					"ArnNotLike": {"aws:PrincipalARN": adminRoleARN},
@@ -103,8 +102,7 @@ func guardControlPolicy(adminRole, sandboxRole, boundaryPolicy string) ([]byte, 
 				},
 				Resource: []string{"*"},
 				Condition: map[string]map[string]any{
-					"StringNotEquals": {"iam:PermissionsBoundary": boundaryPolicyARN},
-					"ArnNotLike":      {"aws:PrincipalARN": adminRoleARN},
+					"ArnNotLike": {"aws:PrincipalARN": adminRoleARN, "iam:PermissionsBoundary": boundaryPolicyARN},
 				},
 			},
 			{
@@ -128,8 +126,7 @@ func guardControlPolicy(adminRole, sandboxRole, boundaryPolicy string) ([]byte, 
 				},
 				Resource: []string{"*"},
 				Condition: map[string]map[string]any{
-					"StringNotEquals": {"iam:PermissionsBoundary": boundaryPolicyARN},
-					"ArnNotLike":      {"aws:PrincipalARN": adminRoleARN},
+					"ArnNotLike": {"aws:PrincipalARN": adminRoleARN, "iam:PermissionsBoundary": boundaryPolicyARN},
 				},
 			},
 			{

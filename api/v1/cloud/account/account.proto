@@ -44,6 +44,15 @@ message UpdateRequest {
 
 message UpdateResponse {}
 
+message CredentialsRequest {
+  string provider_id = 1 [(buf.validate.field).string = {uuid: true}];
+  string id = 2 [(buf.validate.field).string = {uuid: true}];
+}
+
+message CredentialsResponse {
+  string credentials = 1;
+}
+
 message ResetRequest {
   string provider_id = 1 [(buf.validate.field).string = {uuid: true}];
   string id = 2 [(buf.validate.field).string = {uuid: true}];
@@ -75,6 +84,8 @@ service AccountService {
   rpc Create(CreateRequest) returns (CreateResponse);
   // Update updates teh cloudjam account metadata.
   rpc Update(UpdateRequest) returns (UpdateResponse);
+  // Credentials generates short lived credentials for the specified account (e.g. for maintenance).
+  rpc Credentials(CredentialsRequest) returns (CredentialsResponse);
   // Reset applies the nuke scripts to the account to clean it up and bring it back to ready state.
   rpc Reset(ResetRequest) returns (ResetResponse);
   // Fix sets the account state forcefully to READY unbinds it from running Games.

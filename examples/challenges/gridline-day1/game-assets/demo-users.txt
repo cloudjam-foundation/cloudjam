@@ -1,3 +1,0 @@
-# Create these Cognito users (USER_PASSWORD_AUTH). Add to groups as noted.
-director@gridline.example  GridLine-Dir-2026!  group=director
-spectator@gridline.example  GridLine-Spec-2026!  group=spectator

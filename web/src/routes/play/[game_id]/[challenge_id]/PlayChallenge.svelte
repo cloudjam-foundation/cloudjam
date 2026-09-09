@@ -13,7 +13,7 @@
 		StartRequestSchema,
 		UncoverClueRequestSchema
 	} from '$lib/sdk/v1/play/challenge/challenge_pb';
-	import { ScoreType, ScoreTypeSchema, type Challenge, type ScoreEvent } from '$lib/sdk/v1/play/challenge_pb';
+	import { ScoreType, type Challenge, type ScoreEvent } from '$lib/sdk/v1/play/challenge_pb';
 	import { jpegDataURL } from '$lib/utils';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
@@ -21,7 +21,6 @@
 		BadgeCheckIcon,
 		DraftingCompassIcon,
 		KeyRoundIcon,
-		LayersIcon,
 		SquareArrowOutUpRightIcon,
 		ZapIcon
 	} from '@lucide/svelte';
@@ -29,7 +28,6 @@
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import LightbulbIcon from '@lucide/svelte/icons/lightbulb';
 	import PlayIcon from '@lucide/svelte/icons/play';
-	import { flip } from 'svelte/animate';
 
 	const kitchenFmt = Intl.DateTimeFormat(undefined, {
 		hour: '2-digit',
@@ -59,7 +57,6 @@
 	let startState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let credsState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let clueState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let hasScoreReasons = $derived(challenge.scoreEvents.some((event) => event.reason));
 
 	let adhsTimeout: ReturnType<typeof setTimeout>;
 	let adhsSpinner: boolean = $state(false);
@@ -73,7 +70,18 @@
 		return groups;
 	}
 
-	function getEventColor(event: ScoreEvent): string {
+	function getOperationColor(event: ScoreEvent): string {
+		switch (event.score) {
+			case 0:
+				return 'text-red-500/70';
+			case event.maximum:
+				return 'text-emerald-500/70';
+			default:
+				return 'text-amber-500/70';
+		}
+	}
+
+	function getDesignColor(event: ScoreEvent): string {
 		switch (event.score) {
 			case 0:
 				return 'text-red-500/70';
@@ -104,7 +112,7 @@
 				</Badge>
 			{/if}
 		</Card.Title>
-		<Card.Description>
+		<Card.Description class="flex flex-row gap-1">
 			{#each challenge.scores as score (score.type)}
 				<Badge variant="outline">
 					{#if score.type === ScoreType.Operational}
@@ -284,9 +292,9 @@
 		{#if challenge.scoreEvents.length}
 			<Separator />
 
-			<div class="flex flex-col gap-2">
+			<div class="flex flex-col gap-2 overflow-hidden">
 				<Card.Title>System Status</Card.Title>
-				<Table.Root>
+				<Table.Root class="overflow-hidden">
 					<Table.Body>
 						{#each Object.entries(group(challenge.scoreEvents)) as [key, events] (key)}
 							{@const topEvent = events[0]}
@@ -299,36 +307,46 @@
 							>
 								<Table.Cell>
 									{#if topEvent.type === ScoreType.Operational}
-										<ZapIcon class={getEventColor(topEvent)} />
+										<ZapIcon class={getOperationColor(topEvent)} />
 									{:else if topEvent.type === ScoreType.Design}
-										<DraftingCompassIcon />
+										<DraftingCompassIcon class={getDesignColor(topEvent)} />
 									{/if}
 								</Table.Cell>
 								<Table.Cell class="text-muted-foreground font-bold">
 									{kitchenFmt.format(timestampDate(topEvent.timestamp!))}
 								</Table.Cell>
-								<Table.Cell>{topEvent.text}</Table.Cell>
-								<Table.Cell>{topEvent.maximum ? `${topEvent.score} / ${topEvent.maximum}` : ''}</Table.Cell>
-								<Table.Cell>{topEvent.change}</Table.Cell>
-								{#if hasScoreReasons}<Table.Cell>{topEvent.reason}</Table.Cell>{/if}
+								<Table.Cell>
+									<Badge variant="secondary" class="w-20">
+										{topEvent.maximum ? `${topEvent.score} / ${topEvent.maximum}` : ''}
+									</Badge>
+								</Table.Cell>
+								<Table.Cell class="overflow-scroll-hidden max-w-[40vw]">{topEvent.text}</Table.Cell>
+								<Table.Cell class="overflow-scroll-hidden text-muted-foreground max-w-[30vw]">
+									{topEvent.reason}
+								</Table.Cell>
 							</Table.Row>
 							{#if expandedEvent === key}
 								{#each events as event (event)}
 									<Table.Row class="opacity-50">
 										<Table.Cell>
 											{#if event.type === ScoreType.Operational}
-												<ZapIcon class={getEventColor(event)} />
+												<ZapIcon class={getOperationColor(event)} />
 											{:else if event.type === ScoreType.Design}
-												<DraftingCompassIcon />
+												<DraftingCompassIcon class={getDesignColor(event)} />
 											{/if}
 										</Table.Cell>
 										<Table.Cell class="text-muted-foreground font-bold">
 											{kitchenFmt.format(timestampDate(event.timestamp!))}
 										</Table.Cell>
-										<Table.Cell>{event.text}</Table.Cell>
-										<Table.Cell>{event.maximum ? `${event.score} / ${event.maximum}` : ''}</Table.Cell>
-										<Table.Cell>{event.change}</Table.Cell>
-										{#if hasScoreReasons}<Table.Cell>{event.reason}</Table.Cell>{/if}
+										<Table.Cell>
+											<Badge variant="secondary" class="w-20">
+												{event.maximum ? `${event.score} / ${event.maximum}` : ''}
+											</Badge>
+										</Table.Cell>
+										<Table.Cell class="overflow-scroll-hidden max-w-[40vw]">{event.text}</Table.Cell>
+										<Table.Cell class="overflow-scroll-hidden text-muted-foreground max-w-[30vw]">
+											{event.reason}
+										</Table.Cell>
 									</Table.Row>
 								{/each}
 							{/if}

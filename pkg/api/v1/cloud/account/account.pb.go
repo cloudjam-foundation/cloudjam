@@ -392,6 +392,102 @@ func (*UpdateResponse) Descriptor() ([]byte, []int) {
 	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{7}
 }
 
+type CredentialsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ProviderId    string                 `protobuf:"bytes,1,opt,name=provider_id,json=providerId,proto3" json:"provider_id,omitempty"`
+	Id            string                 `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CredentialsRequest) Reset() {
+	*x = CredentialsRequest{}
+	mi := &file_v1_cloud_account_account_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CredentialsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CredentialsRequest) ProtoMessage() {}
+
+func (x *CredentialsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_cloud_account_account_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CredentialsRequest.ProtoReflect.Descriptor instead.
+func (*CredentialsRequest) Descriptor() ([]byte, []int) {
+	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *CredentialsRequest) GetProviderId() string {
+	if x != nil {
+		return x.ProviderId
+	}
+	return ""
+}
+
+func (x *CredentialsRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type CredentialsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Credentials   string                 `protobuf:"bytes,1,opt,name=credentials,proto3" json:"credentials,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CredentialsResponse) Reset() {
+	*x = CredentialsResponse{}
+	mi := &file_v1_cloud_account_account_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CredentialsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CredentialsResponse) ProtoMessage() {}
+
+func (x *CredentialsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_cloud_account_account_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CredentialsResponse.ProtoReflect.Descriptor instead.
+func (*CredentialsResponse) Descriptor() ([]byte, []int) {
+	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *CredentialsResponse) GetCredentials() string {
+	if x != nil {
+		return x.Credentials
+	}
+	return ""
+}
+
 type ResetRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ProviderId    string                 `protobuf:"bytes,1,opt,name=provider_id,json=providerId,proto3" json:"provider_id,omitempty"`
@@ -402,7 +498,7 @@ type ResetRequest struct {
 
 func (x *ResetRequest) Reset() {
 	*x = ResetRequest{}
-	mi := &file_v1_cloud_account_account_proto_msgTypes[8]
+	mi := &file_v1_cloud_account_account_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -414,7 +510,7 @@ func (x *ResetRequest) String() string {
 func (*ResetRequest) ProtoMessage() {}
 
 func (x *ResetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_cloud_account_account_proto_msgTypes[8]
+	mi := &file_v1_cloud_account_account_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -427,7 +523,7 @@ func (x *ResetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ResetRequest.ProtoReflect.Descriptor instead.
 func (*ResetRequest) Descriptor() ([]byte, []int) {
-	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{8}
+	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ResetRequest) GetProviderId() string {
@@ -452,7 +548,7 @@ type ResetResponse struct {
 
 func (x *ResetResponse) Reset() {
 	*x = ResetResponse{}
-	mi := &file_v1_cloud_account_account_proto_msgTypes[9]
+	mi := &file_v1_cloud_account_account_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -464,7 +560,7 @@ func (x *ResetResponse) String() string {
 func (*ResetResponse) ProtoMessage() {}
 
 func (x *ResetResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_cloud_account_account_proto_msgTypes[9]
+	mi := &file_v1_cloud_account_account_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -477,7 +573,7 @@ func (x *ResetResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ResetResponse.ProtoReflect.Descriptor instead.
 func (*ResetResponse) Descriptor() ([]byte, []int) {
-	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{9}
+	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{11}
 }
 
 type FixRequest struct {
@@ -490,7 +586,7 @@ type FixRequest struct {
 
 func (x *FixRequest) Reset() {
 	*x = FixRequest{}
-	mi := &file_v1_cloud_account_account_proto_msgTypes[10]
+	mi := &file_v1_cloud_account_account_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -502,7 +598,7 @@ func (x *FixRequest) String() string {
 func (*FixRequest) ProtoMessage() {}
 
 func (x *FixRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_cloud_account_account_proto_msgTypes[10]
+	mi := &file_v1_cloud_account_account_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -515,7 +611,7 @@ func (x *FixRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FixRequest.ProtoReflect.Descriptor instead.
 func (*FixRequest) Descriptor() ([]byte, []int) {
-	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{10}
+	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *FixRequest) GetProviderId() string {
@@ -540,7 +636,7 @@ type FixResponse struct {
 
 func (x *FixResponse) Reset() {
 	*x = FixResponse{}
-	mi := &file_v1_cloud_account_account_proto_msgTypes[11]
+	mi := &file_v1_cloud_account_account_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -552,7 +648,7 @@ func (x *FixResponse) String() string {
 func (*FixResponse) ProtoMessage() {}
 
 func (x *FixResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_cloud_account_account_proto_msgTypes[11]
+	mi := &file_v1_cloud_account_account_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -565,7 +661,7 @@ func (x *FixResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FixResponse.ProtoReflect.Descriptor instead.
 func (*FixResponse) Descriptor() ([]byte, []int) {
-	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{11}
+	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{13}
 }
 
 type DeleteRequest struct {
@@ -579,7 +675,7 @@ type DeleteRequest struct {
 
 func (x *DeleteRequest) Reset() {
 	*x = DeleteRequest{}
-	mi := &file_v1_cloud_account_account_proto_msgTypes[12]
+	mi := &file_v1_cloud_account_account_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -591,7 +687,7 @@ func (x *DeleteRequest) String() string {
 func (*DeleteRequest) ProtoMessage() {}
 
 func (x *DeleteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_cloud_account_account_proto_msgTypes[12]
+	mi := &file_v1_cloud_account_account_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -604,7 +700,7 @@ func (x *DeleteRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteRequest.ProtoReflect.Descriptor instead.
 func (*DeleteRequest) Descriptor() ([]byte, []int) {
-	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{12}
+	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *DeleteRequest) GetProviderId() string {
@@ -636,7 +732,7 @@ type DeleteResponse struct {
 
 func (x *DeleteResponse) Reset() {
 	*x = DeleteResponse{}
-	mi := &file_v1_cloud_account_account_proto_msgTypes[13]
+	mi := &file_v1_cloud_account_account_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -648,7 +744,7 @@ func (x *DeleteResponse) String() string {
 func (*DeleteResponse) ProtoMessage() {}
 
 func (x *DeleteResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_cloud_account_account_proto_msgTypes[13]
+	mi := &file_v1_cloud_account_account_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -661,7 +757,7 @@ func (x *DeleteResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteResponse.ProtoReflect.Descriptor instead.
 func (*DeleteResponse) Descriptor() ([]byte, []int) {
-	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{13}
+	return file_v1_cloud_account_account_proto_rawDescGZIP(), []int{15}
 }
 
 var File_v1_cloud_account_account_proto protoreflect.FileDescriptor
@@ -690,7 +786,13 @@ const file_v1_cloud_account_account_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\x02id\"4\n" +
 	"\rUpdateRequest\x12#\n" +
 	"\x03mod\x18\x01 \x01(\v2\x11.v1.cloud.AccountR\x03mod\"\x10\n" +
-	"\x0eUpdateResponse\"S\n" +
+	"\x0eUpdateResponse\"Y\n" +
+	"\x12CredentialsRequest\x12)\n" +
+	"\vprovider_id\x18\x01 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\n" +
+	"providerId\x12\x18\n" +
+	"\x02id\x18\x02 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\x02id\"7\n" +
+	"\x13CredentialsResponse\x12 \n" +
+	"\vcredentials\x18\x01 \x01(\tR\vcredentials\"S\n" +
 	"\fResetRequest\x12)\n" +
 	"\vprovider_id\x18\x01 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\n" +
 	"providerId\x12\x18\n" +
@@ -707,12 +809,13 @@ const file_v1_cloud_account_account_proto_rawDesc = "" +
 	"providerId\x12\x18\n" +
 	"\x02id\x18\x02 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\x02id\x12\x14\n" +
 	"\x05force\x18\x03 \x01(\bR\x05force\"\x10\n" +
-	"\x0eDeleteResponse2\x90\x04\n" +
+	"\x0eDeleteResponse2\xec\x04\n" +
 	"\x0eAccountService\x12B\n" +
 	"\x03Get\x12\x1c.v1.cloud.account.GetRequest\x1a\x1d.v1.cloud.account.GetResponse\x12E\n" +
 	"\x04List\x12\x1d.v1.cloud.account.ListRequest\x1a\x1e.v1.cloud.account.ListResponse\x12K\n" +
 	"\x06Create\x12\x1f.v1.cloud.account.CreateRequest\x1a .v1.cloud.account.CreateResponse\x12K\n" +
-	"\x06Update\x12\x1f.v1.cloud.account.UpdateRequest\x1a .v1.cloud.account.UpdateResponse\x12H\n" +
+	"\x06Update\x12\x1f.v1.cloud.account.UpdateRequest\x1a .v1.cloud.account.UpdateResponse\x12Z\n" +
+	"\vCredentials\x12$.v1.cloud.account.CredentialsRequest\x1a%.v1.cloud.account.CredentialsResponse\x12H\n" +
 	"\x05Reset\x12\x1e.v1.cloud.account.ResetRequest\x1a\x1f.v1.cloud.account.ResetResponse\x12B\n" +
 	"\x03Fix\x12\x1c.v1.cloud.account.FixRequest\x1a\x1d.v1.cloud.account.FixResponse\x12K\n" +
 	"\x06Delete\x12\x1f.v1.cloud.account.DeleteRequest\x1a .v1.cloud.account.DeleteResponseB9Z7codeberg.org/megakuul/cloudjam/pkg/api/v1/cloud/accountb\x06proto3"
@@ -729,45 +832,49 @@ func file_v1_cloud_account_account_proto_rawDescGZIP() []byte {
 	return file_v1_cloud_account_account_proto_rawDescData
 }
 
-var file_v1_cloud_account_account_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_v1_cloud_account_account_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_v1_cloud_account_account_proto_goTypes = []any{
-	(*GetRequest)(nil),     // 0: v1.cloud.account.GetRequest
-	(*GetResponse)(nil),    // 1: v1.cloud.account.GetResponse
-	(*ListRequest)(nil),    // 2: v1.cloud.account.ListRequest
-	(*ListResponse)(nil),   // 3: v1.cloud.account.ListResponse
-	(*CreateRequest)(nil),  // 4: v1.cloud.account.CreateRequest
-	(*CreateResponse)(nil), // 5: v1.cloud.account.CreateResponse
-	(*UpdateRequest)(nil),  // 6: v1.cloud.account.UpdateRequest
-	(*UpdateResponse)(nil), // 7: v1.cloud.account.UpdateResponse
-	(*ResetRequest)(nil),   // 8: v1.cloud.account.ResetRequest
-	(*ResetResponse)(nil),  // 9: v1.cloud.account.ResetResponse
-	(*FixRequest)(nil),     // 10: v1.cloud.account.FixRequest
-	(*FixResponse)(nil),    // 11: v1.cloud.account.FixResponse
-	(*DeleteRequest)(nil),  // 12: v1.cloud.account.DeleteRequest
-	(*DeleteResponse)(nil), // 13: v1.cloud.account.DeleteResponse
-	(*cloud.Account)(nil),  // 14: v1.cloud.Account
+	(*GetRequest)(nil),          // 0: v1.cloud.account.GetRequest
+	(*GetResponse)(nil),         // 1: v1.cloud.account.GetResponse
+	(*ListRequest)(nil),         // 2: v1.cloud.account.ListRequest
+	(*ListResponse)(nil),        // 3: v1.cloud.account.ListResponse
+	(*CreateRequest)(nil),       // 4: v1.cloud.account.CreateRequest
+	(*CreateResponse)(nil),      // 5: v1.cloud.account.CreateResponse
+	(*UpdateRequest)(nil),       // 6: v1.cloud.account.UpdateRequest
+	(*UpdateResponse)(nil),      // 7: v1.cloud.account.UpdateResponse
+	(*CredentialsRequest)(nil),  // 8: v1.cloud.account.CredentialsRequest
+	(*CredentialsResponse)(nil), // 9: v1.cloud.account.CredentialsResponse
+	(*ResetRequest)(nil),        // 10: v1.cloud.account.ResetRequest
+	(*ResetResponse)(nil),       // 11: v1.cloud.account.ResetResponse
+	(*FixRequest)(nil),          // 12: v1.cloud.account.FixRequest
+	(*FixResponse)(nil),         // 13: v1.cloud.account.FixResponse
+	(*DeleteRequest)(nil),       // 14: v1.cloud.account.DeleteRequest
+	(*DeleteResponse)(nil),      // 15: v1.cloud.account.DeleteResponse
+	(*cloud.Account)(nil),       // 16: v1.cloud.Account
 }
 var file_v1_cloud_account_account_proto_depIdxs = []int32{
-	14, // 0: v1.cloud.account.GetResponse.account:type_name -> v1.cloud.Account
-	14, // 1: v1.cloud.account.ListResponse.accounts:type_name -> v1.cloud.Account
-	14, // 2: v1.cloud.account.CreateRequest.init:type_name -> v1.cloud.Account
-	14, // 3: v1.cloud.account.UpdateRequest.mod:type_name -> v1.cloud.Account
+	16, // 0: v1.cloud.account.GetResponse.account:type_name -> v1.cloud.Account
+	16, // 1: v1.cloud.account.ListResponse.accounts:type_name -> v1.cloud.Account
+	16, // 2: v1.cloud.account.CreateRequest.init:type_name -> v1.cloud.Account
+	16, // 3: v1.cloud.account.UpdateRequest.mod:type_name -> v1.cloud.Account
 	0,  // 4: v1.cloud.account.AccountService.Get:input_type -> v1.cloud.account.GetRequest
 	2,  // 5: v1.cloud.account.AccountService.List:input_type -> v1.cloud.account.ListRequest
 	4,  // 6: v1.cloud.account.AccountService.Create:input_type -> v1.cloud.account.CreateRequest
 	6,  // 7: v1.cloud.account.AccountService.Update:input_type -> v1.cloud.account.UpdateRequest
-	8,  // 8: v1.cloud.account.AccountService.Reset:input_type -> v1.cloud.account.ResetRequest
-	10, // 9: v1.cloud.account.AccountService.Fix:input_type -> v1.cloud.account.FixRequest
-	12, // 10: v1.cloud.account.AccountService.Delete:input_type -> v1.cloud.account.DeleteRequest
-	1,  // 11: v1.cloud.account.AccountService.Get:output_type -> v1.cloud.account.GetResponse
-	3,  // 12: v1.cloud.account.AccountService.List:output_type -> v1.cloud.account.ListResponse
-	5,  // 13: v1.cloud.account.AccountService.Create:output_type -> v1.cloud.account.CreateResponse
-	7,  // 14: v1.cloud.account.AccountService.Update:output_type -> v1.cloud.account.UpdateResponse
-	9,  // 15: v1.cloud.account.AccountService.Reset:output_type -> v1.cloud.account.ResetResponse
-	11, // 16: v1.cloud.account.AccountService.Fix:output_type -> v1.cloud.account.FixResponse
-	13, // 17: v1.cloud.account.AccountService.Delete:output_type -> v1.cloud.account.DeleteResponse
-	11, // [11:18] is the sub-list for method output_type
-	4,  // [4:11] is the sub-list for method input_type
+	8,  // 8: v1.cloud.account.AccountService.Credentials:input_type -> v1.cloud.account.CredentialsRequest
+	10, // 9: v1.cloud.account.AccountService.Reset:input_type -> v1.cloud.account.ResetRequest
+	12, // 10: v1.cloud.account.AccountService.Fix:input_type -> v1.cloud.account.FixRequest
+	14, // 11: v1.cloud.account.AccountService.Delete:input_type -> v1.cloud.account.DeleteRequest
+	1,  // 12: v1.cloud.account.AccountService.Get:output_type -> v1.cloud.account.GetResponse
+	3,  // 13: v1.cloud.account.AccountService.List:output_type -> v1.cloud.account.ListResponse
+	5,  // 14: v1.cloud.account.AccountService.Create:output_type -> v1.cloud.account.CreateResponse
+	7,  // 15: v1.cloud.account.AccountService.Update:output_type -> v1.cloud.account.UpdateResponse
+	9,  // 16: v1.cloud.account.AccountService.Credentials:output_type -> v1.cloud.account.CredentialsResponse
+	11, // 17: v1.cloud.account.AccountService.Reset:output_type -> v1.cloud.account.ResetResponse
+	13, // 18: v1.cloud.account.AccountService.Fix:output_type -> v1.cloud.account.FixResponse
+	15, // 19: v1.cloud.account.AccountService.Delete:output_type -> v1.cloud.account.DeleteResponse
+	12, // [12:20] is the sub-list for method output_type
+	4,  // [4:12] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
 	4,  // [4:4] is the sub-list for extension extendee
 	0,  // [0:4] is the sub-list for field type_name
@@ -784,7 +891,7 @@ func file_v1_cloud_account_account_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_v1_cloud_account_account_proto_rawDesc), len(file_v1_cloud_account_account_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

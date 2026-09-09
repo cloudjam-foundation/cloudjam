@@ -8,6 +8,7 @@
 	import { Separator } from '$lib/components/shad/separator';
 	import Spinner from '$lib/components/shad/spinner/spinner.svelte';
 	import {
+		CredentialsRequestSchema,
 		DeleteRequestSchema,
 		FixRequestSchema,
 		ResetRequestSchema,
@@ -16,6 +17,7 @@
 	import { AccountState, type Account } from '$lib/sdk/v1/cloud/account_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
+	import { CopyIcon, KeyRoundIcon, SquareArrowUpRightIcon } from '@lucide/svelte';
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 
 	let { account, refresh }: { account: Account; refresh: () => void } = $props();
@@ -26,8 +28,21 @@
 	let confirmDelete = $state(false);
 	let force = $state(false);
 
+	let credentials: string = $state('');
+
+	let parsedCredentials: { env: [string, string][]; url: string } = $derived.by(() => {
+		const parsed = JSON.parse(credentials);
+		return {
+			env: Object.entries(JSON.parse(credentials)).filter(
+				([key, value]) => typeof value === 'string' && value && key !== 'URL'
+			) as [string, string][],
+			url: parsed.URL.toString()
+		};
+	});
+
 	let updateState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let resetState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let credentialState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let fixState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let removeState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 </script>
@@ -84,16 +99,58 @@
 		<Separator />
 
 		<div class="flex flex-col gap-2">
-			<Card.Title>Recovery</Card.Title>
+			<Card.Title>Maintenance</Card.Title>
 			{#if fixState.forbidden}
 				<p class="text-muted-foreground text-sm italic">You are not allowed to fix this account.</p>
 			{:else}
+				<p class="text-muted-foreground text-sm">Generates short lived credentials for the account.</p>
+				<div class="flex flex-row items-center gap-2">
+					<Button
+						class="cursor-pointer self-start"
+						disabled={credentialState.loading}
+						onclick={() =>
+							Submit(async () => {
+								credentials = (
+									await Glue.account.credentials(
+										create(CredentialsRequestSchema, { providerId: account.providerId, id: account.id })
+									)
+								).credentials;
+							}, credentialState)}
+					>
+						<KeyRoundIcon />
+						Generate Credentials
+					</Button>
+					{#if credentialState.loading}
+						<Badge>
+							<Spinner />
+							Generating Credentials
+						</Badge>
+					{/if}
+					{#if credentials}
+						<Button
+							variant="outline"
+							class="cursor-pointer"
+							onclick={() =>
+								navigator.clipboard.writeText(
+									parsedCredentials.env.length
+										? parsedCredentials.env.map(([name, value]) => `export ${name}=${value}`).join('\n')
+										: credentials
+								)}
+						>
+							<CopyIcon /> Copy as environment
+						</Button>
+						<Button variant="secondary" class="cursor-pointer" href={parsedCredentials.url}>
+							<SquareArrowUpRightIcon /> Open AWS Console
+						</Button>
+					{/if}
+				</div>
 				<p class="text-muted-foreground text-sm">
 					Nukes all resources and prepares the account so that it can be used for challenges again.
 				</p>
 				<div class="flex flex-row items-center gap-2">
 					<Button
 						class="cursor-pointer self-start"
+						variant="secondary"
 						disabled={resetState.loading}
 						onclick={() =>
 							Submit(async () => {

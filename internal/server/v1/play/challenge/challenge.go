@@ -90,6 +90,18 @@ func (s *Server) Get(ctx context.Context, req *connect.Request[challenge.GetRequ
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch challenge game"))
 	}
 	ended := time.Now().After(gameMeta.To.Value())
+	visibleScores := []*play.Score{}
+	for _, score := range challengeMeta.Scores.Value() {
+		if ended || score.Type == play.ScoreType_Operational {
+			visibleScores = append(visibleScores, score)
+		}
+	}
+	visibleScoreEvents := []*play.ScoreEvent{}
+	for _, event := range challengeMeta.ScoreEvents.Value() {
+		if ended || event.Type == play.ScoreType_Operational {
+			visibleScoreEvents = append(visibleScoreEvents, event)
+		}
+	}
 
 	return &connect.Response[challenge.GetResponse]{Msg: &challenge.GetResponse{Challenge: &play.Challenge{
 		GameId:               challengeMeta.GameID.Value(),
@@ -104,10 +116,14 @@ func (s *Server) Get(ctx context.Context, req *connect.Request[challenge.GetRequ
 		Clues:                coveredClues,
 		CluePrices:           challengeMeta.CluePrices.Value(),
 		Error:                challengeMeta.Error.Value(),
-		Scores:               visibleScores(challengeMeta.Scores.Value(), ended),
-		ScoreEvents:          visibleScoreEvents(challengeMeta.ScoreEvents.Value(), ended),
-		Ready:                challengeMeta.Ready.Value(),
-		Scope:                challengeMeta.Scope.Value(),
+		Scores: slices.SortedFunc(slices.Values(visibleScores), func(a, b *play.Score) int {
+			return int(a.Type - b.Type)
+		}),
+		ScoreEvents: slices.SortedFunc(slices.Values(visibleScoreEvents), func(a, b *play.ScoreEvent) int {
+			return a.Timestamp.AsTime().Compare(b.Timestamp.AsTime())
+		}),
+		Ready: challengeMeta.Ready.Value(),
+		Scope: challengeMeta.Scope.Value(),
 	}}}, nil
 }
 
@@ -171,10 +187,14 @@ func (s *Server) List(ctx context.Context, req *connect.Request[challenge.ListRe
 			Clues:                coveredClues,
 			CluePrices:           challenge.CluePrices.Value(),
 			Error:                challenge.Error.Value(),
-			Scores:               visibleScores,
-			ScoreEvents:          visibleScoreEvents,
-			Ready:                challenge.Ready.Value(),
-			Scope:                challenge.Scope.Value(),
+			Scores: slices.SortedFunc(slices.Values(visibleScores), func(a, b *play.Score) int {
+				return int(a.Type - b.Type)
+			}),
+			ScoreEvents: slices.SortedFunc(slices.Values(visibleScoreEvents), func(a, b *play.ScoreEvent) int {
+				return a.Timestamp.AsTime().Compare(b.Timestamp.AsTime())
+			}),
+			Ready: challenge.Ready.Value(),
+			Scope: challenge.Scope.Value(),
 		})
 	}
 
@@ -524,7 +544,7 @@ func (s *Server) Credentials(ctx context.Context, req *connect.Request[challenge
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch challenge account"))
 	}
 
-	credentials, err := provider.Credentials(ctx, accountMeta.TargetID.Value(), time.Until(gameMeta.To.Value()))
+	credentials, err := provider.Credentials(ctx, accountMeta.TargetID.Value(), false, time.Until(gameMeta.To.Value()))
 	if err != nil {
 		l.Error(fmt.Sprintf("failed to generate challenge credentials: %v", err))
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to generate challenge credentials"))

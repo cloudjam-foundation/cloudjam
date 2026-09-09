@@ -36,7 +36,7 @@ type Provider interface {
 	Resources(ctx context.Context, id string, lifetime time.Duration) (ResourceController, error)
 	// Credentials generates shortlived credentials that a end-user will use to connect to the specified account.
 	// The format is a generic string that may be json formatted so that the frontend can interpret it (must be human readable as fallback).
-	Credentials(ctx context.Context, id string, lifetime time.Duration) (string, error)
+	Credentials(ctx context.Context, id string, admin bool, lifetime time.Duration) (string, error)
 
 	// Check performs some heuristics on the account to check if resources are leaking.
 	Check(ctx context.Context, id string) ([]Leak, error)
