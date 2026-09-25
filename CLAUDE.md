@@ -1,3 +1,4 @@
 # CLAUDE.md
 
-This project keeps its agent instructions in [AGENTS.md](AGENTS.md). Read that first.
+Read instructions from [AGENTS.md](/AGENTS.md)
+

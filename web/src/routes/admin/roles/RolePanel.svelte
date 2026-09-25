@@ -46,7 +46,7 @@
 
 <Card.Root class="w-full">
 	<Card.Header>
-		<Card.Title class="flex flex-row items-center gap-2 text-2xl">
+		<Card.Title class="flex flex-row gap-2 items-center text-2xl">
 			{role.name}
 			{#if role.builtin}
 				<Badge variant="secondary">builtin</Badge>
@@ -59,14 +59,14 @@
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-6">
 		{#if role.builtin}
-			<p class="text-muted-foreground text-sm italic">
+			<p class="text-sm italic text-muted-foreground">
 				This role is builtin; its metadata and permissions cannot be modified.
 			</p>
 		{:else}
 			<div class="flex flex-col gap-2">
 				<Card.Title>Metadata</Card.Title>
 				{#if updateState.forbidden}
-					<p class="text-muted-foreground text-sm italic">You are not allowed to update this role.</p>
+					<p class="text-sm italic text-muted-foreground">You are not allowed to update this role.</p>
 				{:else}
 					<form
 						class="flex flex-col gap-2"
@@ -76,7 +76,7 @@
 								refresh();
 							}, updateState)}
 					>
-						<div class="flex flex-row items-center gap-2">
+						<div class="flex flex-row gap-2 items-center">
 							<Input class="max-w-48" bind:value={name} placeholder="Name of the role" />
 							<Input class="max-w-96" bind:value={description} placeholder="Description of the role" />
 							<Button
@@ -88,9 +88,9 @@
 								Save
 							</Button>
 						</div>
-						<p class="text-destructive text-xs">{Glue.Validate(RoleSchema, mod).violation.name ?? ''}</p>
+						<p class="text-xs text-destructive">{Glue.Validate(RoleSchema, mod).violation.name ?? ''}</p>
 						{#if updateState.error}
-							<p class="text-destructive text-xs">{updateState.error}</p>
+							<p class="text-xs text-destructive">{updateState.error}</p>
 						{/if}
 					</form>
 				{/if}
@@ -101,16 +101,16 @@
 			<div class="flex flex-col gap-2">
 				<Card.Title>Permissions</Card.Title>
 				{#if configureState.forbidden}
-					<p class="text-muted-foreground text-sm italic">You are not allowed to configure this role.</p>
+					<p class="text-sm italic text-muted-foreground">You are not allowed to configure this role.</p>
 				{:else}
-					<p class="text-muted-foreground text-sm">
+					<p class="text-sm text-muted-foreground">
 						Comma separated glob patterns matched against the rpc procedure names, granted to subjects of the entries
 						scope. You can only grant scopes you possess yourself.
 					</p>
 					<PermissionEditor bind:entries />
 					<Button
 						variant="outline"
-						class="cursor-pointer self-start"
+						class="self-start cursor-pointer"
 						disabled={configureState.loading || Boolean(Glue.Validate(RoleSchema, mod).violation.permissions)}
 						onclick={() =>
 							Submit(async () => {
@@ -121,7 +121,7 @@
 						Save Permissions
 					</Button>
 					{#if configureState.error}
-						<p class="text-destructive text-xs">{configureState.error}</p>
+						<p class="text-xs text-destructive">{configureState.error}</p>
 					{/if}
 				{/if}
 			</div>
@@ -132,10 +132,10 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Scope</Card.Title>
 			{#if attachState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to attach scopes.</p>
+				<p class="text-sm italic text-muted-foreground">You are not allowed to attach scopes.</p>
 			{:else}
-				<p class="text-muted-foreground text-sm">Moves this role into another scope you possess.</p>
-				<div class="flex flex-row items-center gap-2">
+				<p class="text-sm text-muted-foreground">Moves this role into another scope you possess.</p>
+				<div class="flex flex-row gap-2 items-center">
 					<OptionalSelect
 						bind:value={attachScope}
 						placeholder="New scope"
@@ -161,7 +161,7 @@
 					</Button>
 				</div>
 				{#if attachState.error}
-					<p class="text-destructive text-xs">{attachState.error}</p>
+					<p class="text-xs text-destructive">{attachState.error}</p>
 				{/if}
 			{/if}
 		</div>
@@ -172,9 +172,9 @@
 			<div class="flex flex-col gap-2">
 				<Card.Title>Danger Zone</Card.Title>
 				{#if removeState.forbidden}
-					<p class="text-muted-foreground text-sm italic">You are not allowed to delete this role.</p>
+					<p class="text-sm italic text-muted-foreground">You are not allowed to delete this role.</p>
 				{:else}
-					<div class="flex flex-row items-center gap-2">
+					<div class="flex flex-row gap-2 items-center">
 						{#if confirmDelete}
 							<Button
 								variant="destructive"
