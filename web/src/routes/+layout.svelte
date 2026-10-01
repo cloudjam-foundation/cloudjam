@@ -26,9 +26,9 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
-{#if page.route.id !== '/login' && page.route.id !== '/register'}
-	<ModeWatcher />
+<ModeWatcher />
 
+{#if page.route.id !== '/login' && page.route.id !== '/register'}
 	<Sidebar.Provider>
 		<AppSidebar />
 		<span class="absolute md:hidden">
