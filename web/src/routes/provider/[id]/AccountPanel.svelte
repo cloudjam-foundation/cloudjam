@@ -76,9 +76,9 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Description</Card.Title>
 			{#if updateState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to update this account.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to update this account.</p>
 			{:else}
-				<p class="text-muted-foreground text-sm">Only accounts in the ready state accept metadata updates.</p>
+				<p class="text-sm text-muted-foreground">Only accounts in the ready state accept metadata updates.</p>
 				<form
 					class="flex flex-row items-center gap-2"
 					onsubmit={() =>
@@ -91,7 +91,7 @@
 					<Button type="submit" variant="outline" class="cursor-pointer" disabled={updateState.loading}>Save</Button>
 				</form>
 				{#if updateState.error}
-					<p class="text-destructive text-xs">{updateState.error}</p>
+					<p class="text-xs text-destructive">{updateState.error}</p>
 				{/if}
 			{/if}
 		</div>
@@ -101,9 +101,9 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Maintenance</Card.Title>
 			{#if fixState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to fix this account.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to fix this account.</p>
 			{:else}
-				<p class="text-muted-foreground text-sm">Generates short lived credentials for the account.</p>
+				<p class="text-sm text-muted-foreground">Generates short lived credentials for the account.</p>
 				<div class="flex flex-row items-center gap-2">
 					<Button
 						class="cursor-pointer self-start"
@@ -144,7 +144,7 @@
 						</Button>
 					{/if}
 				</div>
-				<p class="text-muted-foreground text-sm">
+				<p class="text-sm text-muted-foreground">
 					Nukes all resources and prepares the account so that it can be used for challenges again.
 				</p>
 				<div class="flex flex-row items-center gap-2">
@@ -177,7 +177,7 @@
 					</Alert.Root>
 				{/if}
 
-				<p class="text-muted-foreground text-sm">
+				<p class="text-sm text-muted-foreground">
 					Forces the account back into the ready state. Only do this after you actually repaired the account on the
 					provider, otherwise it is handed out broken.
 				</p>
@@ -202,7 +202,7 @@
 					{/if}
 				</div>
 				{#if fixState.error}
-					<p class="text-destructive text-xs">{fixState.error}</p>
+					<p class="text-xs text-destructive">{fixState.error}</p>
 				{/if}
 			{/if}
 		</div>
@@ -212,9 +212,9 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Danger Zone</Card.Title>
 			{#if removeState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to delete this account.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to delete this account.</p>
 			{:else}
-				<label class="text-muted-foreground flex flex-row items-center gap-2 text-sm">
+				<label class="flex flex-row items-center gap-2 text-sm text-muted-foreground">
 					<input type="checkbox" bind:checked={force} class="cursor-pointer" />
 					Force: drop the metadata immediately without waiting for the provider (the account leaks).
 				</label>

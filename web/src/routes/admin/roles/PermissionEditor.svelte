@@ -106,7 +106,7 @@
 				</Button>
 			</div>
 			<div class="flex flex-row flex-wrap items-center gap-1">
-				<span class="text-muted-foreground text-xs">grants:</span>
+				<span class="text-xs text-muted-foreground">grants:</span>
 				{#if granted(entry.patterns).length === functions.length}
 					<Badge variant="secondary">every function</Badge>
 				{:else}

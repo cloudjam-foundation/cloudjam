@@ -46,7 +46,7 @@
 
 <Card.Root class="w-full">
 	<Card.Header>
-		<Card.Title class="flex flex-row gap-2 items-center text-2xl">
+		<Card.Title class="flex flex-row items-center gap-2 text-2xl">
 			{role.name}
 			{#if role.builtin}
 				<Badge variant="secondary">builtin</Badge>
@@ -59,14 +59,14 @@
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-6">
 		{#if role.builtin}
-			<p class="text-sm italic text-muted-foreground">
+			<p class="text-sm text-muted-foreground italic">
 				This role is builtin; its metadata and permissions cannot be modified.
 			</p>
 		{:else}
 			<div class="flex flex-col gap-2">
 				<Card.Title>Metadata</Card.Title>
 				{#if updateState.forbidden}
-					<p class="text-sm italic text-muted-foreground">You are not allowed to update this role.</p>
+					<p class="text-sm text-muted-foreground italic">You are not allowed to update this role.</p>
 				{:else}
 					<form
 						class="flex flex-col gap-2"
@@ -76,7 +76,7 @@
 								refresh();
 							}, updateState)}
 					>
-						<div class="flex flex-row gap-2 items-center">
+						<div class="flex flex-row items-center gap-2">
 							<Input class="max-w-48" bind:value={name} placeholder="Name of the role" />
 							<Input class="max-w-96" bind:value={description} placeholder="Description of the role" />
 							<Button
@@ -101,7 +101,7 @@
 			<div class="flex flex-col gap-2">
 				<Card.Title>Permissions</Card.Title>
 				{#if configureState.forbidden}
-					<p class="text-sm italic text-muted-foreground">You are not allowed to configure this role.</p>
+					<p class="text-sm text-muted-foreground italic">You are not allowed to configure this role.</p>
 				{:else}
 					<p class="text-sm text-muted-foreground">
 						Comma separated glob patterns matched against the rpc procedure names, granted to subjects of the entries
@@ -110,7 +110,7 @@
 					<PermissionEditor bind:entries />
 					<Button
 						variant="outline"
-						class="self-start cursor-pointer"
+						class="cursor-pointer self-start"
 						disabled={configureState.loading || Boolean(Glue.Validate(RoleSchema, mod).violation.permissions)}
 						onclick={() =>
 							Submit(async () => {
@@ -132,10 +132,10 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Scope</Card.Title>
 			{#if attachState.forbidden}
-				<p class="text-sm italic text-muted-foreground">You are not allowed to attach scopes.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to attach scopes.</p>
 			{:else}
 				<p class="text-sm text-muted-foreground">Moves this role into another scope you possess.</p>
-				<div class="flex flex-row gap-2 items-center">
+				<div class="flex flex-row items-center gap-2">
 					<OptionalSelect
 						bind:value={attachScope}
 						placeholder="New scope"
@@ -172,9 +172,9 @@
 			<div class="flex flex-col gap-2">
 				<Card.Title>Danger Zone</Card.Title>
 				{#if removeState.forbidden}
-					<p class="text-sm italic text-muted-foreground">You are not allowed to delete this role.</p>
+					<p class="text-sm text-muted-foreground italic">You are not allowed to delete this role.</p>
 				{:else}
-					<div class="flex flex-row gap-2 items-center">
+					<div class="flex flex-row items-center gap-2">
 						{#if confirmDelete}
 							<Button
 								variant="destructive"

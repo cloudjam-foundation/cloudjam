@@ -11,11 +11,11 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex flex-col gap-4 items-center w-full">
+<div class="flex w-full flex-col items-center gap-4">
 	<h1 class="my-8 text-4xl opacity-80">Host</h1>
-	<div class="grid gap-4 w-full md:grid-cols-2">
+	<div class="grid w-full gap-4 md:grid-cols-2">
 		<a href="/host/games/">
-			<Card.Root class="h-full transition-all duration-200 cursor-pointer hover:bg-slate-50/5">
+			<Card.Root class="h-full cursor-pointer transition-all duration-200 hover:bg-slate-50/5">
 				<Card.Header>
 					<GamepadIcon class="size-8" />
 					<Card.Title class="text-2xl">Games</Card.Title>
@@ -24,7 +24,7 @@
 			</Card.Root>
 		</a>
 		<a href="/host/design/">
-			<Card.Root class="h-full transition-all duration-200 cursor-pointer hover:bg-slate-50/5">
+			<Card.Root class="h-full cursor-pointer transition-all duration-200 hover:bg-slate-50/5">
 				<Card.Header>
 					<WandSparklesIcon class="size-8" />
 					<Card.Title class="text-2xl">Design</Card.Title>

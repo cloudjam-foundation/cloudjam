@@ -139,7 +139,7 @@
 			{/each}
 
 			<div class="ml-auto flex items-center gap-2">
-				<span class="text-muted-foreground text-xs">
+				<span class="text-xs text-muted-foreground">
 					{from.toLocaleDateString(undefined, { hour: '2-digit', minute: '2-digit' })}
 					–
 					{to.toLocaleDateString(undefined, { hour: '2-digit', minute: '2-digit' })}

@@ -48,7 +48,7 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Configuration</Card.Title>
 			{#if updateState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to update this provider.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to update this provider.</p>
 			{:else}
 				<form
 					class="flex flex-col gap-4"
@@ -105,7 +105,7 @@
 					</Button>
 				</form>
 				{#if updateState.error}
-					<p class="text-destructive text-xs">{updateState.error}</p>
+					<p class="text-xs text-destructive">{updateState.error}</p>
 				{/if}
 			{/if}
 		</div>
@@ -115,9 +115,9 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Danger Zone</Card.Title>
 			{#if removeState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to delete this provider.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to delete this provider.</p>
 			{:else}
-				<p class="text-muted-foreground text-sm">
+				<p class="text-sm text-muted-foreground">
 					Before deleting a provider please remove all accounts and challenge definitions.
 				</p>
 				<div class="flex flex-row items-center gap-2">

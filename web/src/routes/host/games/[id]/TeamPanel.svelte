@@ -59,14 +59,14 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Name</Card.Title>
 			{#if updateState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to update this team.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to update this team.</p>
 			{:else}
 				<form class="flex flex-row items-center gap-2" onsubmit={() => save()}>
 					<Input class="max-w-96" bind:value={name} placeholder="Name of the team" />
 					<Button type="submit" variant="outline" class="cursor-pointer" disabled={updateState.loading}>Save</Button>
 				</form>
 				{#if updateState.error}
-					<p class="text-destructive text-xs">{updateState.error}</p>
+					<p class="text-xs text-destructive">{updateState.error}</p>
 				{/if}
 			{/if}
 		</div>
@@ -123,7 +123,7 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Danger Zone</Card.Title>
 			{#if removeState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to delete this team.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to delete this team.</p>
 			{:else}
 				<div class="flex flex-row items-center gap-2">
 					{#if confirmDelete}

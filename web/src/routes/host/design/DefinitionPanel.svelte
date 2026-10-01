@@ -42,7 +42,7 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Definition</Card.Title>
 			{#if updateState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to update this definition.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to update this definition.</p>
 			{:else}
 				<form
 					class="flex flex-col gap-4"
@@ -81,7 +81,7 @@
 						<div class="flex flex-col gap-1">
 							<label for="update-binary" class="text-sm">Plugin</label>
 							<Input id="update-binary" type="file" accept=".wasm" bind:files />
-							<p class="text-muted-foreground text-xs">Optional; the stored plugin is kept if no file is selected.</p>
+							<p class="text-xs text-muted-foreground">Optional; the stored plugin is kept if no file is selected.</p>
 						</div>
 					</div>
 
@@ -98,7 +98,7 @@
 					</div>
 				</form>
 				{#if updateState.error}
-					<p class="text-destructive text-xs">{updateState.error}</p>
+					<p class="text-xs text-destructive">{updateState.error}</p>
 				{/if}
 			{/if}
 		</div>
@@ -108,7 +108,7 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Danger Zone</Card.Title>
 			{#if removeState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to delete this definition.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to delete this definition.</p>
 			{:else}
 				<div class="flex flex-row items-center gap-2">
 					{#if confirmDelete}

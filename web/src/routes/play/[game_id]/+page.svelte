@@ -107,7 +107,7 @@
 		{/if}
 	</div>
 
-	<p class="text-muted-foreground text-sm">
+	<p class="text-sm text-muted-foreground">
 		{game?.description}
 	</p>
 

@@ -22,7 +22,7 @@
 
 <div class="flex w-full items-center justify-center">
 	<form
-		class="border-neutral/40 shadow-primary/20 mt-[10%] flex w-96 flex-col items-center gap-4 rounded-2xl border-[0.05rem] p-7 shadow-sm"
+		class="mt-[10%] flex w-96 flex-col items-center gap-4 rounded-2xl border-[0.05rem] border-neutral/40 p-7 shadow-sm shadow-primary/20"
 		onsubmit={() =>
 			Submit(async () => {
 				setToken((await Glue.auth.login(loginRequest)).token);

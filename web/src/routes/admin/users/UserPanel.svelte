@@ -53,7 +53,7 @@
 			alt="user profile"
 			src={`data:image/svg+xml;base64,${btoa(toSvg(user.pubId, 20))}`}
 			height="4rem"
-			class="bg-primary/5 rounded-lg"
+			class="rounded-lg bg-primary/5"
 		/>
 		<div class="flex flex-col gap-1">
 			<Card.Title class="text-2xl">{user.username}</Card.Title>
@@ -73,14 +73,14 @@
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-6">
 		{#if user.privileged}
-			<p class="text-muted-foreground text-sm italic">
+			<p class="text-sm text-muted-foreground italic">
 				This user is privileged; role, scope and profile cannot be modified.
 			</p>
 		{:else}
 			<div class="flex flex-col gap-2">
 				<Card.Title>Organization</Card.Title>
 				{#if updateState.forbidden}
-					<p class="text-muted-foreground text-sm italic">You are not allowed to update this user.</p>
+					<p class="text-sm text-muted-foreground italic">You are not allowed to update this user.</p>
 				{:else}
 					<form
 						class="flex flex-row items-center gap-2"
@@ -94,7 +94,7 @@
 						<Button type="submit" variant="outline" class="cursor-pointer" disabled={updateState.loading}>Save</Button>
 					</form>
 					{#if updateState.error}
-						<p class="text-destructive text-xs">{updateState.error}</p>
+						<p class="text-xs text-destructive">{updateState.error}</p>
 					{/if}
 				{/if}
 			</div>
@@ -104,7 +104,7 @@
 			<div class="flex flex-col gap-2">
 				<Card.Title>Role</Card.Title>
 				{#if rolesForbidden || attachRoleState.forbidden}
-					<p class="text-muted-foreground text-sm italic">You are not allowed to attach roles.</p>
+					<p class="text-sm text-muted-foreground italic">You are not allowed to attach roles.</p>
 				{:else}
 					<div class="flex flex-row items-center gap-2">
 						<Select.Root type="single" bind:value={role}>
@@ -131,7 +131,7 @@
 						</Button>
 					</div>
 					{#if attachRoleState.error}
-						<p class="text-destructive text-xs">{attachRoleState.error}</p>
+						<p class="text-xs text-destructive">{attachRoleState.error}</p>
 					{/if}
 				{/if}
 			</div>
@@ -141,9 +141,9 @@
 			<div class="flex flex-col gap-2">
 				<Card.Title>Scope</Card.Title>
 				{#if attachState.forbidden}
-					<p class="text-muted-foreground text-sm italic">You are not allowed to attach scopes.</p>
+					<p class="text-sm text-muted-foreground italic">You are not allowed to attach scopes.</p>
 				{:else}
-					<p class="text-muted-foreground text-sm">
+					<p class="text-sm text-muted-foreground">
 						Moves the selected resource of this user into another scope you possess. User data is keyed by the user id,
 						login credentials by the email.
 					</p>
@@ -183,7 +183,7 @@
 						</Button>
 					</div>
 					{#if attachState.error}
-						<p class="text-destructive text-xs">{attachState.error}</p>
+						<p class="text-xs text-destructive">{attachState.error}</p>
 					{/if}
 				{/if}
 			</div>
@@ -194,7 +194,7 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Reset Password</Card.Title>
 			{#if resetState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to reset passwords.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to reset passwords.</p>
 			{:else if resetCode}
 				<Alert.Root>
 					<Alert.Title>Reset code created</Alert.Title>
@@ -230,12 +230,12 @@
 					>
 						Create Reset Code
 					</Button>
-					<p class="text-muted-foreground text-sm">
+					<p class="text-sm text-muted-foreground">
 						Creates a one time code (valid 24 hours) to redo the registration.
 					</p>
 				</div>
 				{#if resetState.error}
-					<p class="text-destructive text-xs">{resetState.error}</p>
+					<p class="text-xs text-destructive">{resetState.error}</p>
 				{/if}
 			{/if}
 		</div>
@@ -246,7 +246,7 @@
 			<div class="flex flex-col gap-2">
 				<Card.Title>Danger Zone</Card.Title>
 				{#if removeState.forbidden}
-					<p class="text-muted-foreground text-sm italic">You are not allowed to delete this user.</p>
+					<p class="text-sm text-muted-foreground italic">You are not allowed to delete this user.</p>
 				{:else}
 					<div class="flex flex-row items-center gap-2">
 						{#if confirmDelete}

@@ -12,6 +12,7 @@
 	import CreateTeam from './CreateTeam.svelte';
 	import TeamPanel from './TeamPanel.svelte';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
+	import { ChevronDownIcon, ChevronRightIcon } from '@lucide/svelte';
 
 	let { game }: { game: Game } = $props();
 
@@ -68,7 +69,14 @@
 			<Table.Body>
 				{#each teams as team (team.id)}
 					<Table.Row class="cursor-pointer" onclick={() => (selected = selected?.id === team.id ? undefined : team)}>
-						<Table.Cell class="font-medium">{team.name}</Table.Cell>
+						<Table.Cell class="flex flex-row items-center gap-2 font-medium">
+							{#if selected && selected.id === team.id}
+								<ChevronDownIcon />
+							{:else}
+								<ChevronRightIcon />
+							{/if}
+							{team.name}
+						</Table.Cell>
 						<Table.Cell>
 							{Object.values(team.players)
 								.map((player) => player.username)

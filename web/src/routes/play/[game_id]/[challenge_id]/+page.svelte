@@ -164,7 +164,7 @@
 		<Badge variant="outline">score: {score}</Badge>
 	</div>
 
-	<Card.Root class="bg-accent-600/20 gap-2 p-4">
+	<Card.Root class="gap-2 bg-accent-600/20 p-4">
 		<Card.Title class="flex flex-row items-center gap-2 text-2xl">
 			{team?.name}
 			<Badge variant="default">
@@ -178,7 +178,7 @@
 						alt="user profile"
 						src={`data:image/svg+xml;base64,${btoa(toSvg(player.pubId, 16))}`}
 						height="3rem"
-						class="bg-primary/5 rounded-lg"
+						class="rounded-lg bg-primary/5"
 					/>
 					{player.username}
 				</Badge>

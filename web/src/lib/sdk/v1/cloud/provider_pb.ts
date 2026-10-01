@@ -2,82 +2,83 @@
 // @generated from file v1/cloud/provider.proto (package v1.cloud, syntax proto3)
 /* eslint-disable */
 
-import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
-import type { Message } from "@bufbuild/protobuf";
+import type { Message } from '@bufbuild/protobuf';
+import type { GenEnum, GenFile, GenMessage } from '@bufbuild/protobuf/codegenv2';
+import { enumDesc, fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv2';
+import { file_buf_validate_validate } from '../../buf/validate/validate_pb';
 
 /**
  * Describes the file v1/cloud/provider.proto.
  */
-export const file_v1_cloud_provider: GenFile = /*@__PURE__*/
-  fileDesc("Chd2MS9jbG91ZC9wcm92aWRlci5wcm90bxIIdjEuY2xvdWQi2gEKCFByb3ZpZGVyEg0KBXNjb3BlGAEgASgJEhQKAmlkGAIgASgJQgi6SAVyA7ABARIkCgR0eXBlGAMgASgOMhYudjEuY2xvdWQuUHJvdmlkZXJUeXBlEhcKBG5hbWUYBCABKAlCCbpIBnIEEAMYFBIeCgtkZXNjcmlwdGlvbhgFIAEoCUIJukgGcgQQABgyEhgKBWVtYWlsGAYgASgJQgm6SAZyBBgbYAESDwoHcmVnaW9ucxgHIAMoCRIfCgtjcmVkZW50aWFscxgIIAEoCUIKukgHcgUQABjoByoXCgxQcm92aWRlclR5cGUSBwoDQVdTEABCMVovY29kZWJlcmcub3JnL21lZ2FrdXVsL2Nsb3VkamFtL3BrZy9hcGkvdjEvY2xvdWRiBnByb3RvMw", [file_buf_validate_validate]);
+export const file_v1_cloud_provider: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'Chd2MS9jbG91ZC9wcm92aWRlci5wcm90bxIIdjEuY2xvdWQi2gEKCFByb3ZpZGVyEg0KBXNjb3BlGAEgASgJEhQKAmlkGAIgASgJQgi6SAVyA7ABARIkCgR0eXBlGAMgASgOMhYudjEuY2xvdWQuUHJvdmlkZXJUeXBlEhcKBG5hbWUYBCABKAlCCbpIBnIEEAMYFBIeCgtkZXNjcmlwdGlvbhgFIAEoCUIJukgGcgQQABgyEhgKBWVtYWlsGAYgASgJQgm6SAZyBBgbYAESDwoHcmVnaW9ucxgHIAMoCRIfCgtjcmVkZW50aWFscxgIIAEoCUIKukgHcgUQABjoByoXCgxQcm92aWRlclR5cGUSBwoDQVdTEABCMVovY29kZWJlcmcub3JnL21lZ2FrdXVsL2Nsb3VkamFtL3BrZy9hcGkvdjEvY2xvdWRiBnByb3RvMw',
+		[file_buf_validate_validate]
+	);
 
 /**
  * @generated from message v1.cloud.Provider
  */
-export type Provider = Message<"v1.cloud.Provider"> & {
-  /**
-   * @generated from field: string scope = 1;
-   */
-  scope: string;
+export type Provider = Message<'v1.cloud.Provider'> & {
+	/**
+	 * @generated from field: string scope = 1;
+	 */
+	scope: string;
 
-  /**
-   * @generated from field: string id = 2;
-   */
-  id: string;
+	/**
+	 * @generated from field: string id = 2;
+	 */
+	id: string;
 
-  /**
-   * @generated from field: v1.cloud.ProviderType type = 3;
-   */
-  type: ProviderType;
+	/**
+	 * @generated from field: v1.cloud.ProviderType type = 3;
+	 */
+	type: ProviderType;
 
-  /**
-   * @generated from field: string name = 4;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 4;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: string description = 5;
-   */
-  description: string;
+	/**
+	 * @generated from field: string description = 5;
+	 */
+	description: string;
 
-  /**
-   * @generated from field: string email = 6;
-   */
-  email: string;
+	/**
+	 * @generated from field: string email = 6;
+	 */
+	email: string;
 
-  /**
-   * @generated from field: repeated string regions = 7;
-   */
-  regions: string[];
+	/**
+	 * @generated from field: repeated string regions = 7;
+	 */
+	regions: string[];
 
-  /**
-   * @generated from field: string credentials = 8;
-   */
-  credentials: string;
+	/**
+	 * @generated from field: string credentials = 8;
+	 */
+	credentials: string;
 };
 
 /**
  * Describes the message v1.cloud.Provider.
  * Use `create(ProviderSchema)` to create a new message.
  */
-export const ProviderSchema: GenMessage<Provider> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_provider, 0);
+export const ProviderSchema: GenMessage<Provider> = /*@__PURE__*/ messageDesc(file_v1_cloud_provider, 0);
 
 /**
  * @generated from enum v1.cloud.ProviderType
  */
 export enum ProviderType {
-  /**
-   * @generated from enum value: AWS = 0;
-   */
-  AWS = 0,
+	/**
+	 * @generated from enum value: AWS = 0;
+	 */
+	AWS = 0
 }
 
 /**
  * Describes the enum v1.cloud.ProviderType.
  */
-export const ProviderTypeSchema: GenEnum<ProviderType> = /*@__PURE__*/
-  enumDesc(file_v1_cloud_provider, 0);
-
+export const ProviderTypeSchema: GenEnum<ProviderType> = /*@__PURE__*/ enumDesc(file_v1_cloud_provider, 0);

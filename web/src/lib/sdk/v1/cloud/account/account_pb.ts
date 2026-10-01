@@ -2,404 +2,406 @@
 // @generated from file v1/cloud/account/account.proto (package v1.cloud.account, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_buf_validate_validate } from "../../../buf/validate/validate_pb";
-import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import type { Account } from "../account_pb";
-import { file_v1_cloud_account } from "../account_pb";
-import type { Message } from "@bufbuild/protobuf";
+import type { Message } from '@bufbuild/protobuf';
+import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2';
+import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2';
+import { file_google_protobuf_timestamp } from '@bufbuild/protobuf/wkt';
+import { file_buf_validate_validate } from '../../../buf/validate/validate_pb';
+import type { Account } from '../account_pb';
+import { file_v1_cloud_account } from '../account_pb';
 
 /**
  * Describes the file v1/cloud/account/account.proto.
  */
-export const file_v1_cloud_account_account: GenFile = /*@__PURE__*/
-  fileDesc("Ch52MS9jbG91ZC9hY2NvdW50L2FjY291bnQucHJvdG8SEHYxLmNsb3VkLmFjY291bnQiQQoKR2V0UmVxdWVzdBIdCgtwcm92aWRlcl9pZBgBIAEoCUIIukgFcgOwAQESFAoCaWQYAiABKAlCCLpIBXIDsAEBIjEKC0dldFJlc3BvbnNlEiIKB2FjY291bnQYASABKAsyES52MS5jbG91ZC5BY2NvdW50IlsKC0xpc3RSZXF1ZXN0Eh0KC3Byb3ZpZGVyX2lkGAEgASgJQgi6SAVyA7ABARIYCgVsaW1pdBgCIAEoBUIJukgGGgQYZCAAEhMKC3N0YXJ0X2FmdGVyGAMgASgJIjMKDExpc3RSZXNwb25zZRIjCghhY2NvdW50cxgBIAMoCzIRLnYxLmNsb3VkLkFjY291bnQiMAoNQ3JlYXRlUmVxdWVzdBIfCgRpbml0GAEgASgLMhEudjEuY2xvdWQuQWNjb3VudCImCg5DcmVhdGVSZXNwb25zZRIUCgJpZBgBIAEoCUIIukgFcgOwAQEiLwoNVXBkYXRlUmVxdWVzdBIeCgNtb2QYASABKAsyES52MS5jbG91ZC5BY2NvdW50IhAKDlVwZGF0ZVJlc3BvbnNlIkkKEkNyZWRlbnRpYWxzUmVxdWVzdBIdCgtwcm92aWRlcl9pZBgBIAEoCUIIukgFcgOwAQESFAoCaWQYAiABKAlCCLpIBXIDsAEBIioKE0NyZWRlbnRpYWxzUmVzcG9uc2USEwoLY3JlZGVudGlhbHMYASABKAkiQwoMUmVzZXRSZXF1ZXN0Eh0KC3Byb3ZpZGVyX2lkGAEgASgJQgi6SAVyA7ABARIUCgJpZBgCIAEoCUIIukgFcgOwAQEiDwoNUmVzZXRSZXNwb25zZSJBCgpGaXhSZXF1ZXN0Eh0KC3Byb3ZpZGVyX2lkGAEgASgJQgi6SAVyA7ABARIUCgJpZBgCIAEoCUIIukgFcgOwAQEiDQoLRml4UmVzcG9uc2UiUwoNRGVsZXRlUmVxdWVzdBIdCgtwcm92aWRlcl9pZBgBIAEoCUIIukgFcgOwAQESFAoCaWQYAiABKAlCCLpIBXIDsAEBEg0KBWZvcmNlGAMgASgIIhAKDkRlbGV0ZVJlc3BvbnNlMuwECg5BY2NvdW50U2VydmljZRJCCgNHZXQSHC52MS5jbG91ZC5hY2NvdW50LkdldFJlcXVlc3QaHS52MS5jbG91ZC5hY2NvdW50LkdldFJlc3BvbnNlEkUKBExpc3QSHS52MS5jbG91ZC5hY2NvdW50Lkxpc3RSZXF1ZXN0Gh4udjEuY2xvdWQuYWNjb3VudC5MaXN0UmVzcG9uc2USSwoGQ3JlYXRlEh8udjEuY2xvdWQuYWNjb3VudC5DcmVhdGVSZXF1ZXN0GiAudjEuY2xvdWQuYWNjb3VudC5DcmVhdGVSZXNwb25zZRJLCgZVcGRhdGUSHy52MS5jbG91ZC5hY2NvdW50LlVwZGF0ZVJlcXVlc3QaIC52MS5jbG91ZC5hY2NvdW50LlVwZGF0ZVJlc3BvbnNlEloKC0NyZWRlbnRpYWxzEiQudjEuY2xvdWQuYWNjb3VudC5DcmVkZW50aWFsc1JlcXVlc3QaJS52MS5jbG91ZC5hY2NvdW50LkNyZWRlbnRpYWxzUmVzcG9uc2USSAoFUmVzZXQSHi52MS5jbG91ZC5hY2NvdW50LlJlc2V0UmVxdWVzdBofLnYxLmNsb3VkLmFjY291bnQuUmVzZXRSZXNwb25zZRJCCgNGaXgSHC52MS5jbG91ZC5hY2NvdW50LkZpeFJlcXVlc3QaHS52MS5jbG91ZC5hY2NvdW50LkZpeFJlc3BvbnNlEksKBkRlbGV0ZRIfLnYxLmNsb3VkLmFjY291bnQuRGVsZXRlUmVxdWVzdBogLnYxLmNsb3VkLmFjY291bnQuRGVsZXRlUmVzcG9uc2VCOVo3Y29kZWJlcmcub3JnL21lZ2FrdXVsL2Nsb3VkamFtL3BrZy9hcGkvdjEvY2xvdWQvYWNjb3VudGIGcHJvdG8z", [file_buf_validate_validate, file_google_protobuf_timestamp, file_v1_cloud_account]);
+export const file_v1_cloud_account_account: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'Ch52MS9jbG91ZC9hY2NvdW50L2FjY291bnQucHJvdG8SEHYxLmNsb3VkLmFjY291bnQiQQoKR2V0UmVxdWVzdBIdCgtwcm92aWRlcl9pZBgBIAEoCUIIukgFcgOwAQESFAoCaWQYAiABKAlCCLpIBXIDsAEBIjEKC0dldFJlc3BvbnNlEiIKB2FjY291bnQYASABKAsyES52MS5jbG91ZC5BY2NvdW50IlsKC0xpc3RSZXF1ZXN0Eh0KC3Byb3ZpZGVyX2lkGAEgASgJQgi6SAVyA7ABARIYCgVsaW1pdBgCIAEoBUIJukgGGgQYZCAAEhMKC3N0YXJ0X2FmdGVyGAMgASgJIjMKDExpc3RSZXNwb25zZRIjCghhY2NvdW50cxgBIAMoCzIRLnYxLmNsb3VkLkFjY291bnQiMAoNQ3JlYXRlUmVxdWVzdBIfCgRpbml0GAEgASgLMhEudjEuY2xvdWQuQWNjb3VudCImCg5DcmVhdGVSZXNwb25zZRIUCgJpZBgBIAEoCUIIukgFcgOwAQEiLwoNVXBkYXRlUmVxdWVzdBIeCgNtb2QYASABKAsyES52MS5jbG91ZC5BY2NvdW50IhAKDlVwZGF0ZVJlc3BvbnNlIkkKEkNyZWRlbnRpYWxzUmVxdWVzdBIdCgtwcm92aWRlcl9pZBgBIAEoCUIIukgFcgOwAQESFAoCaWQYAiABKAlCCLpIBXIDsAEBIioKE0NyZWRlbnRpYWxzUmVzcG9uc2USEwoLY3JlZGVudGlhbHMYASABKAkiQwoMUmVzZXRSZXF1ZXN0Eh0KC3Byb3ZpZGVyX2lkGAEgASgJQgi6SAVyA7ABARIUCgJpZBgCIAEoCUIIukgFcgOwAQEiDwoNUmVzZXRSZXNwb25zZSJBCgpGaXhSZXF1ZXN0Eh0KC3Byb3ZpZGVyX2lkGAEgASgJQgi6SAVyA7ABARIUCgJpZBgCIAEoCUIIukgFcgOwAQEiDQoLRml4UmVzcG9uc2UiUwoNRGVsZXRlUmVxdWVzdBIdCgtwcm92aWRlcl9pZBgBIAEoCUIIukgFcgOwAQESFAoCaWQYAiABKAlCCLpIBXIDsAEBEg0KBWZvcmNlGAMgASgIIhAKDkRlbGV0ZVJlc3BvbnNlMuwECg5BY2NvdW50U2VydmljZRJCCgNHZXQSHC52MS5jbG91ZC5hY2NvdW50LkdldFJlcXVlc3QaHS52MS5jbG91ZC5hY2NvdW50LkdldFJlc3BvbnNlEkUKBExpc3QSHS52MS5jbG91ZC5hY2NvdW50Lkxpc3RSZXF1ZXN0Gh4udjEuY2xvdWQuYWNjb3VudC5MaXN0UmVzcG9uc2USSwoGQ3JlYXRlEh8udjEuY2xvdWQuYWNjb3VudC5DcmVhdGVSZXF1ZXN0GiAudjEuY2xvdWQuYWNjb3VudC5DcmVhdGVSZXNwb25zZRJLCgZVcGRhdGUSHy52MS5jbG91ZC5hY2NvdW50LlVwZGF0ZVJlcXVlc3QaIC52MS5jbG91ZC5hY2NvdW50LlVwZGF0ZVJlc3BvbnNlEloKC0NyZWRlbnRpYWxzEiQudjEuY2xvdWQuYWNjb3VudC5DcmVkZW50aWFsc1JlcXVlc3QaJS52MS5jbG91ZC5hY2NvdW50LkNyZWRlbnRpYWxzUmVzcG9uc2USSAoFUmVzZXQSHi52MS5jbG91ZC5hY2NvdW50LlJlc2V0UmVxdWVzdBofLnYxLmNsb3VkLmFjY291bnQuUmVzZXRSZXNwb25zZRJCCgNGaXgSHC52MS5jbG91ZC5hY2NvdW50LkZpeFJlcXVlc3QaHS52MS5jbG91ZC5hY2NvdW50LkZpeFJlc3BvbnNlEksKBkRlbGV0ZRIfLnYxLmNsb3VkLmFjY291bnQuRGVsZXRlUmVxdWVzdBogLnYxLmNsb3VkLmFjY291bnQuRGVsZXRlUmVzcG9uc2VCOVo3Y29kZWJlcmcub3JnL21lZ2FrdXVsL2Nsb3VkamFtL3BrZy9hcGkvdjEvY2xvdWQvYWNjb3VudGIGcHJvdG8z',
+		[file_buf_validate_validate, file_google_protobuf_timestamp, file_v1_cloud_account]
+	);
 
 /**
  * @generated from message v1.cloud.account.GetRequest
  */
-export type GetRequest = Message<"v1.cloud.account.GetRequest"> & {
-  /**
-   * @generated from field: string provider_id = 1;
-   */
-  providerId: string;
+export type GetRequest = Message<'v1.cloud.account.GetRequest'> & {
+	/**
+	 * @generated from field: string provider_id = 1;
+	 */
+	providerId: string;
 
-  /**
-   * @generated from field: string id = 2;
-   */
-  id: string;
+	/**
+	 * @generated from field: string id = 2;
+	 */
+	id: string;
 };
 
 /**
  * Describes the message v1.cloud.account.GetRequest.
  * Use `create(GetRequestSchema)` to create a new message.
  */
-export const GetRequestSchema: GenMessage<GetRequest> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 0);
+export const GetRequestSchema: GenMessage<GetRequest> = /*@__PURE__*/ messageDesc(file_v1_cloud_account_account, 0);
 
 /**
  * @generated from message v1.cloud.account.GetResponse
  */
-export type GetResponse = Message<"v1.cloud.account.GetResponse"> & {
-  /**
-   * @generated from field: v1.cloud.Account account = 1;
-   */
-  account?: Account;
+export type GetResponse = Message<'v1.cloud.account.GetResponse'> & {
+	/**
+	 * @generated from field: v1.cloud.Account account = 1;
+	 */
+	account?: Account;
 };
 
 /**
  * Describes the message v1.cloud.account.GetResponse.
  * Use `create(GetResponseSchema)` to create a new message.
  */
-export const GetResponseSchema: GenMessage<GetResponse> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 1);
+export const GetResponseSchema: GenMessage<GetResponse> = /*@__PURE__*/ messageDesc(file_v1_cloud_account_account, 1);
 
 /**
  * @generated from message v1.cloud.account.ListRequest
  */
-export type ListRequest = Message<"v1.cloud.account.ListRequest"> & {
-  /**
-   * @generated from field: string provider_id = 1;
-   */
-  providerId: string;
+export type ListRequest = Message<'v1.cloud.account.ListRequest'> & {
+	/**
+	 * @generated from field: string provider_id = 1;
+	 */
+	providerId: string;
 
-  /**
-   * @generated from field: int32 limit = 2;
-   */
-  limit: number;
+	/**
+	 * @generated from field: int32 limit = 2;
+	 */
+	limit: number;
 
-  /**
-   * @generated from field: string start_after = 3;
-   */
-  startAfter: string;
+	/**
+	 * @generated from field: string start_after = 3;
+	 */
+	startAfter: string;
 };
 
 /**
  * Describes the message v1.cloud.account.ListRequest.
  * Use `create(ListRequestSchema)` to create a new message.
  */
-export const ListRequestSchema: GenMessage<ListRequest> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 2);
+export const ListRequestSchema: GenMessage<ListRequest> = /*@__PURE__*/ messageDesc(file_v1_cloud_account_account, 2);
 
 /**
  * @generated from message v1.cloud.account.ListResponse
  */
-export type ListResponse = Message<"v1.cloud.account.ListResponse"> & {
-  /**
-   * @generated from field: repeated v1.cloud.Account accounts = 1;
-   */
-  accounts: Account[];
+export type ListResponse = Message<'v1.cloud.account.ListResponse'> & {
+	/**
+	 * @generated from field: repeated v1.cloud.Account accounts = 1;
+	 */
+	accounts: Account[];
 };
 
 /**
  * Describes the message v1.cloud.account.ListResponse.
  * Use `create(ListResponseSchema)` to create a new message.
  */
-export const ListResponseSchema: GenMessage<ListResponse> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 3);
+export const ListResponseSchema: GenMessage<ListResponse> = /*@__PURE__*/ messageDesc(file_v1_cloud_account_account, 3);
 
 /**
  * @generated from message v1.cloud.account.CreateRequest
  */
-export type CreateRequest = Message<"v1.cloud.account.CreateRequest"> & {
-  /**
-   * @generated from field: v1.cloud.Account init = 1;
-   */
-  init?: Account;
+export type CreateRequest = Message<'v1.cloud.account.CreateRequest'> & {
+	/**
+	 * @generated from field: v1.cloud.Account init = 1;
+	 */
+	init?: Account;
 };
 
 /**
  * Describes the message v1.cloud.account.CreateRequest.
  * Use `create(CreateRequestSchema)` to create a new message.
  */
-export const CreateRequestSchema: GenMessage<CreateRequest> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 4);
+export const CreateRequestSchema: GenMessage<CreateRequest> =
+	/*@__PURE__*/
+	messageDesc(file_v1_cloud_account_account, 4);
 
 /**
  * @generated from message v1.cloud.account.CreateResponse
  */
-export type CreateResponse = Message<"v1.cloud.account.CreateResponse"> & {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id: string;
+export type CreateResponse = Message<'v1.cloud.account.CreateResponse'> & {
+	/**
+	 * @generated from field: string id = 1;
+	 */
+	id: string;
 };
 
 /**
  * Describes the message v1.cloud.account.CreateResponse.
  * Use `create(CreateResponseSchema)` to create a new message.
  */
-export const CreateResponseSchema: GenMessage<CreateResponse> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 5);
+export const CreateResponseSchema: GenMessage<CreateResponse> =
+	/*@__PURE__*/
+	messageDesc(file_v1_cloud_account_account, 5);
 
 /**
  * @generated from message v1.cloud.account.UpdateRequest
  */
-export type UpdateRequest = Message<"v1.cloud.account.UpdateRequest"> & {
-  /**
-   * @generated from field: v1.cloud.Account mod = 1;
-   */
-  mod?: Account;
+export type UpdateRequest = Message<'v1.cloud.account.UpdateRequest'> & {
+	/**
+	 * @generated from field: v1.cloud.Account mod = 1;
+	 */
+	mod?: Account;
 };
 
 /**
  * Describes the message v1.cloud.account.UpdateRequest.
  * Use `create(UpdateRequestSchema)` to create a new message.
  */
-export const UpdateRequestSchema: GenMessage<UpdateRequest> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 6);
+export const UpdateRequestSchema: GenMessage<UpdateRequest> =
+	/*@__PURE__*/
+	messageDesc(file_v1_cloud_account_account, 6);
 
 /**
  * @generated from message v1.cloud.account.UpdateResponse
  */
-export type UpdateResponse = Message<"v1.cloud.account.UpdateResponse"> & {
-};
+export type UpdateResponse = Message<'v1.cloud.account.UpdateResponse'> & {};
 
 /**
  * Describes the message v1.cloud.account.UpdateResponse.
  * Use `create(UpdateResponseSchema)` to create a new message.
  */
-export const UpdateResponseSchema: GenMessage<UpdateResponse> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 7);
+export const UpdateResponseSchema: GenMessage<UpdateResponse> =
+	/*@__PURE__*/
+	messageDesc(file_v1_cloud_account_account, 7);
 
 /**
  * @generated from message v1.cloud.account.CredentialsRequest
  */
-export type CredentialsRequest = Message<"v1.cloud.account.CredentialsRequest"> & {
-  /**
-   * @generated from field: string provider_id = 1;
-   */
-  providerId: string;
+export type CredentialsRequest = Message<'v1.cloud.account.CredentialsRequest'> & {
+	/**
+	 * @generated from field: string provider_id = 1;
+	 */
+	providerId: string;
 
-  /**
-   * @generated from field: string id = 2;
-   */
-  id: string;
+	/**
+	 * @generated from field: string id = 2;
+	 */
+	id: string;
 };
 
 /**
  * Describes the message v1.cloud.account.CredentialsRequest.
  * Use `create(CredentialsRequestSchema)` to create a new message.
  */
-export const CredentialsRequestSchema: GenMessage<CredentialsRequest> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 8);
+export const CredentialsRequestSchema: GenMessage<CredentialsRequest> =
+	/*@__PURE__*/
+	messageDesc(file_v1_cloud_account_account, 8);
 
 /**
  * @generated from message v1.cloud.account.CredentialsResponse
  */
-export type CredentialsResponse = Message<"v1.cloud.account.CredentialsResponse"> & {
-  /**
-   * @generated from field: string credentials = 1;
-   */
-  credentials: string;
+export type CredentialsResponse = Message<'v1.cloud.account.CredentialsResponse'> & {
+	/**
+	 * @generated from field: string credentials = 1;
+	 */
+	credentials: string;
 };
 
 /**
  * Describes the message v1.cloud.account.CredentialsResponse.
  * Use `create(CredentialsResponseSchema)` to create a new message.
  */
-export const CredentialsResponseSchema: GenMessage<CredentialsResponse> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 9);
+export const CredentialsResponseSchema: GenMessage<CredentialsResponse> =
+	/*@__PURE__*/
+	messageDesc(file_v1_cloud_account_account, 9);
 
 /**
  * @generated from message v1.cloud.account.ResetRequest
  */
-export type ResetRequest = Message<"v1.cloud.account.ResetRequest"> & {
-  /**
-   * @generated from field: string provider_id = 1;
-   */
-  providerId: string;
+export type ResetRequest = Message<'v1.cloud.account.ResetRequest'> & {
+	/**
+	 * @generated from field: string provider_id = 1;
+	 */
+	providerId: string;
 
-  /**
-   * @generated from field: string id = 2;
-   */
-  id: string;
+	/**
+	 * @generated from field: string id = 2;
+	 */
+	id: string;
 };
 
 /**
  * Describes the message v1.cloud.account.ResetRequest.
  * Use `create(ResetRequestSchema)` to create a new message.
  */
-export const ResetRequestSchema: GenMessage<ResetRequest> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 10);
+export const ResetRequestSchema: GenMessage<ResetRequest> =
+	/*@__PURE__*/
+	messageDesc(file_v1_cloud_account_account, 10);
 
 /**
  * @generated from message v1.cloud.account.ResetResponse
  */
-export type ResetResponse = Message<"v1.cloud.account.ResetResponse"> & {
-};
+export type ResetResponse = Message<'v1.cloud.account.ResetResponse'> & {};
 
 /**
  * Describes the message v1.cloud.account.ResetResponse.
  * Use `create(ResetResponseSchema)` to create a new message.
  */
-export const ResetResponseSchema: GenMessage<ResetResponse> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 11);
+export const ResetResponseSchema: GenMessage<ResetResponse> =
+	/*@__PURE__*/
+	messageDesc(file_v1_cloud_account_account, 11);
 
 /**
  * @generated from message v1.cloud.account.FixRequest
  */
-export type FixRequest = Message<"v1.cloud.account.FixRequest"> & {
-  /**
-   * @generated from field: string provider_id = 1;
-   */
-  providerId: string;
+export type FixRequest = Message<'v1.cloud.account.FixRequest'> & {
+	/**
+	 * @generated from field: string provider_id = 1;
+	 */
+	providerId: string;
 
-  /**
-   * @generated from field: string id = 2;
-   */
-  id: string;
+	/**
+	 * @generated from field: string id = 2;
+	 */
+	id: string;
 };
 
 /**
  * Describes the message v1.cloud.account.FixRequest.
  * Use `create(FixRequestSchema)` to create a new message.
  */
-export const FixRequestSchema: GenMessage<FixRequest> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 12);
+export const FixRequestSchema: GenMessage<FixRequest> = /*@__PURE__*/ messageDesc(file_v1_cloud_account_account, 12);
 
 /**
  * @generated from message v1.cloud.account.FixResponse
  */
-export type FixResponse = Message<"v1.cloud.account.FixResponse"> & {
-};
+export type FixResponse = Message<'v1.cloud.account.FixResponse'> & {};
 
 /**
  * Describes the message v1.cloud.account.FixResponse.
  * Use `create(FixResponseSchema)` to create a new message.
  */
-export const FixResponseSchema: GenMessage<FixResponse> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 13);
+export const FixResponseSchema: GenMessage<FixResponse> = /*@__PURE__*/ messageDesc(file_v1_cloud_account_account, 13);
 
 /**
  * @generated from message v1.cloud.account.DeleteRequest
  */
-export type DeleteRequest = Message<"v1.cloud.account.DeleteRequest"> & {
-  /**
-   * @generated from field: string provider_id = 1;
-   */
-  providerId: string;
+export type DeleteRequest = Message<'v1.cloud.account.DeleteRequest'> & {
+	/**
+	 * @generated from field: string provider_id = 1;
+	 */
+	providerId: string;
 
-  /**
-   * @generated from field: string id = 2;
-   */
-  id: string;
+	/**
+	 * @generated from field: string id = 2;
+	 */
+	id: string;
 
-  /**
-   * @generated from field: bool force = 3;
-   */
-  force: boolean;
+	/**
+	 * @generated from field: bool force = 3;
+	 */
+	force: boolean;
 };
 
 /**
  * Describes the message v1.cloud.account.DeleteRequest.
  * Use `create(DeleteRequestSchema)` to create a new message.
  */
-export const DeleteRequestSchema: GenMessage<DeleteRequest> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 14);
+export const DeleteRequestSchema: GenMessage<DeleteRequest> =
+	/*@__PURE__*/
+	messageDesc(file_v1_cloud_account_account, 14);
 
 /**
  * @generated from message v1.cloud.account.DeleteResponse
  */
-export type DeleteResponse = Message<"v1.cloud.account.DeleteResponse"> & {
-};
+export type DeleteResponse = Message<'v1.cloud.account.DeleteResponse'> & {};
 
 /**
  * Describes the message v1.cloud.account.DeleteResponse.
  * Use `create(DeleteResponseSchema)` to create a new message.
  */
-export const DeleteResponseSchema: GenMessage<DeleteResponse> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account_account, 15);
+export const DeleteResponseSchema: GenMessage<DeleteResponse> =
+	/*@__PURE__*/
+	messageDesc(file_v1_cloud_account_account, 15);
 
 /**
  * @generated from service v1.cloud.account.AccountService
  */
 export const AccountService: GenService<{
-  /**
-   * Get returns the accounts current state.
-   *
-   * @generated from rpc v1.cloud.account.AccountService.Get
-   */
-  get: {
-    methodKind: "unary";
-    input: typeof GetRequestSchema;
-    output: typeof GetResponseSchema;
-  },
-  /**
-   * List returns a list of account states.
-   *
-   * @generated from rpc v1.cloud.account.AccountService.List
-   */
-  list: {
-    methodKind: "unary";
-    input: typeof ListRequestSchema;
-    output: typeof ListResponseSchema;
-  },
-  /**
-   * Create creates a new cloudjam account and triggers the asynchron provisioning process on the provider.
-   *
-   * @generated from rpc v1.cloud.account.AccountService.Create
-   */
-  create: {
-    methodKind: "unary";
-    input: typeof CreateRequestSchema;
-    output: typeof CreateResponseSchema;
-  },
-  /**
-   * Update updates teh cloudjam account metadata.
-   *
-   * @generated from rpc v1.cloud.account.AccountService.Update
-   */
-  update: {
-    methodKind: "unary";
-    input: typeof UpdateRequestSchema;
-    output: typeof UpdateResponseSchema;
-  },
-  /**
-   * Credentials generates short lived credentials for the specified account (e.g. for maintenance).
-   *
-   * @generated from rpc v1.cloud.account.AccountService.Credentials
-   */
-  credentials: {
-    methodKind: "unary";
-    input: typeof CredentialsRequestSchema;
-    output: typeof CredentialsResponseSchema;
-  },
-  /**
-   * Reset applies the nuke scripts to the account to clean it up and bring it back to ready state.
-   *
-   * @generated from rpc v1.cloud.account.AccountService.Reset
-   */
-  reset: {
-    methodKind: "unary";
-    input: typeof ResetRequestSchema;
-    output: typeof ResetResponseSchema;
-  },
-  /**
-   * Fix sets the account state forcefully to READY unbinds it from running Games.
-   * This is very dangerous use with caution only if you actually fixed the account corruption.
-   * Unfortunately this is required because *some* retarded providers (*AWS*) use account quotas
-   * so we cannot just delete and create new accounts but must manually fix them when issues occur.
-   *
-   * @generated from rpc v1.cloud.account.AccountService.Fix
-   */
-  fix: {
-    methodKind: "unary";
-    input: typeof FixRequestSchema;
-    output: typeof FixResponseSchema;
-  },
-  /**
-   * Delete triggers the asynchron deletion process on the provider.
-   * If called with *force* it will immediately remove cloudjam metadata (account will leak then!!!).
-   *
-   * @generated from rpc v1.cloud.account.AccountService.Delete
-   */
-  delete: {
-    methodKind: "unary";
-    input: typeof DeleteRequestSchema;
-    output: typeof DeleteResponseSchema;
-  },
-}> = /*@__PURE__*/
-  serviceDesc(file_v1_cloud_account_account, 0);
-
+	/**
+	 * Get returns the accounts current state.
+	 *
+	 * @generated from rpc v1.cloud.account.AccountService.Get
+	 */
+	get: {
+		methodKind: 'unary';
+		input: typeof GetRequestSchema;
+		output: typeof GetResponseSchema;
+	};
+	/**
+	 * List returns a list of account states.
+	 *
+	 * @generated from rpc v1.cloud.account.AccountService.List
+	 */
+	list: {
+		methodKind: 'unary';
+		input: typeof ListRequestSchema;
+		output: typeof ListResponseSchema;
+	};
+	/**
+	 * Create creates a new cloudjam account and triggers the asynchron provisioning process on the provider.
+	 *
+	 * @generated from rpc v1.cloud.account.AccountService.Create
+	 */
+	create: {
+		methodKind: 'unary';
+		input: typeof CreateRequestSchema;
+		output: typeof CreateResponseSchema;
+	};
+	/**
+	 * Update updates teh cloudjam account metadata.
+	 *
+	 * @generated from rpc v1.cloud.account.AccountService.Update
+	 */
+	update: {
+		methodKind: 'unary';
+		input: typeof UpdateRequestSchema;
+		output: typeof UpdateResponseSchema;
+	};
+	/**
+	 * Credentials generates short lived credentials for the specified account (e.g. for maintenance).
+	 *
+	 * @generated from rpc v1.cloud.account.AccountService.Credentials
+	 */
+	credentials: {
+		methodKind: 'unary';
+		input: typeof CredentialsRequestSchema;
+		output: typeof CredentialsResponseSchema;
+	};
+	/**
+	 * Reset applies the nuke scripts to the account to clean it up and bring it back to ready state.
+	 *
+	 * @generated from rpc v1.cloud.account.AccountService.Reset
+	 */
+	reset: {
+		methodKind: 'unary';
+		input: typeof ResetRequestSchema;
+		output: typeof ResetResponseSchema;
+	};
+	/**
+	 * Fix sets the account state forcefully to READY unbinds it from running Games.
+	 * This is very dangerous use with caution only if you actually fixed the account corruption.
+	 * Unfortunately this is required because *some* retarded providers (*AWS*) use account quotas
+	 * so we cannot just delete and create new accounts but must manually fix them when issues occur.
+	 *
+	 * @generated from rpc v1.cloud.account.AccountService.Fix
+	 */
+	fix: {
+		methodKind: 'unary';
+		input: typeof FixRequestSchema;
+		output: typeof FixResponseSchema;
+	};
+	/**
+	 * Delete triggers the asynchron deletion process on the provider.
+	 * If called with *force* it will immediately remove cloudjam metadata (account will leak then!!!).
+	 *
+	 * @generated from rpc v1.cloud.account.AccountService.Delete
+	 */
+	delete: {
+		methodKind: 'unary';
+		input: typeof DeleteRequestSchema;
+		output: typeof DeleteResponseSchema;
+	};
+}> = /*@__PURE__*/ serviceDesc(file_v1_cloud_account_account, 0);

@@ -15,6 +15,7 @@
 	import { toSvg } from 'jdenticon';
 	import { onMount } from 'svelte';
 	import UserPanel from './UserPanel.svelte';
+	import { ChevronDownIcon, ChevronRightIcon } from '@lucide/svelte';
 
 	const limit = 100;
 
@@ -91,12 +92,15 @@
 			<Table.Body>
 				{#each users as user (user.id)}
 					<Table.Row class="cursor-pointer" onclick={() => (selected = selected?.id === user.id ? undefined : user)}>
-						<Table.Cell>
+						<Table.Cell class="flex flex-row items-center gap-2">
+							<ChevronRightIcon
+								class="transition-all duration-150 ease-in-out {selected && selected.id === user.id ? 'rotate-90' : ''}"
+							/>
 							<img
 								alt="user profile"
 								src={`data:image/svg+xml;base64,${btoa(toSvg(user.pubId, 30))}`}
 								height="4rem"
-								class="bg-primary/5 rounded-md"
+								class="rounded-md bg-primary/5"
 							/>
 						</Table.Cell>
 						<Table.Cell class="font-medium">{user.username}</Table.Cell>

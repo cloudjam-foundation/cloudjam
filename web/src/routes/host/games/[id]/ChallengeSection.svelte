@@ -14,6 +14,7 @@
 	import { onMount } from 'svelte';
 	import ChallengePanel from './ChallengePanel.svelte';
 	import CreateChallenge from './CreateChallenge.svelte';
+	import { ChevronDownIcon, ChevronRightIcon } from '@lucide/svelte';
 
 	let { gameId }: { gameId: string } = $props();
 
@@ -90,7 +91,14 @@
 						class="cursor-pointer"
 						onclick={() => (selected = selected?.id === challenge.id ? undefined : challenge)}
 					>
-						<Table.Cell class="font-medium">{challenge.title || 'not started'}</Table.Cell>
+						<Table.Cell class="flex flex-row items-center gap-2 font-medium">
+							<ChevronRightIcon
+								class="transition-all duration-150 ease-in-out {selected && selected.id === challenge.id
+									? 'rotate-90'
+									: ''}"
+							/>
+							{challenge.title || 'not started'}
+						</Table.Cell>
 						<Table.Cell>{teamName(challenge.teamId)}</Table.Cell>
 						<Table.Cell>{score(challenge)}</Table.Cell>
 						<Table.Cell>

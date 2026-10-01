@@ -227,7 +227,7 @@
 				{#each Object.entries(challenge.diagrams) as [name, diagram] (name)}
 					<figure class="flex flex-col gap-2">
 						<img class="max-h-96 rounded-md object-contain" src={jpegDataURL(diagram)} alt={name} />
-						<figcaption class="text-muted-foreground text-center text-xs">{name}</figcaption>
+						<figcaption class="text-center text-xs text-muted-foreground">{name}</figcaption>
 					</figure>
 				{/each}
 			</div>
@@ -241,7 +241,7 @@
 				{#each Object.entries(challenge.assets) as [name, asset] (name)}
 					<div class="flex flex-row items-center gap-2 text-sm">
 						<span class="font-medium">{name}</span>
-						<span class="text-muted-foreground font-mono text-xs break-all">{asset}</span>
+						<span class="font-mono text-xs break-all text-muted-foreground">{asset}</span>
 					</div>
 				{/each}
 			</div>
@@ -252,7 +252,7 @@
 
 			<div class="flex flex-col gap-2">
 				<Card.Title>Clues</Card.Title>
-				<p class="text-muted-foreground text-sm">Uncovering a clue usually costs points.</p>
+				<p class="text-sm text-muted-foreground">Uncovering a clue usually costs points.</p>
 				<Separator />
 				{#each Object.entries(challenge.clues) as [name, text] (name)}
 					<div class="flex flex-col justify-center gap-2 text-sm">
@@ -284,7 +284,7 @@
 					</div>
 				{/each}
 				{#if clueState.error}
-					<p class="text-destructive text-xs">{clueState.error}</p>
+					<p class="text-xs text-destructive">{clueState.error}</p>
 				{/if}
 			</div>
 		{/if}
@@ -312,7 +312,7 @@
 										<DraftingCompassIcon class={getDesignColor(topEvent)} />
 									{/if}
 								</Table.Cell>
-								<Table.Cell class="text-muted-foreground font-bold">
+								<Table.Cell class="font-bold text-muted-foreground">
 									{kitchenFmt.format(timestampDate(topEvent.timestamp!))}
 								</Table.Cell>
 								<Table.Cell>
@@ -321,7 +321,7 @@
 									</Badge>
 								</Table.Cell>
 								<Table.Cell class="overflow-scroll-hidden max-w-[40vw]">{topEvent.text}</Table.Cell>
-								<Table.Cell class="overflow-scroll-hidden text-muted-foreground max-w-[30vw]">
+								<Table.Cell class="overflow-scroll-hidden max-w-[30vw] text-muted-foreground">
 									{topEvent.reason}
 								</Table.Cell>
 							</Table.Row>
@@ -335,7 +335,7 @@
 												<DraftingCompassIcon class={getDesignColor(event)} />
 											{/if}
 										</Table.Cell>
-										<Table.Cell class="text-muted-foreground font-bold">
+										<Table.Cell class="font-bold text-muted-foreground">
 											{kitchenFmt.format(timestampDate(event.timestamp!))}
 										</Table.Cell>
 										<Table.Cell>
@@ -344,7 +344,7 @@
 											</Badge>
 										</Table.Cell>
 										<Table.Cell class="overflow-scroll-hidden max-w-[40vw]">{event.text}</Table.Cell>
-										<Table.Cell class="overflow-scroll-hidden text-muted-foreground max-w-[30vw]">
+										<Table.Cell class="overflow-scroll-hidden max-w-[30vw] text-muted-foreground">
 											{event.reason}
 										</Table.Cell>
 									</Table.Row>
