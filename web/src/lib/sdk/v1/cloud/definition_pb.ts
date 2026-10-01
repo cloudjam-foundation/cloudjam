@@ -2,77 +2,78 @@
 // @generated from file v1/cloud/definition.proto (package v1.cloud, syntax proto3)
 /* eslint-disable */
 
-import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
-import type { Message } from "@bufbuild/protobuf";
+import type { Message } from '@bufbuild/protobuf';
+import type { GenEnum, GenFile, GenMessage } from '@bufbuild/protobuf/codegenv2';
+import { enumDesc, fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv2';
+import { file_buf_validate_validate } from '../../buf/validate/validate_pb';
 
 /**
  * Describes the file v1/cloud/definition.proto.
  */
-export const file_v1_cloud_definition: GenFile = /*@__PURE__*/
-  fileDesc("Chl2MS9jbG91ZC9kZWZpbml0aW9uLnByb3RvEgh2MS5jbG91ZCKfAQoKRGVmaW5pdGlvbhINCgVzY29wZRgBIAEoCRIdCgtwcm92aWRlcl9pZBgCIAEoCUIIukgFcgOwAQESCgoCaWQYAyABKAkSFwoEbmFtZRgEIAEoCUIJukgGcgQQBBhkEh8KC2Rlc2NyaXB0aW9uGAUgASgJQgq6SAdyBRAAGMgBEg8KB3ZlcnNpb24YBiABKAkSDAoEaGFzaBgHIAEoDCobCg9Db21wcmVzc2lvbk1vZGUSCAoEWnN0ZBAAQjFaL2NvZGViZXJnLm9yZy9tZWdha3V1bC9jbG91ZGphbS9wa2cvYXBpL3YxL2Nsb3VkYgZwcm90bzM", [file_buf_validate_validate]);
+export const file_v1_cloud_definition: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'Chl2MS9jbG91ZC9kZWZpbml0aW9uLnByb3RvEgh2MS5jbG91ZCKfAQoKRGVmaW5pdGlvbhINCgVzY29wZRgBIAEoCRIdCgtwcm92aWRlcl9pZBgCIAEoCUIIukgFcgOwAQESCgoCaWQYAyABKAkSFwoEbmFtZRgEIAEoCUIJukgGcgQQBBhkEh8KC2Rlc2NyaXB0aW9uGAUgASgJQgq6SAdyBRAAGMgBEg8KB3ZlcnNpb24YBiABKAkSDAoEaGFzaBgHIAEoDCobCg9Db21wcmVzc2lvbk1vZGUSCAoEWnN0ZBAAQjFaL2NvZGViZXJnLm9yZy9tZWdha3V1bC9jbG91ZGphbS9wa2cvYXBpL3YxL2Nsb3VkYgZwcm90bzM',
+		[file_buf_validate_validate]
+	);
 
 /**
  * @generated from message v1.cloud.Definition
  */
-export type Definition = Message<"v1.cloud.Definition"> & {
-  /**
-   * @generated from field: string scope = 1;
-   */
-  scope: string;
+export type Definition = Message<'v1.cloud.Definition'> & {
+	/**
+	 * @generated from field: string scope = 1;
+	 */
+	scope: string;
 
-  /**
-   * @generated from field: string provider_id = 2;
-   */
-  providerId: string;
+	/**
+	 * @generated from field: string provider_id = 2;
+	 */
+	providerId: string;
 
-  /**
-   * @generated from field: string id = 3;
-   */
-  id: string;
+	/**
+	 * @generated from field: string id = 3;
+	 */
+	id: string;
 
-  /**
-   * @generated from field: string name = 4;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 4;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: string description = 5;
-   */
-  description: string;
+	/**
+	 * @generated from field: string description = 5;
+	 */
+	description: string;
 
-  /**
-   * @generated from field: string version = 6;
-   */
-  version: string;
+	/**
+	 * @generated from field: string version = 6;
+	 */
+	version: string;
 
-  /**
-   * @generated from field: bytes hash = 7;
-   */
-  hash: Uint8Array;
+	/**
+	 * @generated from field: bytes hash = 7;
+	 */
+	hash: Uint8Array;
 };
 
 /**
  * Describes the message v1.cloud.Definition.
  * Use `create(DefinitionSchema)` to create a new message.
  */
-export const DefinitionSchema: GenMessage<Definition> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_definition, 0);
+export const DefinitionSchema: GenMessage<Definition> = /*@__PURE__*/ messageDesc(file_v1_cloud_definition, 0);
 
 /**
  * @generated from enum v1.cloud.CompressionMode
  */
 export enum CompressionMode {
-  /**
-   * @generated from enum value: Zstd = 0;
-   */
-  Zstd = 0,
+	/**
+	 * @generated from enum value: Zstd = 0;
+	 */
+	Zstd = 0
 }
 
 /**
  * Describes the enum v1.cloud.CompressionMode.
  */
-export const CompressionModeSchema: GenEnum<CompressionMode> = /*@__PURE__*/
-  enumDesc(file_v1_cloud_definition, 0);
-
+export const CompressionModeSchema: GenEnum<CompressionMode> = /*@__PURE__*/ enumDesc(file_v1_cloud_definition, 0);

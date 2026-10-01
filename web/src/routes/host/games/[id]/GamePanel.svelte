@@ -42,9 +42,9 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Schedule</Card.Title>
 			{#if updateState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to update this game.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to update this game.</p>
 			{:else}
-				<p class="text-muted-foreground text-sm">Games that already started cannot be changed anymore.</p>
+				<p class="text-sm text-muted-foreground">Games that already started cannot be changed anymore.</p>
 				<form
 					class="flex flex-col gap-4"
 					onsubmit={() =>
@@ -80,7 +80,7 @@
 					</Button>
 				</form>
 				{#if updateState.error}
-					<p class="text-destructive text-xs">{updateState.error}</p>
+					<p class="text-xs text-destructive">{updateState.error}</p>
 				{/if}
 			{/if}
 		</div>
@@ -90,7 +90,7 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Danger Zone</Card.Title>
 			{#if removeState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to delete this game.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to delete this game.</p>
 			{:else}
 				<div class="flex flex-row items-center gap-2">
 					{#if confirmDelete}

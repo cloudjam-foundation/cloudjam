@@ -2,231 +2,221 @@
 // @generated from file v1/play/game/game.proto (package v1.play.game, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_buf_validate_validate } from "../../../buf/validate/validate_pb";
-import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import type { Game } from "../game_pb";
-import { file_v1_play_game } from "../game_pb";
-import type { Message } from "@bufbuild/protobuf";
+import type { Message } from '@bufbuild/protobuf';
+import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2';
+import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2';
+import { file_google_protobuf_timestamp } from '@bufbuild/protobuf/wkt';
+import { file_buf_validate_validate } from '../../../buf/validate/validate_pb';
+import type { Game } from '../game_pb';
+import { file_v1_play_game } from '../game_pb';
 
 /**
  * Describes the file v1/play/game/game.proto.
  */
-export const file_v1_play_game_game: GenFile = /*@__PURE__*/
-  fileDesc("Chd2MS9wbGF5L2dhbWUvZ2FtZS5wcm90bxIMdjEucGxheS5nYW1lIiIKCkdldFJlcXVlc3QSFAoCaWQYASABKAlCCLpIBXIDsAEBIioKC0dldFJlc3BvbnNlEhsKBGdhbWUYASABKAsyDS52MS5wbGF5LkdhbWUiPAoLTGlzdFJlcXVlc3QSGAoFbGltaXQYASABKAVCCbpIBhoEGGQgABITCgtzdGFydF9hZnRlchgCIAEoCSIsCgxMaXN0UmVzcG9uc2USHAoFZ2FtZXMYASADKAsyDS52MS5wbGF5LkdhbWUiLAoNQ3JlYXRlUmVxdWVzdBIbCgRpbml0GAEgASgLMg0udjEucGxheS5HYW1lIiYKDkNyZWF0ZVJlc3BvbnNlEhQKAmlkGAEgASgJQgi6SAVyA7ABASIrCg1VcGRhdGVSZXF1ZXN0EhoKA21vZBgBIAEoCzINLnYxLnBsYXkuR2FtZSIQCg5VcGRhdGVSZXNwb25zZSIlCg1EZWxldGVSZXF1ZXN0EhQKAmlkGAEgASgJQgi6SAVyA7ABASIQCg5EZWxldGVSZXNwb25zZTLXAgoLR2FtZVNlcnZpY2USOgoDR2V0EhgudjEucGxheS5nYW1lLkdldFJlcXVlc3QaGS52MS5wbGF5LmdhbWUuR2V0UmVzcG9uc2USPQoETGlzdBIZLnYxLnBsYXkuZ2FtZS5MaXN0UmVxdWVzdBoaLnYxLnBsYXkuZ2FtZS5MaXN0UmVzcG9uc2USQwoGQ3JlYXRlEhsudjEucGxheS5nYW1lLkNyZWF0ZVJlcXVlc3QaHC52MS5wbGF5LmdhbWUuQ3JlYXRlUmVzcG9uc2USQwoGVXBkYXRlEhsudjEucGxheS5nYW1lLlVwZGF0ZVJlcXVlc3QaHC52MS5wbGF5LmdhbWUuVXBkYXRlUmVzcG9uc2USQwoGRGVsZXRlEhsudjEucGxheS5nYW1lLkRlbGV0ZVJlcXVlc3QaHC52MS5wbGF5LmdhbWUuRGVsZXRlUmVzcG9uc2VCNVozY29kZWJlcmcub3JnL21lZ2FrdXVsL2Nsb3VkamFtL3BrZy9hcGkvdjEvcGxheS9nYW1lYgZwcm90bzM", [file_buf_validate_validate, file_google_protobuf_timestamp, file_v1_play_game]);
+export const file_v1_play_game_game: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'Chd2MS9wbGF5L2dhbWUvZ2FtZS5wcm90bxIMdjEucGxheS5nYW1lIiIKCkdldFJlcXVlc3QSFAoCaWQYASABKAlCCLpIBXIDsAEBIioKC0dldFJlc3BvbnNlEhsKBGdhbWUYASABKAsyDS52MS5wbGF5LkdhbWUiPAoLTGlzdFJlcXVlc3QSGAoFbGltaXQYASABKAVCCbpIBhoEGGQgABITCgtzdGFydF9hZnRlchgCIAEoCSIsCgxMaXN0UmVzcG9uc2USHAoFZ2FtZXMYASADKAsyDS52MS5wbGF5LkdhbWUiLAoNQ3JlYXRlUmVxdWVzdBIbCgRpbml0GAEgASgLMg0udjEucGxheS5HYW1lIiYKDkNyZWF0ZVJlc3BvbnNlEhQKAmlkGAEgASgJQgi6SAVyA7ABASIrCg1VcGRhdGVSZXF1ZXN0EhoKA21vZBgBIAEoCzINLnYxLnBsYXkuR2FtZSIQCg5VcGRhdGVSZXNwb25zZSIlCg1EZWxldGVSZXF1ZXN0EhQKAmlkGAEgASgJQgi6SAVyA7ABASIQCg5EZWxldGVSZXNwb25zZTLXAgoLR2FtZVNlcnZpY2USOgoDR2V0EhgudjEucGxheS5nYW1lLkdldFJlcXVlc3QaGS52MS5wbGF5LmdhbWUuR2V0UmVzcG9uc2USPQoETGlzdBIZLnYxLnBsYXkuZ2FtZS5MaXN0UmVxdWVzdBoaLnYxLnBsYXkuZ2FtZS5MaXN0UmVzcG9uc2USQwoGQ3JlYXRlEhsudjEucGxheS5nYW1lLkNyZWF0ZVJlcXVlc3QaHC52MS5wbGF5LmdhbWUuQ3JlYXRlUmVzcG9uc2USQwoGVXBkYXRlEhsudjEucGxheS5nYW1lLlVwZGF0ZVJlcXVlc3QaHC52MS5wbGF5LmdhbWUuVXBkYXRlUmVzcG9uc2USQwoGRGVsZXRlEhsudjEucGxheS5nYW1lLkRlbGV0ZVJlcXVlc3QaHC52MS5wbGF5LmdhbWUuRGVsZXRlUmVzcG9uc2VCNVozY29kZWJlcmcub3JnL21lZ2FrdXVsL2Nsb3VkamFtL3BrZy9hcGkvdjEvcGxheS9nYW1lYgZwcm90bzM',
+		[file_buf_validate_validate, file_google_protobuf_timestamp, file_v1_play_game]
+	);
 
 /**
  * @generated from message v1.play.game.GetRequest
  */
-export type GetRequest = Message<"v1.play.game.GetRequest"> & {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id: string;
+export type GetRequest = Message<'v1.play.game.GetRequest'> & {
+	/**
+	 * @generated from field: string id = 1;
+	 */
+	id: string;
 };
 
 /**
  * Describes the message v1.play.game.GetRequest.
  * Use `create(GetRequestSchema)` to create a new message.
  */
-export const GetRequestSchema: GenMessage<GetRequest> = /*@__PURE__*/
-  messageDesc(file_v1_play_game_game, 0);
+export const GetRequestSchema: GenMessage<GetRequest> = /*@__PURE__*/ messageDesc(file_v1_play_game_game, 0);
 
 /**
  * @generated from message v1.play.game.GetResponse
  */
-export type GetResponse = Message<"v1.play.game.GetResponse"> & {
-  /**
-   * @generated from field: v1.play.Game game = 1;
-   */
-  game?: Game;
+export type GetResponse = Message<'v1.play.game.GetResponse'> & {
+	/**
+	 * @generated from field: v1.play.Game game = 1;
+	 */
+	game?: Game;
 };
 
 /**
  * Describes the message v1.play.game.GetResponse.
  * Use `create(GetResponseSchema)` to create a new message.
  */
-export const GetResponseSchema: GenMessage<GetResponse> = /*@__PURE__*/
-  messageDesc(file_v1_play_game_game, 1);
+export const GetResponseSchema: GenMessage<GetResponse> = /*@__PURE__*/ messageDesc(file_v1_play_game_game, 1);
 
 /**
  * @generated from message v1.play.game.ListRequest
  */
-export type ListRequest = Message<"v1.play.game.ListRequest"> & {
-  /**
-   * @generated from field: int32 limit = 1;
-   */
-  limit: number;
+export type ListRequest = Message<'v1.play.game.ListRequest'> & {
+	/**
+	 * @generated from field: int32 limit = 1;
+	 */
+	limit: number;
 
-  /**
-   * @generated from field: string start_after = 2;
-   */
-  startAfter: string;
+	/**
+	 * @generated from field: string start_after = 2;
+	 */
+	startAfter: string;
 };
 
 /**
  * Describes the message v1.play.game.ListRequest.
  * Use `create(ListRequestSchema)` to create a new message.
  */
-export const ListRequestSchema: GenMessage<ListRequest> = /*@__PURE__*/
-  messageDesc(file_v1_play_game_game, 2);
+export const ListRequestSchema: GenMessage<ListRequest> = /*@__PURE__*/ messageDesc(file_v1_play_game_game, 2);
 
 /**
  * @generated from message v1.play.game.ListResponse
  */
-export type ListResponse = Message<"v1.play.game.ListResponse"> & {
-  /**
-   * @generated from field: repeated v1.play.Game games = 1;
-   */
-  games: Game[];
+export type ListResponse = Message<'v1.play.game.ListResponse'> & {
+	/**
+	 * @generated from field: repeated v1.play.Game games = 1;
+	 */
+	games: Game[];
 };
 
 /**
  * Describes the message v1.play.game.ListResponse.
  * Use `create(ListResponseSchema)` to create a new message.
  */
-export const ListResponseSchema: GenMessage<ListResponse> = /*@__PURE__*/
-  messageDesc(file_v1_play_game_game, 3);
+export const ListResponseSchema: GenMessage<ListResponse> = /*@__PURE__*/ messageDesc(file_v1_play_game_game, 3);
 
 /**
  * @generated from message v1.play.game.CreateRequest
  */
-export type CreateRequest = Message<"v1.play.game.CreateRequest"> & {
-  /**
-   * @generated from field: v1.play.Game init = 1;
-   */
-  init?: Game;
+export type CreateRequest = Message<'v1.play.game.CreateRequest'> & {
+	/**
+	 * @generated from field: v1.play.Game init = 1;
+	 */
+	init?: Game;
 };
 
 /**
  * Describes the message v1.play.game.CreateRequest.
  * Use `create(CreateRequestSchema)` to create a new message.
  */
-export const CreateRequestSchema: GenMessage<CreateRequest> = /*@__PURE__*/
-  messageDesc(file_v1_play_game_game, 4);
+export const CreateRequestSchema: GenMessage<CreateRequest> = /*@__PURE__*/ messageDesc(file_v1_play_game_game, 4);
 
 /**
  * @generated from message v1.play.game.CreateResponse
  */
-export type CreateResponse = Message<"v1.play.game.CreateResponse"> & {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id: string;
+export type CreateResponse = Message<'v1.play.game.CreateResponse'> & {
+	/**
+	 * @generated from field: string id = 1;
+	 */
+	id: string;
 };
 
 /**
  * Describes the message v1.play.game.CreateResponse.
  * Use `create(CreateResponseSchema)` to create a new message.
  */
-export const CreateResponseSchema: GenMessage<CreateResponse> = /*@__PURE__*/
-  messageDesc(file_v1_play_game_game, 5);
+export const CreateResponseSchema: GenMessage<CreateResponse> = /*@__PURE__*/ messageDesc(file_v1_play_game_game, 5);
 
 /**
  * @generated from message v1.play.game.UpdateRequest
  */
-export type UpdateRequest = Message<"v1.play.game.UpdateRequest"> & {
-  /**
-   * @generated from field: v1.play.Game mod = 1;
-   */
-  mod?: Game;
+export type UpdateRequest = Message<'v1.play.game.UpdateRequest'> & {
+	/**
+	 * @generated from field: v1.play.Game mod = 1;
+	 */
+	mod?: Game;
 };
 
 /**
  * Describes the message v1.play.game.UpdateRequest.
  * Use `create(UpdateRequestSchema)` to create a new message.
  */
-export const UpdateRequestSchema: GenMessage<UpdateRequest> = /*@__PURE__*/
-  messageDesc(file_v1_play_game_game, 6);
+export const UpdateRequestSchema: GenMessage<UpdateRequest> = /*@__PURE__*/ messageDesc(file_v1_play_game_game, 6);
 
 /**
  * @generated from message v1.play.game.UpdateResponse
  */
-export type UpdateResponse = Message<"v1.play.game.UpdateResponse"> & {
-};
+export type UpdateResponse = Message<'v1.play.game.UpdateResponse'> & {};
 
 /**
  * Describes the message v1.play.game.UpdateResponse.
  * Use `create(UpdateResponseSchema)` to create a new message.
  */
-export const UpdateResponseSchema: GenMessage<UpdateResponse> = /*@__PURE__*/
-  messageDesc(file_v1_play_game_game, 7);
+export const UpdateResponseSchema: GenMessage<UpdateResponse> = /*@__PURE__*/ messageDesc(file_v1_play_game_game, 7);
 
 /**
  * @generated from message v1.play.game.DeleteRequest
  */
-export type DeleteRequest = Message<"v1.play.game.DeleteRequest"> & {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id: string;
+export type DeleteRequest = Message<'v1.play.game.DeleteRequest'> & {
+	/**
+	 * @generated from field: string id = 1;
+	 */
+	id: string;
 };
 
 /**
  * Describes the message v1.play.game.DeleteRequest.
  * Use `create(DeleteRequestSchema)` to create a new message.
  */
-export const DeleteRequestSchema: GenMessage<DeleteRequest> = /*@__PURE__*/
-  messageDesc(file_v1_play_game_game, 8);
+export const DeleteRequestSchema: GenMessage<DeleteRequest> = /*@__PURE__*/ messageDesc(file_v1_play_game_game, 8);
 
 /**
  * @generated from message v1.play.game.DeleteResponse
  */
-export type DeleteResponse = Message<"v1.play.game.DeleteResponse"> & {
-};
+export type DeleteResponse = Message<'v1.play.game.DeleteResponse'> & {};
 
 /**
  * Describes the message v1.play.game.DeleteResponse.
  * Use `create(DeleteResponseSchema)` to create a new message.
  */
-export const DeleteResponseSchema: GenMessage<DeleteResponse> = /*@__PURE__*/
-  messageDesc(file_v1_play_game_game, 9);
+export const DeleteResponseSchema: GenMessage<DeleteResponse> = /*@__PURE__*/ messageDesc(file_v1_play_game_game, 9);
 
 /**
  * @generated from service v1.play.game.GameService
  */
 export const GameService: GenService<{
-  /**
-   * @generated from rpc v1.play.game.GameService.Get
-   */
-  get: {
-    methodKind: "unary";
-    input: typeof GetRequestSchema;
-    output: typeof GetResponseSchema;
-  },
-  /**
-   * @generated from rpc v1.play.game.GameService.List
-   */
-  list: {
-    methodKind: "unary";
-    input: typeof ListRequestSchema;
-    output: typeof ListResponseSchema;
-  },
-  /**
-   * @generated from rpc v1.play.game.GameService.Create
-   */
-  create: {
-    methodKind: "unary";
-    input: typeof CreateRequestSchema;
-    output: typeof CreateResponseSchema;
-  },
-  /**
-   * @generated from rpc v1.play.game.GameService.Update
-   */
-  update: {
-    methodKind: "unary";
-    input: typeof UpdateRequestSchema;
-    output: typeof UpdateResponseSchema;
-  },
-  /**
-   * @generated from rpc v1.play.game.GameService.Delete
-   */
-  delete: {
-    methodKind: "unary";
-    input: typeof DeleteRequestSchema;
-    output: typeof DeleteResponseSchema;
-  },
-}> = /*@__PURE__*/
-  serviceDesc(file_v1_play_game_game, 0);
-
+	/**
+	 * @generated from rpc v1.play.game.GameService.Get
+	 */
+	get: {
+		methodKind: 'unary';
+		input: typeof GetRequestSchema;
+		output: typeof GetResponseSchema;
+	};
+	/**
+	 * @generated from rpc v1.play.game.GameService.List
+	 */
+	list: {
+		methodKind: 'unary';
+		input: typeof ListRequestSchema;
+		output: typeof ListResponseSchema;
+	};
+	/**
+	 * @generated from rpc v1.play.game.GameService.Create
+	 */
+	create: {
+		methodKind: 'unary';
+		input: typeof CreateRequestSchema;
+		output: typeof CreateResponseSchema;
+	};
+	/**
+	 * @generated from rpc v1.play.game.GameService.Update
+	 */
+	update: {
+		methodKind: 'unary';
+		input: typeof UpdateRequestSchema;
+		output: typeof UpdateResponseSchema;
+	};
+	/**
+	 * @generated from rpc v1.play.game.GameService.Delete
+	 */
+	delete: {
+		methodKind: 'unary';
+		input: typeof DeleteRequestSchema;
+		output: typeof DeleteResponseSchema;
+	};
+}> = /*@__PURE__*/ serviceDesc(file_v1_play_game_game, 0);

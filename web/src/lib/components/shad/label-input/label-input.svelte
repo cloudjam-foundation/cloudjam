@@ -16,6 +16,6 @@
 		<Input bind:value {placeholder} />
 	</label>
 	{#if validation && value}
-		<p class="text-destructive text-xs">{validation}</p>
+		<p class="text-xs text-destructive">{validation}</p>
 	{/if}
 </div>

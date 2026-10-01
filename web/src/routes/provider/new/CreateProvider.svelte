@@ -103,7 +103,7 @@
 							suggestions={scopes.map((scope) => ({ id: scope, title: scope }))}
 						/>
 					</label>
-					<p class="text-muted-foreground text-xs">You can only attach a scope you possess yourself.</p>
+					<p class="text-xs text-muted-foreground">You can only attach a scope you possess yourself.</p>
 				</div>
 			</div>
 
@@ -114,7 +114,7 @@
 				{:else}
 					<Input bind:value={init.credentials} placeholder="Provider specific credentials" />
 				{/if}
-				<p class="text-destructive text-xs">{Glue.Validate(ProviderSchema, init).violation.credentials ?? ''}</p>
+				<p class="text-xs text-destructive">{Glue.Validate(ProviderSchema, init).violation.credentials ?? ''}</p>
 			</div>
 			<Button
 				type="submit"

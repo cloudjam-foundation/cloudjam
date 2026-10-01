@@ -2,58 +2,60 @@
 // @generated from file v1/play/game.proto (package v1.play, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
-import type { Timestamp } from "@bufbuild/protobuf/wkt";
-import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import type { Message } from "@bufbuild/protobuf";
+import type { Message } from '@bufbuild/protobuf';
+import type { GenFile, GenMessage } from '@bufbuild/protobuf/codegenv2';
+import { fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv2';
+import type { Timestamp } from '@bufbuild/protobuf/wkt';
+import { file_google_protobuf_timestamp } from '@bufbuild/protobuf/wkt';
+import { file_buf_validate_validate } from '../../buf/validate/validate_pb';
 
 /**
  * Describes the file v1/play/game.proto.
  */
-export const file_v1_play_game: GenFile = /*@__PURE__*/
-  fileDesc("ChJ2MS9wbGF5L2dhbWUucHJvdG8SB3YxLnBsYXkimwIKBEdhbWUSDQoFc2NvcGUYASABKAkSFAoCaWQYAiABKAlCCLpIBXIDsAEBEhcKBG5hbWUYAyABKAlCCbpIBnIEEAMYZBIfCgtkZXNjcmlwdGlvbhgEIAEoCUIKukgHcgUQABjIARIyCgRmcm9tGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEIIukgFsgECQAESMAoCdG8YBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQgi6SAWyAQJAATpOukhLGkkKEXRpbWVzdGFtcF9vdmVybGFwEh9nYW1lIHRpbWVmcmFtZSBtdXN0IG5vdCBvdmVybGFwGhN0aGlzLmZyb20gPCB0aGlzLnRvQjBaLmNvZGViZXJnLm9yZy9tZWdha3V1bC9jbG91ZGphbS9wa2cvYXBpL3YxL3BsYXliBnByb3RvMw", [file_buf_validate_validate, file_google_protobuf_timestamp]);
+export const file_v1_play_game: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'ChJ2MS9wbGF5L2dhbWUucHJvdG8SB3YxLnBsYXkimwIKBEdhbWUSDQoFc2NvcGUYASABKAkSFAoCaWQYAiABKAlCCLpIBXIDsAEBEhcKBG5hbWUYAyABKAlCCbpIBnIEEAMYZBIfCgtkZXNjcmlwdGlvbhgEIAEoCUIKukgHcgUQABjIARIyCgRmcm9tGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEIIukgFsgECQAESMAoCdG8YBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQgi6SAWyAQJAATpOukhLGkkKEXRpbWVzdGFtcF9vdmVybGFwEh9nYW1lIHRpbWVmcmFtZSBtdXN0IG5vdCBvdmVybGFwGhN0aGlzLmZyb20gPCB0aGlzLnRvQjBaLmNvZGViZXJnLm9yZy9tZWdha3V1bC9jbG91ZGphbS9wa2cvYXBpL3YxL3BsYXliBnByb3RvMw',
+		[file_buf_validate_validate, file_google_protobuf_timestamp]
+	);
 
 /**
  * @generated from message v1.play.Game
  */
-export type Game = Message<"v1.play.Game"> & {
-  /**
-   * @generated from field: string scope = 1;
-   */
-  scope: string;
+export type Game = Message<'v1.play.Game'> & {
+	/**
+	 * @generated from field: string scope = 1;
+	 */
+	scope: string;
 
-  /**
-   * @generated from field: string id = 2;
-   */
-  id: string;
+	/**
+	 * @generated from field: string id = 2;
+	 */
+	id: string;
 
-  /**
-   * @generated from field: string name = 3;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 3;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: string description = 4;
-   */
-  description: string;
+	/**
+	 * @generated from field: string description = 4;
+	 */
+	description: string;
 
-  /**
-   * @generated from field: google.protobuf.Timestamp from = 5;
-   */
-  from?: Timestamp;
+	/**
+	 * @generated from field: google.protobuf.Timestamp from = 5;
+	 */
+	from?: Timestamp;
 
-  /**
-   * @generated from field: google.protobuf.Timestamp to = 6;
-   */
-  to?: Timestamp;
+	/**
+	 * @generated from field: google.protobuf.Timestamp to = 6;
+	 */
+	to?: Timestamp;
 };
 
 /**
  * Describes the message v1.play.Game.
  * Use `create(GameSchema)` to create a new message.
  */
-export const GameSchema: GenMessage<Game> = /*@__PURE__*/
-  messageDesc(file_v1_play_game, 0);
-
+export const GameSchema: GenMessage<Game> = /*@__PURE__*/ messageDesc(file_v1_play_game, 0);

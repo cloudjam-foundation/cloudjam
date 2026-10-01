@@ -79,7 +79,7 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Team</Card.Title>
 			{#if updateState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to update this challenge.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to update this challenge.</p>
 			{:else}
 				<div class="flex flex-row items-center gap-2">
 					<Select.Root type="single" bind:value={teamId}>
@@ -106,7 +106,7 @@
 					</Button>
 				</div>
 				{#if updateState.error}
-					<p class="text-destructive text-xs">{updateState.error}</p>
+					<p class="text-xs text-destructive">{updateState.error}</p>
 				{/if}
 			{/if}
 		</div>
@@ -148,7 +148,7 @@
 		<div class="flex flex-col gap-2">
 			<Card.Title>Danger Zone</Card.Title>
 			{#if removeState.forbidden}
-				<p class="text-muted-foreground text-sm italic">You are not allowed to delete this challenge.</p>
+				<p class="text-sm text-muted-foreground italic">You are not allowed to delete this challenge.</p>
 			{:else}
 				<div class="flex flex-row items-center gap-2">
 					{#if confirmDelete}

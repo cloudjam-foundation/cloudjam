@@ -67,7 +67,7 @@
 				<div class="flex flex-col gap-1 md:col-span-2">
 					<label for="create-binary" class="text-sm">Plugin</label>
 					<Input id="create-binary" type="file" accept=".wasm" bind:files />
-					<p class="text-muted-foreground text-xs">
+					<p class="text-xs text-muted-foreground">
 						The compiled challenge.wasm (must be smaller than 50 MB after zstd compression)
 					</p>
 				</div>

@@ -60,7 +60,7 @@
 				>
 					{#if loading}
 						<div
-							class="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
+							class="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground"
 						>
 							<Skeleton class="h-8 w-8 rounded-full" />
 						</div>
@@ -71,7 +71,7 @@
 						</div>
 					{:else}
 						<div
-							class="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
+							class="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground"
 						>
 							<AvatarRenderer {pubId} name={email} width="6" height="6" />
 						</div>

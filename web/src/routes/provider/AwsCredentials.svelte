@@ -46,12 +46,12 @@
 	<div class="flex flex-col gap-1">
 		<label for="{uid}-region" class="text-sm">Region</label>
 		<Input id="{uid}-region" bind:value={creds.region} placeholder="us-east-1" />
-		<p class="text-muted-foreground text-xs">Region the organization api is called in.</p>
+		<p class="text-xs text-muted-foreground">Region the organization api is called in.</p>
 	</div>
 	<div class="flex flex-col gap-1">
 		<label for="{uid}-endpoint" class="text-sm">Endpoint</label>
 		<Input id="{uid}-endpoint" bind:value={creds.endpoint} placeholder="https://localhost:4566 (optional)" />
-		<p class="text-muted-foreground text-xs">Only for emulators like fakecloud, leave empty for real AWS.</p>
+		<p class="text-xs text-muted-foreground">Only for emulators like fakecloud, leave empty for real AWS.</p>
 	</div>
 	<div class="flex flex-col gap-1">
 		<label for="{uid}-access-key" class="text-sm">Access Key ID</label>
@@ -82,12 +82,12 @@
 		</div>
 	</div>
 </div>
-<p class="text-muted-foreground flex flex-row items-center gap-1 text-xs">
+<p class="flex flex-row items-center gap-1 text-xs text-muted-foreground">
 	<Info size={14} />
 	The specified credentials must have unrestricted AWS Organization access. Please only use this on fully blank AWS root accounts
 	with ZERO workloads in it!
 </p>
-<p class="text-muted-foreground flex flex-row items-center gap-1 text-xs">
+<p class="flex flex-row items-center gap-1 text-xs text-muted-foreground">
 	<Info size={14} />
 	You must create a dedicated user with "AdministratorAccess" for this. The AWS root account cannot assume other roles!
 </p>

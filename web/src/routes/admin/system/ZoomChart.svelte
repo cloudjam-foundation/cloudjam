@@ -94,8 +94,8 @@
 							class="w-1 shrink-0 self-stretch rounded-xs bg-(--color-bg)"
 						></div>
 						<div class="flex flex-1 items-center justify-between gap-6 leading-none">
-							<span class="text-muted-foreground whitespace-nowrap">{name}</span>
-							<span class="text-foreground font-mono font-medium whitespace-nowrap tabular-nums">
+							<span class="whitespace-nowrap text-muted-foreground">{name}</span>
+							<span class="font-mono font-medium whitespace-nowrap text-foreground tabular-nums">
 								{typeof value === 'number' ? value.toLocaleString() : value}{unit ? ` ${unit}` : ''}
 							</span>
 						</div>

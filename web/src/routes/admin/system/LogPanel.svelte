@@ -102,7 +102,7 @@
 	</Card.Header>
 	<Card.Content>
 		{#if scanState.forbidden}
-			<p class="text-muted-foreground text-sm italic">You are not allowed to read the system logs.</p>
+			<p class="text-sm text-muted-foreground italic">You are not allowed to read the system logs.</p>
 		{:else}
 			<Table.Root class="w-full table-fixed">
 				<Table.Header>
@@ -172,7 +172,7 @@
 										<pre class="font-mono text-xs whitespace-pre-wrap">{log.message}</pre>
 										<span class="text-sm font-medium">Trace</span>
 										<pre
-											class="text-muted-foreground overflow-x-auto font-mono text-xs whitespace-pre-wrap">{log.trace ||
+											class="overflow-x-auto font-mono text-xs whitespace-pre-wrap text-muted-foreground">{log.trace ||
 												'no trace attached'}</pre>
 									</div>
 								</Table.Cell>

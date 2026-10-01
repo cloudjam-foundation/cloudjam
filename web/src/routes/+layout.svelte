@@ -35,15 +35,15 @@
 			<Sidebar.Trigger />
 		</span>
 
-		<main class="flex-1 min-w-0 h-dvh">
-			<section class="p-3 min-w-0 h-full sm:p-5">
+		<main class="h-dvh min-w-0 flex-1">
+			<section class="h-full min-w-0 p-3 sm:p-5">
 				{@render children?.()}
 			</section>
 		</main>
 	</Sidebar.Provider>
 {:else}
-	<main class="flex-1 min-w-0 h-dvh">
-		<section class="p-3 min-w-0 h-full sm:p-5">
+	<main class="h-dvh min-w-0 flex-1">
+		<section class="h-full min-w-0 p-3 sm:p-5">
 			{@render children?.()}
 		</section>
 	</main>

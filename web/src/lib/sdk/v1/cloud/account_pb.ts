@@ -2,147 +2,148 @@
 // @generated from file v1/cloud/account.proto (package v1.cloud, syntax proto3)
 /* eslint-disable */
 
-import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
-import type { Timestamp } from "@bufbuild/protobuf/wkt";
-import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import type { Message } from "@bufbuild/protobuf";
+import type { Message } from '@bufbuild/protobuf';
+import type { GenEnum, GenFile, GenMessage } from '@bufbuild/protobuf/codegenv2';
+import { enumDesc, fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv2';
+import type { Timestamp } from '@bufbuild/protobuf/wkt';
+import { file_google_protobuf_timestamp } from '@bufbuild/protobuf/wkt';
+import { file_buf_validate_validate } from '../../buf/validate/validate_pb';
 
 /**
  * Describes the file v1/cloud/account.proto.
  */
-export const file_v1_cloud_account: GenFile = /*@__PURE__*/
-  fileDesc("ChZ2MS9jbG91ZC9hY2NvdW50LnByb3RvEgh2MS5jbG91ZCL2AQoHQWNjb3VudBINCgVzY29wZRgBIAEoCRIdCgtwcm92aWRlcl9pZBgCIAEoCUIIukgFcgOwAQESCgoCaWQYAyABKAkSEQoJdGFyZ2V0X2lkGAQgASgJEhcKBG5hbWUYBSABKAlCCbpIBnIEEAQYFBIeCgtkZXNjcmlwdGlvbhgGIAEoCUIJukgGcgQQABgyEiUKBXN0YXRlGAcgASgOMhYudjEuY2xvdWQuQWNjb3VudFN0YXRlEi8KC2JvdW5kX3VudGlsGAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBINCgVlcnJvchgJIAEoCSqCAQoMQWNjb3VudFN0YXRlEg4KCk5vdENyZWF0ZWQQABIQCgxQcm92aXNpb25pbmcQARINCglQcmVwYXJpbmcQAhIJCgVSZWFkeRADEgsKB1J1bm5pbmcQBBIMCghFdmljdGluZxAFEg0KCUNvcnJ1cHRlZBAGEgwKCERlbGV0aW5nEAdCMVovY29kZWJlcmcub3JnL21lZ2FrdXVsL2Nsb3VkamFtL3BrZy9hcGkvdjEvY2xvdWRiBnByb3RvMw", [file_buf_validate_validate, file_google_protobuf_timestamp]);
+export const file_v1_cloud_account: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'ChZ2MS9jbG91ZC9hY2NvdW50LnByb3RvEgh2MS5jbG91ZCL2AQoHQWNjb3VudBINCgVzY29wZRgBIAEoCRIdCgtwcm92aWRlcl9pZBgCIAEoCUIIukgFcgOwAQESCgoCaWQYAyABKAkSEQoJdGFyZ2V0X2lkGAQgASgJEhcKBG5hbWUYBSABKAlCCbpIBnIEEAQYFBIeCgtkZXNjcmlwdGlvbhgGIAEoCUIJukgGcgQQABgyEiUKBXN0YXRlGAcgASgOMhYudjEuY2xvdWQuQWNjb3VudFN0YXRlEi8KC2JvdW5kX3VudGlsGAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBINCgVlcnJvchgJIAEoCSqCAQoMQWNjb3VudFN0YXRlEg4KCk5vdENyZWF0ZWQQABIQCgxQcm92aXNpb25pbmcQARINCglQcmVwYXJpbmcQAhIJCgVSZWFkeRADEgsKB1J1bm5pbmcQBBIMCghFdmljdGluZxAFEg0KCUNvcnJ1cHRlZBAGEgwKCERlbGV0aW5nEAdCMVovY29kZWJlcmcub3JnL21lZ2FrdXVsL2Nsb3VkamFtL3BrZy9hcGkvdjEvY2xvdWRiBnByb3RvMw',
+		[file_buf_validate_validate, file_google_protobuf_timestamp]
+	);
 
 /**
  * @generated from message v1.cloud.Account
  */
-export type Account = Message<"v1.cloud.Account"> & {
-  /**
-   * @generated from field: string scope = 1;
-   */
-  scope: string;
+export type Account = Message<'v1.cloud.Account'> & {
+	/**
+	 * @generated from field: string scope = 1;
+	 */
+	scope: string;
 
-  /**
-   * @generated from field: string provider_id = 2;
-   */
-  providerId: string;
+	/**
+	 * @generated from field: string provider_id = 2;
+	 */
+	providerId: string;
 
-  /**
-   * @generated from field: string id = 3;
-   */
-  id: string;
+	/**
+	 * @generated from field: string id = 3;
+	 */
+	id: string;
 
-  /**
-   * @generated from field: string target_id = 4;
-   */
-  targetId: string;
+	/**
+	 * @generated from field: string target_id = 4;
+	 */
+	targetId: string;
 
-  /**
-   * @generated from field: string name = 5;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 5;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: string description = 6;
-   */
-  description: string;
+	/**
+	 * @generated from field: string description = 6;
+	 */
+	description: string;
 
-  /**
-   * @generated from field: v1.cloud.AccountState state = 7;
-   */
-  state: AccountState;
+	/**
+	 * @generated from field: v1.cloud.AccountState state = 7;
+	 */
+	state: AccountState;
 
-  /**
-   * @generated from field: google.protobuf.Timestamp bound_until = 8;
-   */
-  boundUntil?: Timestamp;
+	/**
+	 * @generated from field: google.protobuf.Timestamp bound_until = 8;
+	 */
+	boundUntil?: Timestamp;
 
-  /**
-   * @generated from field: string error = 9;
-   */
-  error: string;
+	/**
+	 * @generated from field: string error = 9;
+	 */
+	error: string;
 };
 
 /**
  * Describes the message v1.cloud.Account.
  * Use `create(AccountSchema)` to create a new message.
  */
-export const AccountSchema: GenMessage<Account> = /*@__PURE__*/
-  messageDesc(file_v1_cloud_account, 0);
+export const AccountSchema: GenMessage<Account> = /*@__PURE__*/ messageDesc(file_v1_cloud_account, 0);
 
 /**
  * @generated from enum v1.cloud.AccountState
  */
 export enum AccountState {
-  /**
-   * NotCreated means the account metadata is there but the provisioning process did not start.
-   * In this state it is forbidden to perform ANY action on the provider.
-   *
-   * @generated from enum value: NotCreated = 0;
-   */
-  NotCreated = 0,
+	/**
+	 * NotCreated means the account metadata is there but the provisioning process did not start.
+	 * In this state it is forbidden to perform ANY action on the provider.
+	 *
+	 * @generated from enum value: NotCreated = 0;
+	 */
+	NotCreated = 0,
 
-  /**
-   * Provisioning means the account is currently being created by an asynchron provider action.
-   * In this state it is forbidden to perform ANY action on the provider.
-   *
-   * @generated from enum value: Provisioning = 1;
-   */
-  Provisioning = 1,
+	/**
+	 * Provisioning means the account is currently being created by an asynchron provider action.
+	 * In this state it is forbidden to perform ANY action on the provider.
+	 *
+	 * @generated from enum value: Provisioning = 1;
+	 */
+	Provisioning = 1,
 
-  /**
-   * Preparing means the account is currently being prepared (installing security guardrails, configuring metadata, etc.).
-   * In this state it is forbidden to perform ANY action on the provider.
-   *
-   * @generated from enum value: Preparing = 2;
-   */
-  Preparing = 2,
+	/**
+	 * Preparing means the account is currently being prepared (installing security guardrails, configuring metadata, etc.).
+	 * In this state it is forbidden to perform ANY action on the provider.
+	 *
+	 * @generated from enum value: Preparing = 2;
+	 */
+	Preparing = 2,
 
-  /**
-   * Ready means the account is currently ready in the pool and can be used for a challenge.
-   *
-   * @generated from enum value: Ready = 3;
-   */
-  Ready = 3,
+	/**
+	 * Ready means the account is currently ready in the pool and can be used for a challenge.
+	 *
+	 * @generated from enum value: Ready = 3;
+	 */
+	Ready = 3,
 
-  /**
-   * Running means the account is currently running (bzw. bound to a challenge).
-   * In this state it is forbidden to perform ANY action on the provider as long as the providers bound_until property is not expired.
-   *
-   * @generated from enum value: Running = 4;
-   */
-  Running = 4,
+	/**
+	 * Running means the account is currently running (bzw. bound to a challenge).
+	 * In this state it is forbidden to perform ANY action on the provider as long as the providers bound_until property is not expired.
+	 *
+	 * @generated from enum value: Running = 4;
+	 */
+	Running = 4,
 
-  /**
-   * Evicting means the account is currently cleaned by an asynchron provider action.
-   * In this state it is forbidden to perform ANY action on the provider.
-   *
-   * @generated from enum value: Evicting = 5;
-   */
-  Evicting = 5,
+	/**
+	 * Evicting means the account is currently cleaned by an asynchron provider action.
+	 * In this state it is forbidden to perform ANY action on the provider.
+	 *
+	 * @generated from enum value: Evicting = 5;
+	 */
+	Evicting = 5,
 
-  /**
-   * Corrupted means an asynchron provider action on the account failed. Manual intervention is required!
-   * In this state it is forbidden to perform ANY action on the provider.
-   *
-   * @generated from enum value: Corrupted = 6;
-   */
-  Corrupted = 6,
+	/**
+	 * Corrupted means an asynchron provider action on the account failed. Manual intervention is required!
+	 * In this state it is forbidden to perform ANY action on the provider.
+	 *
+	 * @generated from enum value: Corrupted = 6;
+	 */
+	Corrupted = 6,
 
-  /**
-   * Deleting means the providers async deletion mechanism is working.
-   * In this state it is forbidden to perform ANY action on the provider.
-   *
-   * @generated from enum value: Deleting = 7;
-   */
-  Deleting = 7,
+	/**
+	 * Deleting means the providers async deletion mechanism is working.
+	 * In this state it is forbidden to perform ANY action on the provider.
+	 *
+	 * @generated from enum value: Deleting = 7;
+	 */
+	Deleting = 7
 }
 
 /**
  * Describes the enum v1.cloud.AccountState.
  */
-export const AccountStateSchema: GenEnum<AccountState> = /*@__PURE__*/
-  enumDesc(file_v1_cloud_account, 0);
-
+export const AccountStateSchema: GenEnum<AccountState> = /*@__PURE__*/ enumDesc(file_v1_cloud_account, 0);

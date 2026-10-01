@@ -2,384 +2,396 @@
 // @generated from file v1/play/challenge/challenge.proto (package v1.play.challenge, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_buf_validate_validate } from "../../../buf/validate/validate_pb";
-import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import type { Challenge } from "../challenge_pb";
-import { file_v1_play_challenge } from "../challenge_pb";
-import type { Message } from "@bufbuild/protobuf";
+import type { Message } from '@bufbuild/protobuf';
+import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2';
+import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2';
+import { file_google_protobuf_timestamp } from '@bufbuild/protobuf/wkt';
+import { file_buf_validate_validate } from '../../../buf/validate/validate_pb';
+import type { Challenge } from '../challenge_pb';
+import { file_v1_play_challenge } from '../challenge_pb';
 
 /**
  * Describes the file v1/play/challenge/challenge.proto.
  */
-export const file_v1_play_challenge_challenge: GenFile = /*@__PURE__*/
-  fileDesc("CiF2MS9wbGF5L2NoYWxsZW5nZS9jaGFsbGVuZ2UucHJvdG8SEXYxLnBsYXkuY2hhbGxlbmdlIj0KCkdldFJlcXVlc3QSGQoHZ2FtZV9pZBgBIAEoCUIIukgFcgOwAQESFAoCaWQYAiABKAlCCLpIBXIDsAEBIjQKC0dldFJlc3BvbnNlEiUKCWNoYWxsZW5nZRgBIAEoCzISLnYxLnBsYXkuQ2hhbGxlbmdlIlcKC0xpc3RSZXF1ZXN0EhkKB2dhbWVfaWQYASABKAlCCLpIBXIDsAEBEhgKBWxpbWl0GAIgASgFQgm6SAYaBBhkIAASEwoLc3RhcnRfYWZ0ZXIYAyABKAkiNgoMTGlzdFJlc3BvbnNlEiYKCmNoYWxsZW5nZXMYASADKAsyEi52MS5wbGF5LkNoYWxsZW5nZSIxCg1DcmVhdGVSZXF1ZXN0EiAKBGluaXQYASABKAsyEi52MS5wbGF5LkNoYWxsZW5nZSImCg5DcmVhdGVSZXNwb25zZRIUCgJpZBgBIAEoCUIIukgFcgOwAQEiMAoNVXBkYXRlUmVxdWVzdBIfCgNtb2QYASABKAsyEi52MS5wbGF5LkNoYWxsZW5nZSIQCg5VcGRhdGVSZXNwb25zZSJACg1EZWxldGVSZXF1ZXN0EhkKB2dhbWVfaWQYASABKAlCCLpIBXIDsAEBEhQKAmlkGAIgASgJQgi6SAVyA7ABASIQCg5EZWxldGVSZXNwb25zZSI/CgxTdGFydFJlcXVlc3QSGQoHZ2FtZV9pZBgBIAEoCUIIukgFcgOwAQESFAoCaWQYAiABKAlCCLpIBXIDsAEBIg8KDVN0YXJ0UmVzcG9uc2UiRQoSQ3JlZGVudGlhbHNSZXF1ZXN0EhkKB2dhbWVfaWQYASABKAlCCLpIBXIDsAEBEhQKAmlkGAIgASgJQgi6SAVyA7ABASIqChNDcmVkZW50aWFsc1Jlc3BvbnNlEhMKC2NyZWRlbnRpYWxzGAEgASgJIl4KElVuY292ZXJDbHVlUmVxdWVzdBIZCgdnYW1lX2lkGAEgASgJQgi6SAVyA7ABARIUCgJpZBgCIAEoCUIIukgFcgOwAQESFwoEY2x1ZRgDIAEoCUIJukgGcgQQARhkIhUKE1VuY292ZXJDbHVlUmVzcG9uc2UylgUKEENoYWxsZW5nZVNlcnZpY2USRAoDR2V0Eh0udjEucGxheS5jaGFsbGVuZ2UuR2V0UmVxdWVzdBoeLnYxLnBsYXkuY2hhbGxlbmdlLkdldFJlc3BvbnNlEkcKBExpc3QSHi52MS5wbGF5LmNoYWxsZW5nZS5MaXN0UmVxdWVzdBofLnYxLnBsYXkuY2hhbGxlbmdlLkxpc3RSZXNwb25zZRJNCgZDcmVhdGUSIC52MS5wbGF5LmNoYWxsZW5nZS5DcmVhdGVSZXF1ZXN0GiEudjEucGxheS5jaGFsbGVuZ2UuQ3JlYXRlUmVzcG9uc2USTQoGVXBkYXRlEiAudjEucGxheS5jaGFsbGVuZ2UuVXBkYXRlUmVxdWVzdBohLnYxLnBsYXkuY2hhbGxlbmdlLlVwZGF0ZVJlc3BvbnNlEk0KBkRlbGV0ZRIgLnYxLnBsYXkuY2hhbGxlbmdlLkRlbGV0ZVJlcXVlc3QaIS52MS5wbGF5LmNoYWxsZW5nZS5EZWxldGVSZXNwb25zZRJKCgVTdGFydBIfLnYxLnBsYXkuY2hhbGxlbmdlLlN0YXJ0UmVxdWVzdBogLnYxLnBsYXkuY2hhbGxlbmdlLlN0YXJ0UmVzcG9uc2USXAoLQ3JlZGVudGlhbHMSJS52MS5wbGF5LmNoYWxsZW5nZS5DcmVkZW50aWFsc1JlcXVlc3QaJi52MS5wbGF5LmNoYWxsZW5nZS5DcmVkZW50aWFsc1Jlc3BvbnNlElwKC1VuY292ZXJDbHVlEiUudjEucGxheS5jaGFsbGVuZ2UuVW5jb3ZlckNsdWVSZXF1ZXN0GiYudjEucGxheS5jaGFsbGVuZ2UuVW5jb3ZlckNsdWVSZXNwb25zZUI6Wjhjb2RlYmVyZy5vcmcvbWVnYWt1dWwvY2xvdWRqYW0vcGtnL2FwaS92MS9wbGF5L2NoYWxsZW5nZWIGcHJvdG8z", [file_buf_validate_validate, file_google_protobuf_timestamp, file_v1_play_challenge]);
+export const file_v1_play_challenge_challenge: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'CiF2MS9wbGF5L2NoYWxsZW5nZS9jaGFsbGVuZ2UucHJvdG8SEXYxLnBsYXkuY2hhbGxlbmdlIj0KCkdldFJlcXVlc3QSGQoHZ2FtZV9pZBgBIAEoCUIIukgFcgOwAQESFAoCaWQYAiABKAlCCLpIBXIDsAEBIjQKC0dldFJlc3BvbnNlEiUKCWNoYWxsZW5nZRgBIAEoCzISLnYxLnBsYXkuQ2hhbGxlbmdlIlcKC0xpc3RSZXF1ZXN0EhkKB2dhbWVfaWQYASABKAlCCLpIBXIDsAEBEhgKBWxpbWl0GAIgASgFQgm6SAYaBBhkIAASEwoLc3RhcnRfYWZ0ZXIYAyABKAkiNgoMTGlzdFJlc3BvbnNlEiYKCmNoYWxsZW5nZXMYASADKAsyEi52MS5wbGF5LkNoYWxsZW5nZSIxCg1DcmVhdGVSZXF1ZXN0EiAKBGluaXQYASABKAsyEi52MS5wbGF5LkNoYWxsZW5nZSImCg5DcmVhdGVSZXNwb25zZRIUCgJpZBgBIAEoCUIIukgFcgOwAQEiMAoNVXBkYXRlUmVxdWVzdBIfCgNtb2QYASABKAsyEi52MS5wbGF5LkNoYWxsZW5nZSIQCg5VcGRhdGVSZXNwb25zZSJACg1EZWxldGVSZXF1ZXN0EhkKB2dhbWVfaWQYASABKAlCCLpIBXIDsAEBEhQKAmlkGAIgASgJQgi6SAVyA7ABASIQCg5EZWxldGVSZXNwb25zZSI/CgxTdGFydFJlcXVlc3QSGQoHZ2FtZV9pZBgBIAEoCUIIukgFcgOwAQESFAoCaWQYAiABKAlCCLpIBXIDsAEBIg8KDVN0YXJ0UmVzcG9uc2UiRQoSQ3JlZGVudGlhbHNSZXF1ZXN0EhkKB2dhbWVfaWQYASABKAlCCLpIBXIDsAEBEhQKAmlkGAIgASgJQgi6SAVyA7ABASIqChNDcmVkZW50aWFsc1Jlc3BvbnNlEhMKC2NyZWRlbnRpYWxzGAEgASgJIl4KElVuY292ZXJDbHVlUmVxdWVzdBIZCgdnYW1lX2lkGAEgASgJQgi6SAVyA7ABARIUCgJpZBgCIAEoCUIIukgFcgOwAQESFwoEY2x1ZRgDIAEoCUIJukgGcgQQARhkIhUKE1VuY292ZXJDbHVlUmVzcG9uc2UylgUKEENoYWxsZW5nZVNlcnZpY2USRAoDR2V0Eh0udjEucGxheS5jaGFsbGVuZ2UuR2V0UmVxdWVzdBoeLnYxLnBsYXkuY2hhbGxlbmdlLkdldFJlc3BvbnNlEkcKBExpc3QSHi52MS5wbGF5LmNoYWxsZW5nZS5MaXN0UmVxdWVzdBofLnYxLnBsYXkuY2hhbGxlbmdlLkxpc3RSZXNwb25zZRJNCgZDcmVhdGUSIC52MS5wbGF5LmNoYWxsZW5nZS5DcmVhdGVSZXF1ZXN0GiEudjEucGxheS5jaGFsbGVuZ2UuQ3JlYXRlUmVzcG9uc2USTQoGVXBkYXRlEiAudjEucGxheS5jaGFsbGVuZ2UuVXBkYXRlUmVxdWVzdBohLnYxLnBsYXkuY2hhbGxlbmdlLlVwZGF0ZVJlc3BvbnNlEk0KBkRlbGV0ZRIgLnYxLnBsYXkuY2hhbGxlbmdlLkRlbGV0ZVJlcXVlc3QaIS52MS5wbGF5LmNoYWxsZW5nZS5EZWxldGVSZXNwb25zZRJKCgVTdGFydBIfLnYxLnBsYXkuY2hhbGxlbmdlLlN0YXJ0UmVxdWVzdBogLnYxLnBsYXkuY2hhbGxlbmdlLlN0YXJ0UmVzcG9uc2USXAoLQ3JlZGVudGlhbHMSJS52MS5wbGF5LmNoYWxsZW5nZS5DcmVkZW50aWFsc1JlcXVlc3QaJi52MS5wbGF5LmNoYWxsZW5nZS5DcmVkZW50aWFsc1Jlc3BvbnNlElwKC1VuY292ZXJDbHVlEiUudjEucGxheS5jaGFsbGVuZ2UuVW5jb3ZlckNsdWVSZXF1ZXN0GiYudjEucGxheS5jaGFsbGVuZ2UuVW5jb3ZlckNsdWVSZXNwb25zZUI6Wjhjb2RlYmVyZy5vcmcvbWVnYWt1dWwvY2xvdWRqYW0vcGtnL2FwaS92MS9wbGF5L2NoYWxsZW5nZWIGcHJvdG8z',
+		[file_buf_validate_validate, file_google_protobuf_timestamp, file_v1_play_challenge]
+	);
 
 /**
  * @generated from message v1.play.challenge.GetRequest
  */
-export type GetRequest = Message<"v1.play.challenge.GetRequest"> & {
-  /**
-   * @generated from field: string game_id = 1;
-   */
-  gameId: string;
+export type GetRequest = Message<'v1.play.challenge.GetRequest'> & {
+	/**
+	 * @generated from field: string game_id = 1;
+	 */
+	gameId: string;
 
-  /**
-   * @generated from field: string id = 2;
-   */
-  id: string;
+	/**
+	 * @generated from field: string id = 2;
+	 */
+	id: string;
 };
 
 /**
  * Describes the message v1.play.challenge.GetRequest.
  * Use `create(GetRequestSchema)` to create a new message.
  */
-export const GetRequestSchema: GenMessage<GetRequest> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 0);
+export const GetRequestSchema: GenMessage<GetRequest> = /*@__PURE__*/ messageDesc(file_v1_play_challenge_challenge, 0);
 
 /**
  * @generated from message v1.play.challenge.GetResponse
  */
-export type GetResponse = Message<"v1.play.challenge.GetResponse"> & {
-  /**
-   * @generated from field: v1.play.Challenge challenge = 1;
-   */
-  challenge?: Challenge;
+export type GetResponse = Message<'v1.play.challenge.GetResponse'> & {
+	/**
+	 * @generated from field: v1.play.Challenge challenge = 1;
+	 */
+	challenge?: Challenge;
 };
 
 /**
  * Describes the message v1.play.challenge.GetResponse.
  * Use `create(GetResponseSchema)` to create a new message.
  */
-export const GetResponseSchema: GenMessage<GetResponse> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 1);
+export const GetResponseSchema: GenMessage<GetResponse> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 1);
 
 /**
  * @generated from message v1.play.challenge.ListRequest
  */
-export type ListRequest = Message<"v1.play.challenge.ListRequest"> & {
-  /**
-   * @generated from field: string game_id = 1;
-   */
-  gameId: string;
+export type ListRequest = Message<'v1.play.challenge.ListRequest'> & {
+	/**
+	 * @generated from field: string game_id = 1;
+	 */
+	gameId: string;
 
-  /**
-   * @generated from field: int32 limit = 2;
-   */
-  limit: number;
+	/**
+	 * @generated from field: int32 limit = 2;
+	 */
+	limit: number;
 
-  /**
-   * @generated from field: string start_after = 3;
-   */
-  startAfter: string;
+	/**
+	 * @generated from field: string start_after = 3;
+	 */
+	startAfter: string;
 };
 
 /**
  * Describes the message v1.play.challenge.ListRequest.
  * Use `create(ListRequestSchema)` to create a new message.
  */
-export const ListRequestSchema: GenMessage<ListRequest> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 2);
+export const ListRequestSchema: GenMessage<ListRequest> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 2);
 
 /**
  * @generated from message v1.play.challenge.ListResponse
  */
-export type ListResponse = Message<"v1.play.challenge.ListResponse"> & {
-  /**
-   * @generated from field: repeated v1.play.Challenge challenges = 1;
-   */
-  challenges: Challenge[];
+export type ListResponse = Message<'v1.play.challenge.ListResponse'> & {
+	/**
+	 * @generated from field: repeated v1.play.Challenge challenges = 1;
+	 */
+	challenges: Challenge[];
 };
 
 /**
  * Describes the message v1.play.challenge.ListResponse.
  * Use `create(ListResponseSchema)` to create a new message.
  */
-export const ListResponseSchema: GenMessage<ListResponse> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 3);
+export const ListResponseSchema: GenMessage<ListResponse> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 3);
 
 /**
  * @generated from message v1.play.challenge.CreateRequest
  */
-export type CreateRequest = Message<"v1.play.challenge.CreateRequest"> & {
-  /**
-   * @generated from field: v1.play.Challenge init = 1;
-   */
-  init?: Challenge;
+export type CreateRequest = Message<'v1.play.challenge.CreateRequest'> & {
+	/**
+	 * @generated from field: v1.play.Challenge init = 1;
+	 */
+	init?: Challenge;
 };
 
 /**
  * Describes the message v1.play.challenge.CreateRequest.
  * Use `create(CreateRequestSchema)` to create a new message.
  */
-export const CreateRequestSchema: GenMessage<CreateRequest> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 4);
+export const CreateRequestSchema: GenMessage<CreateRequest> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 4);
 
 /**
  * @generated from message v1.play.challenge.CreateResponse
  */
-export type CreateResponse = Message<"v1.play.challenge.CreateResponse"> & {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id: string;
+export type CreateResponse = Message<'v1.play.challenge.CreateResponse'> & {
+	/**
+	 * @generated from field: string id = 1;
+	 */
+	id: string;
 };
 
 /**
  * Describes the message v1.play.challenge.CreateResponse.
  * Use `create(CreateResponseSchema)` to create a new message.
  */
-export const CreateResponseSchema: GenMessage<CreateResponse> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 5);
+export const CreateResponseSchema: GenMessage<CreateResponse> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 5);
 
 /**
  * @generated from message v1.play.challenge.UpdateRequest
  */
-export type UpdateRequest = Message<"v1.play.challenge.UpdateRequest"> & {
-  /**
-   * @generated from field: v1.play.Challenge mod = 1;
-   */
-  mod?: Challenge;
+export type UpdateRequest = Message<'v1.play.challenge.UpdateRequest'> & {
+	/**
+	 * @generated from field: v1.play.Challenge mod = 1;
+	 */
+	mod?: Challenge;
 };
 
 /**
  * Describes the message v1.play.challenge.UpdateRequest.
  * Use `create(UpdateRequestSchema)` to create a new message.
  */
-export const UpdateRequestSchema: GenMessage<UpdateRequest> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 6);
+export const UpdateRequestSchema: GenMessage<UpdateRequest> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 6);
 
 /**
  * @generated from message v1.play.challenge.UpdateResponse
  */
-export type UpdateResponse = Message<"v1.play.challenge.UpdateResponse"> & {
-};
+export type UpdateResponse = Message<'v1.play.challenge.UpdateResponse'> & {};
 
 /**
  * Describes the message v1.play.challenge.UpdateResponse.
  * Use `create(UpdateResponseSchema)` to create a new message.
  */
-export const UpdateResponseSchema: GenMessage<UpdateResponse> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 7);
+export const UpdateResponseSchema: GenMessage<UpdateResponse> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 7);
 
 /**
  * @generated from message v1.play.challenge.DeleteRequest
  */
-export type DeleteRequest = Message<"v1.play.challenge.DeleteRequest"> & {
-  /**
-   * @generated from field: string game_id = 1;
-   */
-  gameId: string;
+export type DeleteRequest = Message<'v1.play.challenge.DeleteRequest'> & {
+	/**
+	 * @generated from field: string game_id = 1;
+	 */
+	gameId: string;
 
-  /**
-   * @generated from field: string id = 2;
-   */
-  id: string;
+	/**
+	 * @generated from field: string id = 2;
+	 */
+	id: string;
 };
 
 /**
  * Describes the message v1.play.challenge.DeleteRequest.
  * Use `create(DeleteRequestSchema)` to create a new message.
  */
-export const DeleteRequestSchema: GenMessage<DeleteRequest> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 8);
+export const DeleteRequestSchema: GenMessage<DeleteRequest> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 8);
 
 /**
  * @generated from message v1.play.challenge.DeleteResponse
  */
-export type DeleteResponse = Message<"v1.play.challenge.DeleteResponse"> & {
-};
+export type DeleteResponse = Message<'v1.play.challenge.DeleteResponse'> & {};
 
 /**
  * Describes the message v1.play.challenge.DeleteResponse.
  * Use `create(DeleteResponseSchema)` to create a new message.
  */
-export const DeleteResponseSchema: GenMessage<DeleteResponse> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 9);
+export const DeleteResponseSchema: GenMessage<DeleteResponse> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 9);
 
 /**
  * @generated from message v1.play.challenge.StartRequest
  */
-export type StartRequest = Message<"v1.play.challenge.StartRequest"> & {
-  /**
-   * @generated from field: string game_id = 1;
-   */
-  gameId: string;
+export type StartRequest = Message<'v1.play.challenge.StartRequest'> & {
+	/**
+	 * @generated from field: string game_id = 1;
+	 */
+	gameId: string;
 
-  /**
-   * @generated from field: string id = 2;
-   */
-  id: string;
+	/**
+	 * @generated from field: string id = 2;
+	 */
+	id: string;
 };
 
 /**
  * Describes the message v1.play.challenge.StartRequest.
  * Use `create(StartRequestSchema)` to create a new message.
  */
-export const StartRequestSchema: GenMessage<StartRequest> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 10);
+export const StartRequestSchema: GenMessage<StartRequest> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 10);
 
 /**
  * @generated from message v1.play.challenge.StartResponse
  */
-export type StartResponse = Message<"v1.play.challenge.StartResponse"> & {
-};
+export type StartResponse = Message<'v1.play.challenge.StartResponse'> & {};
 
 /**
  * Describes the message v1.play.challenge.StartResponse.
  * Use `create(StartResponseSchema)` to create a new message.
  */
-export const StartResponseSchema: GenMessage<StartResponse> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 11);
+export const StartResponseSchema: GenMessage<StartResponse> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 11);
 
 /**
  * @generated from message v1.play.challenge.CredentialsRequest
  */
-export type CredentialsRequest = Message<"v1.play.challenge.CredentialsRequest"> & {
-  /**
-   * @generated from field: string game_id = 1;
-   */
-  gameId: string;
+export type CredentialsRequest = Message<'v1.play.challenge.CredentialsRequest'> & {
+	/**
+	 * @generated from field: string game_id = 1;
+	 */
+	gameId: string;
 
-  /**
-   * @generated from field: string id = 2;
-   */
-  id: string;
+	/**
+	 * @generated from field: string id = 2;
+	 */
+	id: string;
 };
 
 /**
  * Describes the message v1.play.challenge.CredentialsRequest.
  * Use `create(CredentialsRequestSchema)` to create a new message.
  */
-export const CredentialsRequestSchema: GenMessage<CredentialsRequest> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 12);
+export const CredentialsRequestSchema: GenMessage<CredentialsRequest> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 12);
 
 /**
  * @generated from message v1.play.challenge.CredentialsResponse
  */
-export type CredentialsResponse = Message<"v1.play.challenge.CredentialsResponse"> & {
-  /**
-   * @generated from field: string credentials = 1;
-   */
-  credentials: string;
+export type CredentialsResponse = Message<'v1.play.challenge.CredentialsResponse'> & {
+	/**
+	 * @generated from field: string credentials = 1;
+	 */
+	credentials: string;
 };
 
 /**
  * Describes the message v1.play.challenge.CredentialsResponse.
  * Use `create(CredentialsResponseSchema)` to create a new message.
  */
-export const CredentialsResponseSchema: GenMessage<CredentialsResponse> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 13);
+export const CredentialsResponseSchema: GenMessage<CredentialsResponse> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 13);
 
 /**
  * @generated from message v1.play.challenge.UncoverClueRequest
  */
-export type UncoverClueRequest = Message<"v1.play.challenge.UncoverClueRequest"> & {
-  /**
-   * @generated from field: string game_id = 1;
-   */
-  gameId: string;
+export type UncoverClueRequest = Message<'v1.play.challenge.UncoverClueRequest'> & {
+	/**
+	 * @generated from field: string game_id = 1;
+	 */
+	gameId: string;
 
-  /**
-   * @generated from field: string id = 2;
-   */
-  id: string;
+	/**
+	 * @generated from field: string id = 2;
+	 */
+	id: string;
 
-  /**
-   * @generated from field: string clue = 3;
-   */
-  clue: string;
+	/**
+	 * @generated from field: string clue = 3;
+	 */
+	clue: string;
 };
 
 /**
  * Describes the message v1.play.challenge.UncoverClueRequest.
  * Use `create(UncoverClueRequestSchema)` to create a new message.
  */
-export const UncoverClueRequestSchema: GenMessage<UncoverClueRequest> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 14);
+export const UncoverClueRequestSchema: GenMessage<UncoverClueRequest> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 14);
 
 /**
  * @generated from message v1.play.challenge.UncoverClueResponse
  */
-export type UncoverClueResponse = Message<"v1.play.challenge.UncoverClueResponse"> & {
-};
+export type UncoverClueResponse = Message<'v1.play.challenge.UncoverClueResponse'> & {};
 
 /**
  * Describes the message v1.play.challenge.UncoverClueResponse.
  * Use `create(UncoverClueResponseSchema)` to create a new message.
  */
-export const UncoverClueResponseSchema: GenMessage<UncoverClueResponse> = /*@__PURE__*/
-  messageDesc(file_v1_play_challenge_challenge, 15);
+export const UncoverClueResponseSchema: GenMessage<UncoverClueResponse> =
+	/*@__PURE__*/
+	messageDesc(file_v1_play_challenge_challenge, 15);
 
 /**
  * @generated from service v1.play.challenge.ChallengeService
  */
 export const ChallengeService: GenService<{
-  /**
-   * @generated from rpc v1.play.challenge.ChallengeService.Get
-   */
-  get: {
-    methodKind: "unary";
-    input: typeof GetRequestSchema;
-    output: typeof GetResponseSchema;
-  },
-  /**
-   * @generated from rpc v1.play.challenge.ChallengeService.List
-   */
-  list: {
-    methodKind: "unary";
-    input: typeof ListRequestSchema;
-    output: typeof ListResponseSchema;
-  },
-  /**
-   * @generated from rpc v1.play.challenge.ChallengeService.Create
-   */
-  create: {
-    methodKind: "unary";
-    input: typeof CreateRequestSchema;
-    output: typeof CreateResponseSchema;
-  },
-  /**
-   * @generated from rpc v1.play.challenge.ChallengeService.Update
-   */
-  update: {
-    methodKind: "unary";
-    input: typeof UpdateRequestSchema;
-    output: typeof UpdateResponseSchema;
-  },
-  /**
-   * @generated from rpc v1.play.challenge.ChallengeService.Delete
-   */
-  delete: {
-    methodKind: "unary";
-    input: typeof DeleteRequestSchema;
-    output: typeof DeleteResponseSchema;
-  },
-  /**
-   * @generated from rpc v1.play.challenge.ChallengeService.Start
-   */
-  start: {
-    methodKind: "unary";
-    input: typeof StartRequestSchema;
-    output: typeof StartResponseSchema;
-  },
-  /**
-   * @generated from rpc v1.play.challenge.ChallengeService.Credentials
-   */
-  credentials: {
-    methodKind: "unary";
-    input: typeof CredentialsRequestSchema;
-    output: typeof CredentialsResponseSchema;
-  },
-  /**
-   * @generated from rpc v1.play.challenge.ChallengeService.UncoverClue
-   */
-  uncoverClue: {
-    methodKind: "unary";
-    input: typeof UncoverClueRequestSchema;
-    output: typeof UncoverClueResponseSchema;
-  },
-}> = /*@__PURE__*/
-  serviceDesc(file_v1_play_challenge_challenge, 0);
-
+	/**
+	 * @generated from rpc v1.play.challenge.ChallengeService.Get
+	 */
+	get: {
+		methodKind: 'unary';
+		input: typeof GetRequestSchema;
+		output: typeof GetResponseSchema;
+	};
+	/**
+	 * @generated from rpc v1.play.challenge.ChallengeService.List
+	 */
+	list: {
+		methodKind: 'unary';
+		input: typeof ListRequestSchema;
+		output: typeof ListResponseSchema;
+	};
+	/**
+	 * @generated from rpc v1.play.challenge.ChallengeService.Create
+	 */
+	create: {
+		methodKind: 'unary';
+		input: typeof CreateRequestSchema;
+		output: typeof CreateResponseSchema;
+	};
+	/**
+	 * @generated from rpc v1.play.challenge.ChallengeService.Update
+	 */
+	update: {
+		methodKind: 'unary';
+		input: typeof UpdateRequestSchema;
+		output: typeof UpdateResponseSchema;
+	};
+	/**
+	 * @generated from rpc v1.play.challenge.ChallengeService.Delete
+	 */
+	delete: {
+		methodKind: 'unary';
+		input: typeof DeleteRequestSchema;
+		output: typeof DeleteResponseSchema;
+	};
+	/**
+	 * @generated from rpc v1.play.challenge.ChallengeService.Start
+	 */
+	start: {
+		methodKind: 'unary';
+		input: typeof StartRequestSchema;
+		output: typeof StartResponseSchema;
+	};
+	/**
+	 * @generated from rpc v1.play.challenge.ChallengeService.Credentials
+	 */
+	credentials: {
+		methodKind: 'unary';
+		input: typeof CredentialsRequestSchema;
+		output: typeof CredentialsResponseSchema;
+	};
+	/**
+	 * @generated from rpc v1.play.challenge.ChallengeService.UncoverClue
+	 */
+	uncoverClue: {
+		methodKind: 'unary';
+		input: typeof UncoverClueRequestSchema;
+		output: typeof UncoverClueResponseSchema;
+	};
+}> = /*@__PURE__*/ serviceDesc(file_v1_play_challenge_challenge, 0);
