@@ -75,7 +75,7 @@
 		<h1 class="text-3xl opacity-80">Design</h1>
 	</div>
 
-	<p class="text-muted-foreground text-sm">Create, update and manage challenge definitions</p>
+	<p class="text-sm text-muted-foreground">Create, update and manage challenge definitions</p>
 
 	<div class="flex flex-row items-center gap-4">
 		<OptionalSelect
@@ -175,8 +175,8 @@
 		</div>
 	{:else}
 		<div class="flex h-[60vh] w-full flex-col items-center justify-center gap-8">
-			<WandSparklesIcon class="text-muted h-48 w-48" />
-			<h1 class="text-muted text-4xl font-bold">The Canvas is yours</h1>
+			<WandSparklesIcon class="h-48 w-48 text-muted" />
+			<h1 class="text-4xl font-bold text-muted">The Canvas is yours</h1>
 		</div>
 	{/if}
 </div>

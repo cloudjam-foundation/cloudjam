@@ -12,6 +12,7 @@
 	import PlusIcon from '@lucide/svelte/icons/plus';
 	import { onMount } from 'svelte';
 	import RolePanel from './RolePanel.svelte';
+	import { ChevronDownIcon, ChevronRightIcon } from '@lucide/svelte';
 
 	const limit = 100;
 
@@ -72,7 +73,14 @@
 			<Table.Body>
 				{#each roles as role (role.id)}
 					<Table.Row class="cursor-pointer" onclick={() => (selected = selected?.id === role.id ? undefined : role)}>
-						<Table.Cell class="font-medium">{role.name}</Table.Cell>
+						<Table.Cell class="flex flex-row items-center gap-2 font-medium">
+							{#if selected && selected.id === role.id}
+								<ChevronDownIcon />
+							{:else}
+								<ChevronRightIcon />
+							{/if}
+							{role.name}
+						</Table.Cell>
 						<Table.Cell>{role.scope}</Table.Cell>
 						<Table.Cell>{Object.keys(role.permissions).length} scope(s)</Table.Cell>
 						<Table.Cell class="font-mono text-xs">{role.id}</Table.Cell>
