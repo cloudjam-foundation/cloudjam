@@ -74,11 +74,9 @@
 				{#each roles as role (role.id)}
 					<Table.Row class="cursor-pointer" onclick={() => (selected = selected?.id === role.id ? undefined : role)}>
 						<Table.Cell class="flex flex-row items-center gap-2 font-medium">
-							{#if selected && selected.id === role.id}
-								<ChevronDownIcon />
-							{:else}
-								<ChevronRightIcon />
-							{/if}
+							<ChevronRightIcon
+								class="transition-all duration-150 ease-in-out {selected && selected.id === role.id ? 'rotate-90' : ''}"
+							/>
 							{role.name}
 						</Table.Cell>
 						<Table.Cell>{role.scope}</Table.Cell>

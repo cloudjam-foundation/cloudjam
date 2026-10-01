@@ -93,11 +93,9 @@
 				{#each users as user (user.id)}
 					<Table.Row class="cursor-pointer" onclick={() => (selected = selected?.id === user.id ? undefined : user)}>
 						<Table.Cell class="flex flex-row items-center gap-2">
-							{#if selected && selected.id === user.id}
-								<ChevronDownIcon />
-							{:else}
-								<ChevronRightIcon />
-							{/if}
+							<ChevronRightIcon
+								class="transition-all duration-150 ease-in-out {selected && selected.id === user.id ? 'rotate-90' : ''}"
+							/>
 							<img
 								alt="user profile"
 								src={`data:image/svg+xml;base64,${btoa(toSvg(user.pubId, 30))}`}

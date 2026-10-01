@@ -13,7 +13,7 @@
 	import { onMount } from 'svelte';
 	import AccountPanel from './AccountPanel.svelte';
 	import CreateAccount from './CreateAccount.svelte';
-	import { RefreshCw } from '@lucide/svelte';
+	import { ChevronRightIcon, RefreshCw } from '@lucide/svelte';
 
 	let { providerId }: { providerId: string } = $props();
 
@@ -84,7 +84,14 @@
 						class="cursor-pointer"
 						onclick={() => (selected = selected?.id === account.id ? undefined : account)}
 					>
-						<Table.Cell class="font-medium">{account.name}</Table.Cell>
+						<Table.Cell class="flex flex-row items-center gap-2 font-medium">
+							<ChevronRightIcon
+								class="transition-all duration-150 ease-in-out {selected && selected.id === account.id
+									? 'rotate-90'
+									: ''}"
+							/>
+							{account.name}
+						</Table.Cell>
 						<Table.Cell>{account.description}</Table.Cell>
 						<Table.Cell>
 							<Badge variant={account.state === AccountState.Corrupted ? 'destructive' : 'secondary'}>

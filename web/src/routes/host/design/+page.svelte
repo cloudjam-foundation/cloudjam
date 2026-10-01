@@ -19,7 +19,7 @@
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import DefinitionPanel from './DefinitionPanel.svelte';
 	import Badge from '$lib/components/shad/badge/badge.svelte';
-	import { CircleQuestionMarkIcon, WandSparklesIcon } from '@lucide/svelte';
+	import { ChevronRightIcon, CircleQuestionMarkIcon, WandSparklesIcon } from '@lucide/svelte';
 
 	let providerId: string = $state('');
 	let provider: Provider | undefined = $state();
@@ -42,7 +42,7 @@
 	let definitionsState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let definitionsExhausted = $state(true);
 
-	let selectedDefinition: Definition | undefined = $state();
+	let selected: Definition | undefined = $state();
 
 	function loadDefinitions(startAfter?: string) {
 		Submit(async () => {
@@ -123,9 +123,16 @@
 						{#each definitions as definition (definition.id)}
 							<Table.Row
 								class="cursor-pointer"
-								onclick={() => (selectedDefinition = selectedDefinition?.id === definition.id ? undefined : definition)}
+								onclick={() => (selected = selected?.id === definition.id ? undefined : definition)}
 							>
-								<Table.Cell class="font-medium">{definition.name}</Table.Cell>
+								<Table.Cell class="flex flex-row items-center gap-2 font-medium">
+									<ChevronRightIcon
+										class="transition-all duration-150 ease-in-out {selected && selected.id === definition.id
+											? 'rotate-90'
+											: ''}"
+									/>
+									{definition.name}
+								</Table.Cell>
 								<Table.Cell>{definition.version}</Table.Cell>
 								<Table.Cell>{definition.description}</Table.Cell>
 								<Table.Cell class="font-mono text-xs break-all">{toDigest(definition.hash)}</Table.Cell>
@@ -155,12 +162,12 @@
 				{/if}
 			{/if}
 
-			{#if selectedDefinition}
-				{#key selectedDefinition.id}
+			{#if selected}
+				{#key selected.id}
 					<DefinitionPanel
-						definition={selectedDefinition}
+						definition={selected}
 						refresh={() => loadDefinitions()}
-						close={() => (selectedDefinition = undefined)}
+						close={() => (selected = undefined)}
 					/>
 				{/key}
 			{/if}

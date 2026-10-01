@@ -92,11 +92,11 @@
 						onclick={() => (selected = selected?.id === challenge.id ? undefined : challenge)}
 					>
 						<Table.Cell class="flex flex-row items-center gap-2 font-medium">
-							{#if selected && selected.id === challenge.id}
-								<ChevronDownIcon />
-							{:else}
-								<ChevronRightIcon />
-							{/if}
+							<ChevronRightIcon
+								class="transition-all duration-150 ease-in-out {selected && selected.id === challenge.id
+									? 'rotate-90'
+									: ''}"
+							/>
 							{challenge.title || 'not started'}
 						</Table.Cell>
 						<Table.Cell>{teamName(challenge.teamId)}</Table.Cell>
