@@ -48,6 +48,9 @@ const (
 	AccountServiceResetProcedure = "/v1.cloud.account.AccountService/Reset"
 	// AccountServiceFixProcedure is the fully-qualified name of the AccountService's Fix RPC.
 	AccountServiceFixProcedure = "/v1.cloud.account.AccountService/Fix"
+	// AccountServiceAggregateCostProcedure is the fully-qualified name of the AccountService's
+	// AggregateCost RPC.
+	AccountServiceAggregateCostProcedure = "/v1.cloud.account.AccountService/AggregateCost"
 	// AccountServiceDeleteProcedure is the fully-qualified name of the AccountService's Delete RPC.
 	AccountServiceDeleteProcedure = "/v1.cloud.account.AccountService/Delete"
 )
@@ -71,6 +74,9 @@ type AccountServiceClient interface {
 	// Unfortunately this is required because *some* retarded providers (*AWS*) use account quotas
 	// so we cannot just delete and create new accounts but must manually fix them when issues occur.
 	Fix(context.Context, *connect.Request[account.FixRequest]) (*connect.Response[account.FixResponse], error)
+	// AggregateCost returns the providers cost aggregation of this account bucketed by day.
+	// Notice that this might be delayed depending on provider.
+	AggregateCost(context.Context, *connect.Request[account.AggregateCostRequest]) (*connect.Response[account.AggregateCostResponse], error)
 	// Delete triggers the asynchron deletion process on the provider.
 	// If called with *force* it will immediately remove cloudjam metadata (account will leak then!!!).
 	Delete(context.Context, *connect.Request[account.DeleteRequest]) (*connect.Response[account.DeleteResponse], error)
@@ -129,6 +135,12 @@ func NewAccountServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(accountServiceMethods.ByName("Fix")),
 			connect.WithClientOptions(opts...),
 		),
+		aggregateCost: connect.NewClient[account.AggregateCostRequest, account.AggregateCostResponse](
+			httpClient,
+			baseURL+AccountServiceAggregateCostProcedure,
+			connect.WithSchema(accountServiceMethods.ByName("AggregateCost")),
+			connect.WithClientOptions(opts...),
+		),
 		delete: connect.NewClient[account.DeleteRequest, account.DeleteResponse](
 			httpClient,
 			baseURL+AccountServiceDeleteProcedure,
@@ -140,14 +152,15 @@ func NewAccountServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 
 // accountServiceClient implements AccountServiceClient.
 type accountServiceClient struct {
-	get         *connect.Client[account.GetRequest, account.GetResponse]
-	list        *connect.Client[account.ListRequest, account.ListResponse]
-	create      *connect.Client[account.CreateRequest, account.CreateResponse]
-	update      *connect.Client[account.UpdateRequest, account.UpdateResponse]
-	credentials *connect.Client[account.CredentialsRequest, account.CredentialsResponse]
-	reset       *connect.Client[account.ResetRequest, account.ResetResponse]
-	fix         *connect.Client[account.FixRequest, account.FixResponse]
-	delete      *connect.Client[account.DeleteRequest, account.DeleteResponse]
+	get           *connect.Client[account.GetRequest, account.GetResponse]
+	list          *connect.Client[account.ListRequest, account.ListResponse]
+	create        *connect.Client[account.CreateRequest, account.CreateResponse]
+	update        *connect.Client[account.UpdateRequest, account.UpdateResponse]
+	credentials   *connect.Client[account.CredentialsRequest, account.CredentialsResponse]
+	reset         *connect.Client[account.ResetRequest, account.ResetResponse]
+	fix           *connect.Client[account.FixRequest, account.FixResponse]
+	aggregateCost *connect.Client[account.AggregateCostRequest, account.AggregateCostResponse]
+	delete        *connect.Client[account.DeleteRequest, account.DeleteResponse]
 }
 
 // Get calls v1.cloud.account.AccountService.Get.
@@ -185,6 +198,11 @@ func (c *accountServiceClient) Fix(ctx context.Context, req *connect.Request[acc
 	return c.fix.CallUnary(ctx, req)
 }
 
+// AggregateCost calls v1.cloud.account.AccountService.AggregateCost.
+func (c *accountServiceClient) AggregateCost(ctx context.Context, req *connect.Request[account.AggregateCostRequest]) (*connect.Response[account.AggregateCostResponse], error) {
+	return c.aggregateCost.CallUnary(ctx, req)
+}
+
 // Delete calls v1.cloud.account.AccountService.Delete.
 func (c *accountServiceClient) Delete(ctx context.Context, req *connect.Request[account.DeleteRequest]) (*connect.Response[account.DeleteResponse], error) {
 	return c.delete.CallUnary(ctx, req)
@@ -209,6 +227,9 @@ type AccountServiceHandler interface {
 	// Unfortunately this is required because *some* retarded providers (*AWS*) use account quotas
 	// so we cannot just delete and create new accounts but must manually fix them when issues occur.
 	Fix(context.Context, *connect.Request[account.FixRequest]) (*connect.Response[account.FixResponse], error)
+	// AggregateCost returns the providers cost aggregation of this account bucketed by day.
+	// Notice that this might be delayed depending on provider.
+	AggregateCost(context.Context, *connect.Request[account.AggregateCostRequest]) (*connect.Response[account.AggregateCostResponse], error)
 	// Delete triggers the asynchron deletion process on the provider.
 	// If called with *force* it will immediately remove cloudjam metadata (account will leak then!!!).
 	Delete(context.Context, *connect.Request[account.DeleteRequest]) (*connect.Response[account.DeleteResponse], error)
@@ -263,6 +284,12 @@ func NewAccountServiceHandler(svc AccountServiceHandler, opts ...connect.Handler
 		connect.WithSchema(accountServiceMethods.ByName("Fix")),
 		connect.WithHandlerOptions(opts...),
 	)
+	accountServiceAggregateCostHandler := connect.NewUnaryHandler(
+		AccountServiceAggregateCostProcedure,
+		svc.AggregateCost,
+		connect.WithSchema(accountServiceMethods.ByName("AggregateCost")),
+		connect.WithHandlerOptions(opts...),
+	)
 	accountServiceDeleteHandler := connect.NewUnaryHandler(
 		AccountServiceDeleteProcedure,
 		svc.Delete,
@@ -285,6 +312,8 @@ func NewAccountServiceHandler(svc AccountServiceHandler, opts ...connect.Handler
 			accountServiceResetHandler.ServeHTTP(w, r)
 		case AccountServiceFixProcedure:
 			accountServiceFixHandler.ServeHTTP(w, r)
+		case AccountServiceAggregateCostProcedure:
+			accountServiceAggregateCostHandler.ServeHTTP(w, r)
 		case AccountServiceDeleteProcedure:
 			accountServiceDeleteHandler.ServeHTTP(w, r)
 		default:
@@ -322,6 +351,10 @@ func (UnimplementedAccountServiceHandler) Reset(context.Context, *connect.Reques
 
 func (UnimplementedAccountServiceHandler) Fix(context.Context, *connect.Request[account.FixRequest]) (*connect.Response[account.FixResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("v1.cloud.account.AccountService.Fix is not implemented"))
+}
+
+func (UnimplementedAccountServiceHandler) AggregateCost(context.Context, *connect.Request[account.AggregateCostRequest]) (*connect.Response[account.AggregateCostResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("v1.cloud.account.AccountService.AggregateCost is not implemented"))
 }
 
 func (UnimplementedAccountServiceHandler) Delete(context.Context, *connect.Request[account.DeleteRequest]) (*connect.Response[account.DeleteResponse], error) {

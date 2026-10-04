@@ -3,6 +3,7 @@ syntax = "proto3";
 package v1.cloud.account;
 
 import "buf/validate/validate.proto";
+import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 import "v1/cloud/account.proto";
 
@@ -67,6 +68,22 @@ message FixRequest {
 
 message FixResponse {}
 
+message ServiceCost {
+  string service = 1;
+  repeated google.protobuf.Timestamp time = 2;
+  repeated double cost = 3;
+}
+
+message AggregateCostRequest {
+  string provider_id = 1 [(buf.validate.field).string = {uuid: true}];
+  string id = 2 [(buf.validate.field).string = {uuid: true}];
+  google.protobuf.Duration window = 3;
+}
+
+message AggregateCostResponse {
+  map<string, ServiceCost> services = 1;
+}
+
 message DeleteRequest {
   string provider_id = 1 [(buf.validate.field).string = {uuid: true}];
   string id = 2 [(buf.validate.field).string = {uuid: true}];
@@ -93,6 +110,11 @@ service AccountService {
   // Unfortunately this is required because *some* retarded providers (*AWS*) use account quotas
   // so we cannot just delete and create new accounts but must manually fix them when issues occur.
   rpc Fix(FixRequest) returns (FixResponse);
+
+  // AggregateCost returns the providers cost aggregation of this account bucketed by day.
+  // Notice that this might be delayed depending on provider.
+  rpc AggregateCost(AggregateCostRequest) returns (AggregateCostResponse);
+
   // Delete triggers the asynchron deletion process on the provider.
   // If called with *force* it will immediately remove cloudjam metadata (account will leak then!!!).
   rpc Delete(DeleteRequest) returns (DeleteResponse);

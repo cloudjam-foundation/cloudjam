@@ -389,6 +389,63 @@ func (s *Server) Fix(ctx context.Context, req *connect.Request[account.FixReques
 	return &connect.Response[account.FixResponse]{Msg: &account.FixResponse{}}, nil
 }
 
+func (s *Server) AggregateCost(ctx context.Context, req *connect.Request[account.AggregateCostRequest]) (*connect.Response[account.AggregateCostResponse], error) {
+	l := s.logger.With("proc", req.Spec().Procedure)
+
+	providerMeta, err := dynamitedb.Get(ctx, s.oltp, &oltp.Provider{
+		ProviderID: dynamitedb.Key(req.Msg.ProviderId),
+		Scope:      dynamitedb.In(auth.Scopes(ctx)...),
+	})
+	if err != nil {
+		if errors.Is(err, dynamitedb.ErrNotFound) {
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("provider does not exist"))
+		}
+		l.Error(fmt.Sprintf("failed to fetch provider: %v", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch provider"))
+	}
+	accountMeta, err := dynamitedb.Get(ctx, s.oltp, &oltp.Account{
+		ProviderID: dynamitedb.Key(req.Msg.ProviderId),
+		AccountID:  dynamitedb.Key(req.Msg.Id),
+		Scope:      dynamitedb.In(auth.Scopes(ctx)...),
+	})
+	if err != nil {
+		if errors.Is(err, dynamitedb.ErrNotFound) {
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("account does not exist"))
+		}
+		l.Error(fmt.Sprintf("failed to fetch account: %v", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch account"))
+	}
+	provider, err := s.providers.Load(ctx, providerMeta)
+	if err != nil {
+		l.Error(fmt.Sprintf("failed to load provider: %v", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to load provider"))
+	}
+	costDatapoints, err := provider.Cost(ctx, accountMeta.TargetID.Value(), req.Msg.Window.AsDuration())
+	if err != nil {
+		l.Error(fmt.Sprintf("failed to load cost aggregations of %q: %v", accountMeta.AccountID.Value(), err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to aggregate cost"))
+	}
+
+	services := map[string]*account.ServiceCost{}
+	for _, datapoint := range costDatapoints {
+		service, ok := services[datapoint.Service]
+		if !ok {
+			services[datapoint.Service] = &account.ServiceCost{
+				Service: datapoint.Service,
+				Time:    []*timestamppb.Timestamp{timestamppb.New(datapoint.Date)},
+				Cost:    []float64{datapoint.Amount},
+			}
+		} else {
+			service.Time = append(service.Time, timestamppb.New(datapoint.Date))
+			service.Cost = append(service.Cost, datapoint.Amount)
+		}
+	}
+
+	return &connect.Response[account.AggregateCostResponse]{Msg: &account.AggregateCostResponse{
+		Services: services,
+	}}, nil
+}
+
 func (s *Server) Delete(ctx context.Context, req *connect.Request[account.DeleteRequest]) (*connect.Response[account.DeleteResponse], error) {
 	l := s.logger.With("proc", req.Spec().Procedure)
 

@@ -3,7 +3,6 @@ package aws
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 )
 
 type policyDocument struct {
@@ -147,31 +146,74 @@ func guardControlPolicy(adminRole, sandboxRole, boundaryPolicy string) ([]byte, 
 	})
 }
 
-// costControlPolicy generates an SCP that denies common cost / commitment traps.
-// It also denies resources that should definitely never be used (like regions out of scope).
-func costControlPolicy(regions []string) ([]byte, error) {
+// whitelistControlPolicy generates an SCP that blocks every service and region not specified in this allowlist.
+// The idea is to ensure users never use expensive or new bleeding edge AI bullshit that was not blocked by challenge guardrails.
+func whitelistControlPolicy(regions []string) ([]byte, error) {
+	s3Locations := append([]string(nil), regions...)
+	s3LocationCondition := map[string]map[string]any{}
+	for _, region := range regions {
+		if region == "" {
+			return nil, fmt.Errorf("costControlPolicy: region must not be empty")
+		}
+		if region == "eu-west-1" {
+			s3Locations = append(s3Locations, "EU")
+		}
+		if region == "us-east-1" {
+			s3LocationCondition["Null"] = map[string]any{
+				"s3:LocationConstraint": "false",
+			}
+		}
+	}
+	s3LocationCondition["StringNotEquals"] = map[string]any{
+		"s3:LocationConstraint": s3Locations,
+	}
 	return json.Marshal(policyDocument{
 		Version: "2012-10-17",
 		Statement: []policyStatement{
 			{
+				Sid:    "DenyServicesNotExplicitlyAllowed",
+				Effect: "Deny",
+				NotAction: []string{
+					"ec2:*", "ec2-instance-connect:*", "ecr:*", "ecs:*",
+					"lambda:*", "cloudformation:*", "elasticloadbalancing:*",
+					"application-autoscaling:*",
+
+					"s3:*", "backup:*", "dynamodb:*", "rds:*", "rds-db:*",
+					"kinesis:*", "firehose:*", "athena:*", "glue:*", "lakeformation:*",
+
+					"apigateway:*", "execute-api:*", "events:*", "pipes:*",
+					"scheduler:*", "states:*", "sns:*", "sqs:*",
+					"cognito-identity:*", "cognito-idp:*",
+
+					"route53:*", "servicediscovery:*",
+					"cloudfront:*", "cloudfront-keyvaluestore:*",
+
+					"codeartifact:*", "codebuild:*", "codecommit:*",
+					"codeconnections:*", "codestar-connections:*",
+					"codedeploy:*", "codepipeline:*",
+
+					"cloudwatch:*", "logs:*", "cloudtrail:*", "xray:*",
+					"iam:*", "sts:*", "acm:*", "kms:*", "secretsmanager:*",
+					"ssm:*", "ssmmessages:*", "ec2messages:*",
+					"resource-groups:*", "resource-explorer-2:*", "tag:*",
+				},
+				Resource: []string{"*"},
+			},
+			{
 				Sid:    "DenyOutsideRegions",
 				Effect: "Deny",
 				NotAction: []string{
-					"budgets:*",
-					"ce:*",
-					"cloudfront:*",
-					"cur:*",
-					"globalaccelerator:*",
-					"health:*",
 					"iam:*",
-					"organizations:*",
-					"route53:*",
-					"shield:*",
 					"sts:*",
-					"support:*",
-					"tag:*",
+					"route53:*",
+					"cloudfront:*",
+					"cloudfront-keyvaluestore:*",
 					"waf:*",
 					"wafv2:*",
+
+					"s3:ListAllMyBuckets",
+					"s3:GetAccountPublicAccessBlock",
+					"s3:PutAccountPublicAccessBlock",
 				},
 				Resource: []string{"*"},
 				Condition: map[string]map[string]any{
@@ -179,12 +221,56 @@ func costControlPolicy(regions []string) ([]byte, error) {
 				},
 			},
 			{
-				Sid:      "DenyInstanceTypes",
+				Sid:       "DenyS3BucketLocationsOutsideRegions",
+				Effect:    "Deny",
+				Action:    []string{"s3:CreateBucket"},
+				Resource:  []string{"*"},
+				Condition: s3LocationCondition,
+			},
+			{
+				Sid:    "DenyCrossRegionReplicationSetup",
+				Effect: "Deny",
+				Action: []string{
+					"s3:PutReplicationConfiguration", "s3:CreateMultiRegionAccessPoint",
+					"ecr:PutReplicationConfiguration",
+					"dynamodb:CreateGlobalTable", "dynamodb:UpdateGlobalTable",
+					"rds:CreateGlobalCluster", "rds:ModifyGlobalCluster",
+					"rds:StartDBInstanceAutomatedBackupsReplication",
+					"kms:ReplicateKey", "secretsmanager:ReplicateSecretToRegions",
+					"lambda:EnableReplication*",
+				},
+				Resource: []string{"*"},
+			},
+		},
+	})
+}
+
+// costControlPolicy generates an SCP that blocks particularly expensive and well known services.
+// The idea is to provide some heuristics to catch common cost traps.
+func costControlPolicy(regions []string) ([]byte, error) {
+	return json.Marshal(policyDocument{
+		Version: "2012-10-17",
+		Statement: []policyStatement{
+			{
+				Sid:      "DenyExpensiveInstanceTypes",
+				Effect:   "Deny",
+				Action:   []string{"ec2:RunInstances", "ec2:StartInstances"},
+				Resource: []string{"arn:aws:ec2:*:*:instance/*"},
+				Condition: map[string]map[string]any{
+					"StringNotLike": {
+						"ec2:InstanceType": []string{"t2.*", "t3.*", "t3a.*", "t4g.*", "*.micro", "*.small", "*.medium"},
+					},
+				},
+			},
+			{
+				Sid:      "DenyDedicatedInstanceTenancy",
 				Effect:   "Deny",
 				Action:   []string{"ec2:RunInstances"},
 				Resource: []string{"arn:aws:ec2:*:*:instance/*"},
 				Condition: map[string]map[string]any{
-					"StringNotLike": {"ec2:InstanceType": allowedInstanceTypes},
+					"StringNotEquals": {
+						"ec2:Tenancy": "default",
+					},
 				},
 			},
 			{
@@ -193,35 +279,76 @@ func costControlPolicy(regions []string) ([]byte, error) {
 				Action:   []string{"ec2:CreateVolume", "ec2:RunInstances"},
 				Resource: []string{"arn:aws:ec2:*:*:volume/*"},
 				Condition: map[string]map[string]any{
-					"NumericGreaterThan": {"ec2:VolumeSize": strconv.Itoa(maxVolumeSize)},
+					"NumericGreaterThan": {
+						"ec2:VolumeSize": "50",
+					},
 				},
 			},
 			{
-				Sid:      "DenyAccelerators",
+				Sid:      "DenyExtremeVolumeIOPS",
 				Effect:   "Deny",
-				Action:   []string{"sagemaker:*"},
+				Action:   []string{"ec2:CreateVolume", "ec2:RunInstances", "ec2:ModifyVolume"},
+				Resource: []string{"arn:aws:ec2:*:*:volume/*"},
+				Condition: map[string]map[string]any{
+					"NumericGreaterThan": {
+						"ec2:VolumeIops": "6000",
+					},
+				},
+			},
+			{
+				Sid:      "DenyExtremeVolumeThroughput",
+				Effect:   "Deny",
+				Action:   []string{"ec2:CreateVolume", "ec2:RunInstances", "ec2:ModifyVolume"},
+				Resource: []string{"arn:aws:ec2:*:*:volume/*"},
+				Condition: map[string]map[string]any{
+					"NumericGreaterThan": {
+						"ec2:VolumeThroughput": "250",
+					},
+				},
+			},
+			{
+				Sid:    "DenyExpensiveRDSInstanceClasses",
+				Effect: "Deny",
+				Action: []string{
+					"rds:CreateDBInstance",
+					"rds:CreateDBInstanceReadReplica",
+					"rds:ModifyDBInstance",
+					"rds:RestoreDBInstanceFromDBSnapshot",
+					"rds:RestoreDBInstanceFromS3",
+					"rds:RestoreDBInstanceToPointInTime",
+				},
 				Resource: []string{"*"},
 				Condition: map[string]map[string]any{
-					"ForAnyValue:StringLike": {"sagemaker:InstanceTypes": []string{
-						"ml.p*", "ml.g*", "ml.trn*", "ml.inf*", "ml.dl*",
-					}},
+					"StringNotEquals": {
+						"rds:DatabaseClass": []string{
+							"db.t3.micro",
+							"db.t3.small",
+							"db.t3.medium",
+
+							"db.t4g.micro",
+							"db.t4g.small",
+							"db.t4g.medium",
+						},
+					},
 				},
 			},
 			{
 				Sid:    "DenyCommitments",
 				Effect: "Deny",
 				Action: []string{
-					"acm-pca:CreateCertificateAuthority",
-					"aoss:CreateCollection",
+					// AWS Marketplace purchases/subscriptions.
 					"aws-marketplace:AcceptAgreementApprovalRequest",
 					"aws-marketplace:Subscribe",
-					"bedrock:CreateModelCustomizationJob",
-					"bedrock:CreateProvisionedModelThroughput",
-					"bedrock:UpdateProvisionedModelThroughput",
-					"cloudhsm:CreateCluster",
-					"cloudhsm:CreateHsm",
-					"devicefarm:PurchaseOffering",
-					"dynamodb:PurchaseReservedCapacityOfferings",
+
+					// Savings Plans.
+					"savingsplans:CreateSavingsPlan",
+
+					// CloudFront flat-rate / paid plans.
+					"pricingplanmanager:CreateSubscription",
+					"pricingplanmanager:ApprovePaidSubscription",
+					"pricingplanmanager:UpdateSubscription",
+
+					// EC2 commitments / dedicated hardware.
 					"ec2:AllocateHosts",
 					"ec2:CreateCapacityReservation",
 					"ec2:CreateCapacityReservationFleet",
@@ -231,40 +358,56 @@ func costControlPolicy(regions []string) ([]byte, error) {
 					"ec2:PurchaseHostReservation",
 					"ec2:PurchaseReservedInstancesOffering",
 					"ec2:PurchaseScheduledInstances",
+
+					// Database/cache reserved capacity.
+					"dynamodb:PurchaseReservedCapacityOfferings",
+					"rds:PurchaseReservedDBInstancesOffering",
 					"elasticache:PurchaseReservedCacheNodesOffering",
+					"memorydb:PurchaseReservedNodesOffering",
+					"redshift:PurchaseReservedNodeOffering",
 					"es:PurchaseReservedElasticsearchInstanceOffering",
 					"es:PurchaseReservedInstanceOffering",
-					"fsx:CreateFileSystem",
-					"kendra:CreateIndex",
-					"lambda:PutProvisionedConcurrencyConfig",
+
+					// Other explicit purchasing APIs.
+					"devicefarm:PurchaseOffering",
 					"mediaconnect:PurchaseOffering",
-					"medialive:CreateChannel",
-					"medialive:CreateInput",
 					"medialive:PurchaseOffering",
-					"memorydb:PurchaseReservedNodesOffering",
-					"outposts:CreateOutpost",
-					"rds:PurchaseReservedDBInstancesOffering",
-					"redshift-serverless:CreateWorkgroup",
-					"redshift:PurchaseReservedNodeOffering",
+
+					// Domain registrations are real purchases / renewals.
 					"route53domains:RegisterDomain",
 					"route53domains:RenewDomain",
 					"route53domains:TransferDomain",
-					"savingsplans:CreateSavingsPlan",
-					"ses:PutDeliverabilityDashboardOption",
+
+					// Paid account-level subscriptions.
 					"shield:CreateSubscription",
-					"snowball:CreateCluster",
-					"snowball:CreateJob",
+					"ses:PutDeliverabilityDashboardOption",
 				},
 				Resource: []string{"*"},
 			},
 			{
-				Sid:    "DenyMonitorTraps",
+				Sid:    "DenyExpensiveProvisionedCapacity",
 				Effect: "Deny",
 				Action: []string{
-					"cloudwatch:PutInsightRule",
-					"cloudwatch:PutMetricStream",
-					"internetmonitor:CreateMonitor",
-					"synthetics:CreateCanary",
+					"lambda:PutProvisionedConcurrencyConfig",
+					"kinesis:UpdateAccountSettings",
+					"kinesis:UpdateStreamWarmThroughput",
+					"bedrock:CreateProvisionedModelThroughput",
+					"bedrock:UpdateProvisionedModelThroughput",
+				},
+				Resource: []string{"*"},
+			},
+			{
+				Sid:    "DenyHighBaselineCostResources",
+				Effect: "Deny",
+				Action: []string{
+					"acm-pca:CreateCertificateAuthority",
+					"cloudhsm:CreateCluster",
+					"cloudhsm:CreateHsm",
+					"outposts:CreateOutpost",
+					"snowball:CreateCluster",
+					"snowball:CreateJob",
+					"kendra:CreateIndex",
+					"redshift-serverless:CreateWorkgroup",
 				},
 				Resource: []string{"*"},
 			},
@@ -274,13 +417,28 @@ func costControlPolicy(regions []string) ([]byte, error) {
 				Action:   []string{"acm:RequestCertificate"},
 				Resource: []string{"*"},
 				Condition: map[string]map[string]any{
-					"StringEquals": {"acm:Export": "ENABLED"},
+					"StringEquals": {
+						"acm:Export": "ENABLED",
+					},
 				},
 			},
 			{
-				Sid:      "DenyCertificateExport",
-				Effect:   "Deny",
-				Action:   []string{"acm:ExportCertificate"},
+				Sid:    "DenyCertificateExport",
+				Effect: "Deny",
+				Action: []string{
+					"acm:ExportCertificate",
+					"acm:UpdateCertificateOptions",
+				},
+				Resource: []string{"*"},
+			},
+			{
+				Sid:    "DenyMonitoringCostTraps",
+				Effect: "Deny",
+				Action: []string{
+					"cloudwatch:PutInsightRule",
+					"cloudwatch:PutManagedInsightRules",
+					"cloudwatch:PutMetricStream",
+				},
 				Resource: []string{"*"},
 			},
 			{
@@ -288,14 +446,30 @@ func costControlPolicy(regions []string) ([]byte, error) {
 				Effect: "Deny",
 				Action: []string{
 					"backup:PutBackupVaultLockConfiguration",
-					"glacier:CompleteVaultLock",
+					"backup:CreateLogicallyAirGappedBackupVault",
+
 					"glacier:InitiateVaultLock",
-					"s3-object-lambda:PutObjectLegalHold",
-					"s3-object-lambda:PutObjectRetention",
-					"s3:BypassGovernanceRetention",
+					"glacier:CompleteVaultLock",
+
 					"s3:PutBucketObjectLockConfiguration",
 					"s3:PutObjectLegalHold",
 					"s3:PutObjectRetention",
+
+					"s3-object-lambda:PutObjectLegalHold",
+					"s3-object-lambda:PutObjectRetention",
+
+					"ec2:LockSnapshot",
+
+					"rbin:LockRule",
+				},
+				Resource: []string{"*"},
+			},
+			{
+				Sid:    "DenyPremiumSnapshotFeatures",
+				Effect: "Deny",
+				Action: []string{
+					"ec2:EnableFastSnapshotRestores",
+					"ec2:EnableFastLaunch",
 				},
 				Resource: []string{"*"},
 			},

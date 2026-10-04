@@ -3,17 +3,8 @@ package provider
 import (
 	"context"
 	"io"
-	"log/slog"
 	"time"
 )
-
-type Leak struct {
-	Severity slog.Level
-	Region   string // empty for global services
-	Resource string
-	Message  string
-	Burn     string // human readable estimated burn rate (e.g. "~$400/month")
-}
 
 type Cost struct {
 	Service string
@@ -38,8 +29,6 @@ type Provider interface {
 	// The format is a generic string that may be json formatted so that the frontend can interpret it (must be human readable as fallback).
 	Credentials(ctx context.Context, id string, admin bool, lifetime time.Duration) (string, error)
 
-	// Check performs some heuristics on the account to check if resources are leaking.
-	Check(ctx context.Context, id string) ([]Leak, error)
 	// Cost returns aggregated cost data for the specified account in the specified time window (data might be delayed).
 	Cost(ctx context.Context, id string, window time.Duration) ([]Cost, error)
 

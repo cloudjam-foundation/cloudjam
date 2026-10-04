@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
-	"path"
 	"time"
 
 	awssdk "github.com/aws/aws-sdk-go-v2/aws"
@@ -28,24 +27,11 @@ type Credentials struct {
 }
 
 const sandboxInlinePolicy = "cloudjam"
-
-// maxVolumeSize defines the hardcoded maximum storage size (ebs).
-const maxVolumeSize = 50 // 50 gb
-
-// allowedInstanceTypes defines a hardcoded list of allowed ec2 instance types.
-var allowedInstanceTypes = []string{
-	"t2.*", "t3.*", "t3a.*", "t4g.*", "*.micro", "*.small", "*.medium",
-}
-
-// isAllowedInstance tells you if the specified instanceType is allowed according to allowedInstanceTypes.
-func isAllowedInstance(instanceType string) bool {
-	for _, pattern := range allowedInstanceTypes {
-		if ok, _ := path.Match(pattern, instanceType); ok {
-			return true
-		}
-	}
-	return false
-}
+const (
+	guardPolicyName     = "cloudjam-guard"
+	whitelistPolicyName = "cloudjam-whitelist"
+	costPolicyName      = "cloudjam-cost"
+)
 
 var _ provider.Provider = &Provider{}
 
@@ -71,8 +57,6 @@ type Provider struct {
 	costexplorer  *costexplorer.Client
 	sts           *sts.Client
 }
-
-var _ provider.Provider = (*Provider)(nil)
 
 type ProviderOption func(*Provider)
 
@@ -193,10 +177,17 @@ func (p *Provider) bootstrap(ctx context.Context) error {
 		return fmt.Errorf("list account policies: %w", err)
 	}
 
-	guardPolicyID := ""
+	guardPolicyID, whitelistPolicyID, costPolicyID := "", "", ""
 	for _, policy := range policiesResp.Policies {
-		if policy.Name != nil && *policy.Name == "cloudjam-guard" {
-			guardPolicyID = *policy.Id
+		if policy.Name != nil {
+			switch *policy.Name {
+			case guardPolicyName:
+				guardPolicyID = *policy.Id
+			case whitelistPolicyName:
+				whitelistPolicyID = *policy.Id
+			case costPolicyName:
+				costPolicyID = *policy.Id
+			}
 		}
 	}
 
@@ -206,7 +197,7 @@ func (p *Provider) bootstrap(ctx context.Context) error {
 	}
 	if guardPolicyID == "" {
 		_, err = p.organizations.CreatePolicy(ctx, &organizations.CreatePolicyInput{
-			Name:        new("cloudjam-guard"), // hardcoded unchangable API
+			Name:        new(guardPolicyName), // hardcoded unchangable API
 			Description: new("read the fucking cloudjam manual"),
 			Type:        orgtypes.PolicyTypeServiceControlPolicy,
 			Content:     new(string(guardPolicyContent)),
@@ -223,7 +214,6 @@ func (p *Provider) bootstrap(ctx context.Context) error {
 			return fmt.Errorf("updating cloudjam guard policy: %w", err)
 		}
 	}
-
 	_, err = p.organizations.AttachPolicy(ctx, &organizations.AttachPolicyInput{
 		PolicyId: &guardPolicyID,
 		TargetId: &p.cloudjamOU,
@@ -231,6 +221,73 @@ func (p *Provider) bootstrap(ctx context.Context) error {
 	if err != nil {
 		if _, ok := errors.AsType[*orgtypes.DuplicatePolicyAttachmentException](err); !ok {
 			return fmt.Errorf("attaching guard policy (%q) to cloudjam ou (%q): %w", guardPolicyID, p.cloudjamOU, err)
+		}
+	}
+
+	whitelistPolicyContent, err := whitelistControlPolicy(p.regions)
+	if err != nil {
+		return err
+	}
+	if whitelistPolicyID == "" {
+		_, err = p.organizations.CreatePolicy(ctx, &organizations.CreatePolicyInput{
+			Name:        new(whitelistPolicyName), // hardcoded unchangable API
+			Description: new("read the fucking cloudjam manual"),
+			Type:        orgtypes.PolicyTypeServiceControlPolicy,
+			Content:     new(string(whitelistPolicyContent)),
+		})
+		if err != nil {
+			return fmt.Errorf("creating cloudjam whitelist policy: %w", err)
+		}
+	} else {
+		_, err = p.organizations.UpdatePolicy(ctx, &organizations.UpdatePolicyInput{
+			PolicyId: &whitelistPolicyID,
+			Content:  new(string(whitelistPolicyContent)),
+		})
+		if err != nil {
+			return fmt.Errorf("updating cloudjam whitelist policy: %w", err)
+		}
+	}
+	_, err = p.organizations.AttachPolicy(ctx, &organizations.AttachPolicyInput{
+		PolicyId: &whitelistPolicyID,
+		TargetId: &p.cloudjamOU,
+	})
+	if err != nil {
+		if _, ok := errors.AsType[*orgtypes.DuplicatePolicyAttachmentException](err); !ok {
+			return fmt.Errorf("attaching whitelist policy (%q) to cloudjam ou (%q): %w", whitelistPolicyID, p.cloudjamOU, err)
+		}
+	}
+
+	costPolicyContent, err := costControlPolicy(p.regions)
+	if err != nil {
+		return err
+	}
+	if costPolicyID == "" {
+		_, err = p.organizations.CreatePolicy(ctx, &organizations.CreatePolicyInput{
+			Name:        new(costPolicyName), // hardcoded unchangable API
+			Description: new("read the fucking cloudjam manual"),
+			Type:        orgtypes.PolicyTypeServiceControlPolicy,
+			Content:     new(string(costPolicyContent)),
+		})
+		if err != nil {
+			return fmt.Errorf("creating cloudjam cost policy: %w", err)
+		}
+	} else {
+		_, err = p.organizations.UpdatePolicy(ctx, &organizations.UpdatePolicyInput{
+			PolicyId: &costPolicyID,
+			Content:  new(string(costPolicyContent)),
+		})
+		if err != nil {
+			return fmt.Errorf("updating cloudjam cost policy: %w", err)
+		}
+	}
+
+	_, err = p.organizations.AttachPolicy(ctx, &organizations.AttachPolicyInput{
+		PolicyId: &costPolicyID,
+		TargetId: &p.cloudjamOU,
+	})
+	if err != nil {
+		if _, ok := errors.AsType[*orgtypes.DuplicatePolicyAttachmentException](err); !ok {
+			return fmt.Errorf("attaching cost policy (%q) to cloudjam ou (%q): %w", costPolicyID, p.cloudjamOU, err)
 		}
 	}
 
