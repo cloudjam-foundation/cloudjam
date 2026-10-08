@@ -196,7 +196,7 @@ func (p *Provider) bootstrap(ctx context.Context) error {
 		return err
 	}
 	if guardPolicyID == "" {
-		_, err = p.organizations.CreatePolicy(ctx, &organizations.CreatePolicyInput{
+		result, err := p.organizations.CreatePolicy(ctx, &organizations.CreatePolicyInput{
 			Name:        new(guardPolicyName), // hardcoded unchangable API
 			Description: new("read the fucking cloudjam manual"),
 			Type:        orgtypes.PolicyTypeServiceControlPolicy,
@@ -205,6 +205,7 @@ func (p *Provider) bootstrap(ctx context.Context) error {
 		if err != nil {
 			return fmt.Errorf("creating cloudjam guard policy: %w", err)
 		}
+		guardPolicyID = *result.Policy.PolicySummary.Id
 	} else {
 		_, err = p.organizations.UpdatePolicy(ctx, &organizations.UpdatePolicyInput{
 			PolicyId: &guardPolicyID,
@@ -229,7 +230,7 @@ func (p *Provider) bootstrap(ctx context.Context) error {
 		return err
 	}
 	if whitelistPolicyID == "" {
-		_, err = p.organizations.CreatePolicy(ctx, &organizations.CreatePolicyInput{
+		result, err := p.organizations.CreatePolicy(ctx, &organizations.CreatePolicyInput{
 			Name:        new(whitelistPolicyName), // hardcoded unchangable API
 			Description: new("read the fucking cloudjam manual"),
 			Type:        orgtypes.PolicyTypeServiceControlPolicy,
@@ -238,6 +239,7 @@ func (p *Provider) bootstrap(ctx context.Context) error {
 		if err != nil {
 			return fmt.Errorf("creating cloudjam whitelist policy: %w", err)
 		}
+		whitelistPolicyID = *result.Policy.PolicySummary.Id
 	} else {
 		_, err = p.organizations.UpdatePolicy(ctx, &organizations.UpdatePolicyInput{
 			PolicyId: &whitelistPolicyID,
@@ -262,7 +264,7 @@ func (p *Provider) bootstrap(ctx context.Context) error {
 		return err
 	}
 	if costPolicyID == "" {
-		_, err = p.organizations.CreatePolicy(ctx, &organizations.CreatePolicyInput{
+		result, err := p.organizations.CreatePolicy(ctx, &organizations.CreatePolicyInput{
 			Name:        new(costPolicyName), // hardcoded unchangable API
 			Description: new("read the fucking cloudjam manual"),
 			Type:        orgtypes.PolicyTypeServiceControlPolicy,
@@ -271,6 +273,7 @@ func (p *Provider) bootstrap(ctx context.Context) error {
 		if err != nil {
 			return fmt.Errorf("creating cloudjam cost policy: %w", err)
 		}
+		costPolicyID = *result.Policy.PolicySummary.Id
 	} else {
 		_, err = p.organizations.UpdatePolicy(ctx, &organizations.UpdatePolicyInput{
 			PolicyId: &costPolicyID,
@@ -280,7 +283,6 @@ func (p *Provider) bootstrap(ctx context.Context) error {
 			return fmt.Errorf("updating cloudjam cost policy: %w", err)
 		}
 	}
-
 	_, err = p.organizations.AttachPolicy(ctx, &organizations.AttachPolicyInput{
 		PolicyId: &costPolicyID,
 		TargetId: &p.cloudjamOU,

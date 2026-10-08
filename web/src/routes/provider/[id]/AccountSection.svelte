@@ -13,7 +13,6 @@
 	import { onMount } from 'svelte';
 	import AccountPanel from './AccountPanel.svelte';
 	import CreateAccount from './CreateAccount.svelte';
-	import { ChevronRightIcon, RefreshCw } from '@lucide/svelte';
 
 	let { providerId }: { providerId: string } = $props();
 
@@ -21,6 +20,7 @@
 
 	let accounts: Account[] = $state([]);
 	let exhausted = $state(true);
+	let dialog = $state(false);
 
 	let selected: Account | undefined = $state();
 	let creating = $state(false);
@@ -49,10 +49,7 @@
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
 		<h2 class="text-xl opacity-80">Accounts</h2>
-		<Button variant="outline" class="ml-auto cursor-pointer" onclick={() => load()}>
-			<RefreshCw />
-		</Button>
-		<Button variant="outline" class="cursor-pointer" onclick={() => (creating = !creating)}>
+		<Button variant="outline" class="ml-auto cursor-pointer" onclick={() => (creating = !creating)}>
 			<PlusIcon /> Provision Account
 		</Button>
 	</div>
@@ -68,36 +65,53 @@
 			<Alert.Description>You are not allowed to list the accounts of this provider</Alert.Description>
 		</Alert.Root>
 	{:else}
+		{#if selected}
+			<AccountPanel account={selected} bind:open={dialog} refresh={() => ((dialog = false), load())} />
+		{/if}
 		<Table.Root>
 			<Table.Header>
 				<Table.Row>
+					<Table.Head class="w-24">State</Table.Head>
 					<Table.Head>Name</Table.Head>
 					<Table.Head>Description</Table.Head>
-					<Table.Head>State</Table.Head>
 					<Table.Head>Target</Table.Head>
 					<Table.Head>Bound Until</Table.Head>
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
 				{#each accounts as account (account.id)}
-					<Table.Row
-						class="cursor-pointer"
-						onclick={() => (selected = selected?.id === account.id ? undefined : account)}
-					>
+					<Table.Row class="cursor-pointer" onclick={() => ((selected = account), (dialog = true))}>
+						<Table.Cell>
+							<div class="tiny-apple-glass w-max rounded-full px-3 py-[0.2rem] text-center text-xs">
+								{#if account.state === AccountState.Provisioning || account.state === AccountState.Preparing || account.state === AccountState.Evicting}
+									<span class="shimmer shimmer-color-muted">
+										{AccountState[account.state]}
+									</span>
+								{:else if account.state === AccountState.Deleting}
+									<span class="shimmer text-red-500 shimmer-color-red-900">
+										{AccountState[account.state]}
+									</span>
+								{:else if account.state === AccountState.Corrupted}
+									<span class="text-red-500">
+										{AccountState[account.state]}
+									</span>
+								{:else if account.state === AccountState.Ready}
+									<span class="text-emerald-500">
+										{AccountState[account.state]}
+									</span>
+								{:else if account.state === AccountState.Running}
+									<span class="shimmer text-orange-400 shimmer-color-orange-800">
+										{AccountState[account.state]}
+									</span>
+								{:else}
+									{AccountState[account.state]}
+								{/if}
+							</div>
+						</Table.Cell>
 						<Table.Cell class="flex flex-row items-center gap-2 font-medium">
-							<ChevronRightIcon
-								class="transition-all duration-150 ease-in-out {selected && selected.id === account.id
-									? 'rotate-90'
-									: ''}"
-							/>
 							{account.name}
 						</Table.Cell>
 						<Table.Cell>{account.description}</Table.Cell>
-						<Table.Cell>
-							<Badge variant={account.state === AccountState.Corrupted ? 'destructive' : 'secondary'}>
-								{AccountState[account.state]}
-							</Badge>
-						</Table.Cell>
 						<Table.Cell class="font-mono text-xs">{account.targetId}</Table.Cell>
 						<Table.Cell>
 							{account.boundUntil ? timestampDate(account.boundUntil).toLocaleString() : ''}
@@ -124,12 +138,6 @@
 				Load More
 			</Button>
 		{/if}
-	{/if}
-
-	{#if selected}
-		{#key selected.id}
-			<AccountPanel account={selected} refresh={() => load()} />
-		{/key}
 	{/if}
 
 	{#if listState.error}

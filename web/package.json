@@ -41,7 +41,7 @@
 		"prettier-plugin-organize-imports": "^4.3.0",
 		"prettier-plugin-svelte": "^3.4.1",
 		"prettier-plugin-tailwindcss": "^0.7.2",
-		"shadcn-svelte": "^1.5.0",
+		"shadcn-svelte": "^1.7.0",
 		"svelte": "^5.51.0",
 		"svelte-check": "^4.4.2",
 		"svelte-gauge": "^2.0.1",
