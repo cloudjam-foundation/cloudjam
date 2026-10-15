@@ -5,6 +5,19 @@
 
 Platform to design, host and play CTF like challenges for DevOps guys.
 
+## NoAI Policy
+
+CloudJam is a platform dedicated to helping people develop skills through competitive learning.
+
+While LLMs can be useful under certain circumstances, relying on them often prevents genuine understanding of underlying concepts.
+
+To lead by example, **we do not accept AI-generated code in the core CloudJam system**, regardless of how "superior" the quality might be. 
+
+We strive to design our challenge SDKs with human developers in mind and strongly encourage writing challenge plugins independently. 
+However, the decision to use LLM-assisted tools or services when developing your own challenge plugins is ultimately yours.
+
+**Security audits are explicitly exempt from this policy.** AI-assisted security analysis is permitted, as the security and integrity of the platform take precedence over these restrictions.
+
 
 ## Deployment 🪖
 

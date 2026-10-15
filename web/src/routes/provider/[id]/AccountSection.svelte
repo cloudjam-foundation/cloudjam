@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
 	import * as Alert from '$lib/components/shad/alert';
-	import { Badge } from '$lib/components/shad/badge';
 	import { Button } from '$lib/components/shad/button';
 	import * as Table from '$lib/components/shad/table';
 	import { ListRequestSchema } from '$lib/sdk/v1/cloud/account/account_pb';
@@ -38,12 +37,15 @@
 				accounts = startAfter ? [...accounts, ...resp.accounts] : resp.accounts;
 				exhausted = resp.accounts.length < limit;
 			}, listState);
-			timeoutId = setTimeout(poll, 5000);
+			timeoutId = setTimeout(poll, 10000);
 		}
 		poll();
 	}
 
-	onMount(() => load());
+	onMount(() => {
+		load();
+		return () => clearTimeout(timeoutId);
+	});
 </script>
 
 <div class="flex w-full flex-col gap-4">
