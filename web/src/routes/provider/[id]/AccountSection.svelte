@@ -12,6 +12,7 @@
 	import { onMount } from 'svelte';
 	import AccountPanel from './AccountPanel.svelte';
 	import CreateAccount from './CreateAccount.svelte';
+	import StateBadge from '$lib/components/custom/badges/StateBadge.svelte';
 
 	let { providerId }: { providerId: string } = $props();
 
@@ -84,31 +85,19 @@
 				{#each accounts as account (account.id)}
 					<Table.Row class="cursor-pointer" onclick={() => ((selected = account), (dialog = true))}>
 						<Table.Cell>
-							<div class="tiny-apple-glass w-max rounded-full px-3 py-[0.2rem] text-center text-xs">
-								{#if account.state === AccountState.Provisioning || account.state === AccountState.Preparing || account.state === AccountState.Evicting}
-									<span class="shimmer shimmer-color-muted">
-										{AccountState[account.state]}
-									</span>
-								{:else if account.state === AccountState.Deleting}
-									<span class="shimmer text-red-500 shimmer-color-red-900">
-										{AccountState[account.state]}
-									</span>
-								{:else if account.state === AccountState.Corrupted}
-									<span class="text-red-500">
-										{AccountState[account.state]}
-									</span>
-								{:else if account.state === AccountState.Ready}
-									<span class="text-emerald-500">
-										{AccountState[account.state]}
-									</span>
-								{:else if account.state === AccountState.Running}
-									<span class="shimmer text-orange-400 shimmer-color-orange-800">
-										{AccountState[account.state]}
-									</span>
-								{:else}
-									{AccountState[account.state]}
-								{/if}
-							</div>
+							<StateBadge
+								text={AccountState[account.state]}
+								state={account.state.toString()}
+								mapper={{
+									[AccountState.Provisioning.toString()]: 'RunningPositive',
+									[AccountState.Preparing.toString()]: 'RunningPositive',
+									[AccountState.Evicting.toString()]: 'RunningPositive',
+									[AccountState.Deleting.toString()]: 'RunningNegative',
+									[AccountState.Corrupted.toString()]: 'StableNegative',
+									[AccountState.Ready.toString()]: 'StablePositive',
+									[AccountState.Running.toString()]: 'RunningWarning'
+								}}
+							/>
 						</Table.Cell>
 						<Table.Cell class="flex flex-row items-center gap-2 font-medium">
 							{account.name}
