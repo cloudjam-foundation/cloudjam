@@ -68,7 +68,7 @@ func (v *Authorizer) Check(ctx context.Context, subject, procedure string) (time
 
 	policy := policy{
 		expires:     time.Now().Add(v.cacheTimeout),
-		permissions: map[string][]glob.Glob{},
+		permissions: map[string][]*glob.Pattern{},
 	}
 	for scope, exprs := range role.Permissions.Value() {
 		for expr := range strings.SplitSeq(exprs, ",") {

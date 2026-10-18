@@ -10,7 +10,7 @@ import (
 // Access is modeled as list of glob patterns that must match the gRPC procedure name.
 type policy struct {
 	expires     time.Time
-	permissions map[string][]glob.Glob
+	permissions map[string][]*glob.Pattern
 }
 
 func (p *policy) check(procedure string) []string {
