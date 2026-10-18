@@ -3,6 +3,7 @@
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import LogSection from './LogSection.svelte';
 	import MetricSection from './MetricSection.svelte';
+	import CostSection from './CostSection.svelte';
 
 	let { close }: { close: () => void } = $props();
 
@@ -38,6 +39,6 @@
 	{:else if tab === 'metrics'}
 		<MetricSection />
 	{:else if tab === 'cost'}
-		<p>TBD (here would be cost / budget analytics aggregated from each providers interface)</p>
+		<CostSection />
 	{/if}
 </div>

@@ -10,6 +10,7 @@
 		timeFormat,
 		labels,
 		data,
+		brushDisabled: disabled,
 		unit = '',
 		from = $bindable(),
 		to = $bindable()
@@ -17,10 +18,13 @@
 		timeFormat: any;
 		labels: Chart.ChartConfig;
 		data: any[];
+		brushDisabled?: boolean;
 		unit?: string;
 		from?: Date;
 		to?: Date;
 	} = $props();
+
+	let locked = $state(false);
 </script>
 
 <ChartContainer config={labels} class="-ml-3 aspect-auto h-62.5 w-full">
@@ -35,7 +39,12 @@
 			color: value.color
 		}))}
 		seriesLayout="stack"
+		tooltipContext={{
+			locked,
+			onclick: () => (locked = !locked)
+		}}
 		brush={{
+			disabled: disabled,
 			axis: 'x',
 			zoomOnBrush: false,
 			onBrushEnd: ({ brush }) => {
@@ -74,9 +83,9 @@
 			</ChartClipPath>
 		{/snippet}
 		{#snippet tooltip({ context })}
-			{#if Number(context) === 0 || true}
+			{#if Number(context) !== 0}
 				<Chart.Tooltip
-					class="w-max"
+					class="overflow-scroll-hidden pointer-events-auto! z-50 max-h-72 w-max"
 					labelFormatter={(v: Date) => {
 						return v.toLocaleDateString('en-US', {
 							month: '2-digit',

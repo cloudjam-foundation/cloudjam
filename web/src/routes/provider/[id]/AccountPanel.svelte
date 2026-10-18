@@ -23,6 +23,8 @@
 	import { CopyIcon, HandCoinsIcon, KeyRoundIcon, SquareArrowUpRightIcon } from '@lucide/svelte';
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import LoadingBadge from '$lib/components/custom/badges/LoadingBadge.svelte';
+	import ProcessingButton from '$lib/components/custom/buttons/ProcessingButton.svelte';
+	import Badge from '$lib/components/shad/badge/badge.svelte';
 
 	let { account, open = $bindable(), refresh }: { account: Account; open: boolean; refresh: () => void } = $props();
 
@@ -115,9 +117,10 @@
 		{:else}
 			<p class="text-sm text-muted-foreground">Aggregate account cost report</p>
 			<div class="flex flex-row items-center gap-2">
-				<Button
-					class="cursor-pointer self-start"
-					disabled={costState.loading}
+				<ProcessingButton
+					variant="primary"
+					processing={costState.loading}
+					hint={'Aggregating...'}
 					onclick={() =>
 						Submit(async () => {
 							const resp = await Glue.account.aggregateCost(
@@ -137,10 +140,7 @@
 				>
 					<HandCoinsIcon />
 					Aggregate Cost
-				</Button>
-				{#if costState.loading}
-					<LoadingBadge text={'Aggregating Data'} />
-				{/if}
+				</ProcessingButton>
 				<p>Total Cost: {totalCost}$</p>
 			</div>
 
