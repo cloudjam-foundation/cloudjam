@@ -1,3 +1,4 @@
+<!-- Badge with built-in mappings to opinionated states that represent a color & animation -->
 <script lang="ts">
 	type State =
 		| 'StableNeutral'

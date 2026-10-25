@@ -1,3 +1,4 @@
+<!-- Badge with loading animation and spinner -->
 <script lang="ts">
 	import Spinner from '$lib/components/shad/spinner/spinner.svelte';
 

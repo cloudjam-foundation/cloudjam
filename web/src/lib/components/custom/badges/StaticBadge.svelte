@@ -1,3 +1,4 @@
+<!-- Normal badge with additional support for shimmering text -->
 <script lang="ts">
 	let { text, shimmer }: { text: string; shimmer?: boolean } = $props();
 </script>

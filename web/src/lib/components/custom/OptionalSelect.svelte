@@ -1,3 +1,4 @@
+<!-- Opinionated selector that can dynamically load data and also works if no suggestion got loaded -->
 <script lang="ts">
 	import { Input } from '$lib/components/shad/input';
 	import * as Select from '$lib/components/shad/select';

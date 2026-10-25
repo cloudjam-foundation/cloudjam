@@ -1,3 +1,4 @@
+<!-- button used to automatically support some async action feedback -->
 <script lang="ts">
 	import Spinner from '$lib/components/shad/spinner/spinner.svelte';
 	import type { Snippet } from 'svelte';
@@ -16,7 +17,7 @@
 
 	const variants: Record<Variant, string> = {
 		primary: 'bg-primary hover:bg-primary/80 active:bg-primary/80 text-secondary',
-		secondary: 'bg-secondary hover:bg-secondary/80 active:bg-secondary/80 text-primary',
+		secondary: 'bg-secondary/80 hover:bg-secondary/60 active:bg-secondary/60 text-primary',
 		destructive: 'bg-destructive/20 hover:bg-destructive/25 active:bg-destructive/25 text-destructive'
 	};
 

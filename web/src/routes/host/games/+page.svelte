@@ -1,26 +1,18 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import DelaySpinner from '$lib/components/custom/DelaySpinner.svelte';
-	import * as Alert from '$lib/components/shad/alert';
-	import { Badge } from '$lib/components/shad/badge';
-	import { Button } from '$lib/components/shad/button';
 	import * as Card from '$lib/components/shad/card';
 	import { Input } from '$lib/components/shad/input';
-	import * as Table from '$lib/components/shad/table';
 	import { ListRequestSchema } from '$lib/sdk/v1/play/game/game_pb';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import PlusIcon from '@lucide/svelte/icons/plus';
-	import { onMount } from 'svelte';
-
-	const limit = 20;
-
-	let games: Game[] = $state([]);
-	let exhausted = $state(true);
+	import DataTable from './DataTable.svelte';
+	import StateBadge from '$lib/components/custom/badges/StateBadge.svelte';
+	import Button from '$lib/components/custom/buttons/Button.svelte';
+	import LinkButton from '$lib/components/custom/buttons/LinkButton.svelte';
 
 	let id = $state('');
 
@@ -30,18 +22,7 @@
 		if (game.to && timestampDate(game.to).getTime() < now) return 'ended';
 		return 'running';
 	}
-
 	let gamesState: SubmitState = $state({ error: '', loading: true, forbidden: false });
-
-	function load(startAfter?: string) {
-		Submit(async () => {
-			const resp = await Glue.game.list(create(ListRequestSchema, { limit: limit, startAfter: startAfter }));
-			games = startAfter ? [...games, ...resp.games] : resp.games;
-			exhausted = resp.games.length < limit;
-		}, gamesState);
-	}
-
-	onMount(() => load());
 </script>
 
 <svelte:head>
@@ -62,9 +43,49 @@
 		</Button>
 	</div>
 
-	{#if gamesState.loading}
-		<DelaySpinner class="mt-10 flex justify-center" delay={200} />
-	{:else if gamesState.forbidden}
+	<DataTable
+		load={async (startAfter: Game | undefined) => {
+			const games: Game[] = [];
+			await Submit(async () => {
+				const resp = await Glue.game.list(create(ListRequestSchema, { limit: 3, startAfter: startAfter?.id }));
+				games.push(...resp.games);
+			}, gamesState);
+			return games;
+		}}
+		loadState={gamesState}
+		columns={[
+			{ title: 'Status', width: '90px', render: renderStatus },
+			{ title: 'Name', width: '10%', render: renderName },
+			{ title: 'Description', width: '20%', render: renderDescription },
+			{ title: 'From', width: '20%', render: renderFrom },
+			{ title: 'To', width: '20%', render: renderTo },
+			{ title: 'Action', width: '10%', render: renderAction }
+		]}
+	/>
+	{#snippet renderName(game: Game)}
+		<b>{game.name}</b>
+	{/snippet}
+	{#snippet renderDescription(game: Game)}
+		{game.description}
+	{/snippet}
+	{#snippet renderFrom(game: Game)}
+		{game.from ? timestampDate(game.from).toLocaleString() : ''}
+	{/snippet}
+	{#snippet renderTo(game: Game)}
+		{game.to ? timestampDate(game.to).toLocaleString() : ''}
+	{/snippet}
+	{#snippet renderStatus(game: Game)}
+		<StateBadge
+			text={status(game)}
+			state={status(game)}
+			mapper={{ running: 'StablePositive', upcoming: 'StableWarning', ended: 'StableNeutral' }}
+		/>
+	{/snippet}
+	{#snippet renderAction(game: Game)}
+		<LinkButton text="Open" href={`/host/games/${game.id}`} data-sveltekit-preload-data="tap" />
+	{/snippet}
+
+	{#if gamesState.forbidden}
 		<Card.Root class="w-full">
 			<Card.Header>
 				<Card.Title>Open a Game</Card.Title>
@@ -77,56 +98,5 @@
 				</form>
 			</Card.Content>
 		</Card.Root>
-	{:else}
-		<Table.Root>
-			<Table.Header>
-				<Table.Row>
-					<Table.Head>Name</Table.Head>
-					<Table.Head>Description</Table.Head>
-					<Table.Head>From</Table.Head>
-					<Table.Head>To</Table.Head>
-					<Table.Head>Status</Table.Head>
-					<Table.Head>Scope</Table.Head>
-				</Table.Row>
-			</Table.Header>
-			<Table.Body>
-				{#each games as game (game.id)}
-					<Table.Row class="cursor-pointer" onclick={() => goto(`/host/games/${game.id}`)}>
-						<Table.Cell class="font-medium">{game.name}</Table.Cell>
-						<Table.Cell>{game.description}</Table.Cell>
-						<Table.Cell>{game.from ? timestampDate(game.from).toLocaleString() : ''}</Table.Cell>
-						<Table.Cell>{game.to ? timestampDate(game.to).toLocaleString() : ''}</Table.Cell>
-						<Table.Cell><Badge variant="secondary">{status(game)}</Badge></Table.Cell>
-						<Table.Cell><Badge variant="outline">{game.scope}</Badge></Table.Cell>
-					</Table.Row>
-				{:else}
-					<Table.Row>
-						<Table.Cell colspan={6}>
-							<p class="text-muted-foreground p-4 text-sm italic">
-								{gamesState.loading ? 'Loading games…' : 'No games yet (or management did not give you access, loser)'}
-							</p>
-						</Table.Cell>
-					</Table.Row>
-				{/each}
-			</Table.Body>
-		</Table.Root>
-		{#if !exhausted}
-			<Button
-				variant="outline"
-				class="cursor-pointer self-center"
-				disabled={gamesState.loading}
-				onclick={() => load(games.at(-1)?.id)}
-			>
-				Load More
-			</Button>
-		{/if}
-	{/if}
-
-	{#if gamesState.error}
-		<Alert.Root variant="destructive">
-			<AlertCircleIcon />
-			<Alert.Title>Failed to load games</Alert.Title>
-			<Alert.Description>{gamesState.error}</Alert.Description>
-		</Alert.Root>
 	{/if}
 </div>

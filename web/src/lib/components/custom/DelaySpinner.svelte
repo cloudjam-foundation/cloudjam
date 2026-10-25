@@ -1,3 +1,4 @@
+<!-- Spinner that activates only after the specified delay to avoid bubble spinners if it loads fast -->
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Spinner from '../shad/spinner/spinner.svelte';
