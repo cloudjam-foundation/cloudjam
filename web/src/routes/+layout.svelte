@@ -10,6 +10,7 @@
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/env';
 	import { page } from '$app/state';
+	import Background from '$lib/components/layout/Background.svelte';
 
 	let { children } = $props();
 
@@ -28,23 +29,26 @@
 
 <ModeWatcher />
 
-{#if page.route.id !== '/login' && page.route.id !== '/register'}
-	<Sidebar.Provider>
-		<AppSidebar />
-		<span class="absolute md:hidden">
-			<Sidebar.Trigger />
-		</span>
+<div class="relative isolate min-h-screen w-full overflow-hidden">
+	<Background />
+	{#if page.route.id !== '/login' && page.route.id !== '/register'}
+		<Sidebar.Provider>
+			<AppSidebar />
+			<span class="absolute md:hidden">
+				<Sidebar.Trigger />
+			</span>
 
+			<main class="h-dvh min-w-0 flex-1">
+				<section class="h-full min-w-0 p-3 sm:p-5">
+					{@render children?.()}
+				</section>
+			</main>
+		</Sidebar.Provider>
+	{:else}
 		<main class="h-dvh min-w-0 flex-1">
 			<section class="h-full min-w-0 p-3 sm:p-5">
 				{@render children?.()}
 			</section>
 		</main>
-	</Sidebar.Provider>
-{:else}
-	<main class="h-dvh min-w-0 flex-1">
-		<section class="h-full min-w-0 p-3 sm:p-5">
-			{@render children?.()}
-		</section>
-	</main>
-{/if}
+	{/if}
+</div>

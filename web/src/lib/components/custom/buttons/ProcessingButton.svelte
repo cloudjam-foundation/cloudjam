@@ -8,7 +8,7 @@
 	type Variant = 'primary' | 'secondary' | 'destructive';
 
 	interface Props extends HTMLButtonAttributes {
-		processing: boolean;
+		processing?: boolean;
 		hint?: string;
 		variant: Variant;
 		class?: string;
@@ -16,9 +16,9 @@
 	}
 
 	const variants: Record<Variant, string> = {
-		primary: 'bg-primary hover:bg-primary/80 active:bg-primary/80 text-secondary',
-		secondary: 'bg-secondary/80 hover:bg-secondary/60 active:bg-secondary/60 text-primary',
-		destructive: 'bg-destructive/20 hover:bg-destructive/25 active:bg-destructive/25 text-destructive'
+		primary: '',
+		secondary: '',
+		destructive: ''
 	};
 
 	let { processing, hint, variant, class: className, children, ...restProps }: Props = $props();
@@ -27,7 +27,7 @@
 <button
 	disabled={processing}
 	class={cn(
-		'relative flex cursor-pointer items-center justify-center rounded-md px-3 py-2 transition-all active:translate-y-px ',
+		'glass relative flex cursor-pointer items-center justify-center rounded-md px-3 py-2 transition-all active:translate-y-px ',
 		variants[variant],
 		className
 	)}

@@ -31,7 +31,7 @@
 
 <div class="glass w-max rounded-full px-3 py-[0.2rem] text-center text-xs">
 	{#if finalState === 'StableNeutral'}
-		<span class="text-muted"> {text} </span>
+		<span class="text-primary/70"> {text} </span>
 	{:else if finalState === 'StablePositive'}
 		<span class="text-emerald-500"> {text} </span>
 	{:else if finalState === 'StableWarning'}
@@ -39,7 +39,7 @@
 	{:else if finalState === 'StableNegative'}
 		<span class="text-red-500"> {text} </span>
 	{:else if finalState === 'RunningNeutral'}
-		<span class="shimmer shimmer-color-muted"> {text} </span>
+		<span class="shimmer shimmer-color-primary/70"> {text} </span>
 	{:else if finalState === 'RunningPositive'}
 		<span class="shimmer text-emerald-500 shimmer-color-emerald-800"> {text} </span>
 	{:else if finalState === 'RunningWarning'}
@@ -48,13 +48,3 @@
 		<span class="shimmer text-red-500 shimmer-color-red-900"> {text} </span>
 	{/if}
 </div>
-
-<style>
-	.glass {
-		box-shadow:
-			rgba(255, 255, 255, 0.05) 0px 4px 7px 0px,
-			rgba(255, 255, 255, 0.08) 0px 0px 0px 1px;
-		background-color: rgba(255, 255, 255, 0.01);
-		backdrop-filter: blur(2px);
-	}
-</style>

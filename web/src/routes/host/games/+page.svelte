@@ -9,10 +9,11 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import PlusIcon from '@lucide/svelte/icons/plus';
-	import DataTable from './DataTable.svelte';
 	import StateBadge from '$lib/components/custom/badges/StateBadge.svelte';
-	import Button from '$lib/components/custom/buttons/Button.svelte';
 	import LinkButton from '$lib/components/custom/buttons/LinkButton.svelte';
+	import DataTable from '$lib/components/layout/DataTable.svelte';
+	import ProcessingButton from '$lib/components/custom/buttons/ProcessingButton.svelte';
+	import { SquareArrowOutUpRight } from '@lucide/svelte';
 
 	let id = $state('');
 
@@ -34,56 +35,65 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" size="icon" class="cursor-pointer" href="/host/">
+		<LinkButton ghost href="/host/">
 			<ChevronLeftIcon />
-		</Button>
+		</LinkButton>
 		<h1 class="text-3xl opacity-80">Games</h1>
-		<Button variant="outline" class="ml-auto cursor-pointer" href="/host/games/new/">
+		<LinkButton class="ml-auto" href="/host/games/new/">
 			<PlusIcon /> Host Game
-		</Button>
+		</LinkButton>
 	</div>
 
-	<DataTable
-		load={async (startAfter: Game | undefined) => {
-			const games: Game[] = [];
-			await Submit(async () => {
-				const resp = await Glue.game.list(create(ListRequestSchema, { limit: 3, startAfter: startAfter?.id }));
-				games.push(...resp.games);
-			}, gamesState);
-			return games;
-		}}
-		loadState={gamesState}
-		columns={[
-			{ title: 'Status', width: '90px', render: renderStatus },
-			{ title: 'Name', width: '10%', render: renderName },
-			{ title: 'Description', width: '20%', render: renderDescription },
-			{ title: 'From', width: '20%', render: renderFrom },
-			{ title: 'To', width: '20%', render: renderTo },
-			{ title: 'Action', width: '10%', render: renderAction }
-		]}
-	/>
-	{#snippet renderName(game: Game)}
-		<b>{game.name}</b>
-	{/snippet}
-	{#snippet renderDescription(game: Game)}
-		{game.description}
-	{/snippet}
-	{#snippet renderFrom(game: Game)}
-		{game.from ? timestampDate(game.from).toLocaleString() : ''}
-	{/snippet}
-	{#snippet renderTo(game: Game)}
-		{game.to ? timestampDate(game.to).toLocaleString() : ''}
-	{/snippet}
-	{#snippet renderStatus(game: Game)}
-		<StateBadge
-			text={status(game)}
-			state={status(game)}
-			mapper={{ running: 'StablePositive', upcoming: 'StableWarning', ended: 'StableNeutral' }}
+	<div class="rounded-sm p-2">
+		<DataTable
+			load={async (startAfter: Game | undefined) => {
+				const games: Game[] = [];
+				await Submit(async () => {
+					const resp = await Glue.game.list(create(ListRequestSchema, { limit: 3, startAfter: startAfter?.id }));
+					games.push(...resp.games);
+				}, gamesState);
+				return games;
+			}}
+			loadState={gamesState}
+			columns={[
+				{ title: 'Status', width: '90px', render: renderStatus },
+				{ title: 'Name', width: '10%', render: renderName },
+				{ title: 'Description', width: '20%', render: renderDescription },
+				{ title: 'From', width: '20%', render: renderFrom },
+				{ title: 'To', width: '20%', render: renderTo },
+				{ title: 'Action', width: '10%', render: renderAction }
+			]}
 		/>
-	{/snippet}
-	{#snippet renderAction(game: Game)}
-		<LinkButton text="Open" href={`/host/games/${game.id}`} data-sveltekit-preload-data="tap" />
-	{/snippet}
+		{#snippet renderName(game: Game)}
+			<b>{game.name}</b>
+		{/snippet}
+		{#snippet renderDescription(game: Game)}
+			{game.description}
+		{/snippet}
+		{#snippet renderFrom(game: Game)}
+			{game.from ? timestampDate(game.from).toLocaleString() : ''}
+		{/snippet}
+		{#snippet renderTo(game: Game)}
+			{game.to ? timestampDate(game.to).toLocaleString() : ''}
+		{/snippet}
+		{#snippet renderStatus(game: Game)}
+			<StateBadge
+				text={status(game)}
+				state={status(game)}
+				mapper={{ running: 'StablePositive', upcoming: 'StableWarning', ended: 'StableNeutral' }}
+			/>
+		{/snippet}
+		{#snippet renderAction(game: Game)}
+			<LinkButton
+				href={`/host/games/${game.id}`}
+				class="underline active:scale-[0.99]"
+				data-sveltekit-preload-data="tap"
+			>
+				Open
+				<SquareArrowOutUpRight />
+			</LinkButton>
+		{/snippet}
+	</div>
 
 	{#if gamesState.forbidden}
 		<Card.Root class="w-full">
@@ -94,7 +104,7 @@
 			<Card.Content>
 				<form class="flex flex-row items-center gap-2" onsubmit={() => goto(`/host/games/${id}`)}>
 					<Input class="max-w-96" bind:value={id} placeholder="Game id" />
-					<Button type="submit" class="cursor-pointer" disabled={!id.trim()}>Open</Button>
+					<ProcessingButton type="submit" variant={'primary'} disabled={!id.trim()}>Open</ProcessingButton>
 				</form>
 			</Card.Content>
 		</Card.Root>

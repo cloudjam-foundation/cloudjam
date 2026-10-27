@@ -8,6 +8,7 @@
 	import Input from '$lib/components/shad/input/input.svelte';
 	import Button from '$lib/components/shad/button/button.svelte';
 	import * as Alert from '$lib/components/shad/alert';
+	import Card from '$lib/components/layout/Card.svelte';
 
 	let loginState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let loginRequest = $state(create(LoginRequestSchema, {}));
@@ -21,30 +22,32 @@
 </svelte:head>
 
 <div class="flex w-full items-center justify-center">
-	<form
-		class="mt-[10%] flex w-96 flex-col items-center gap-4 rounded-2xl border-[0.05rem] border-neutral/40 p-7 shadow-sm shadow-primary/20"
-		onsubmit={() =>
-			Submit(async () => {
-				setToken((await Glue.auth.login(loginRequest)).token);
-				goto('/profile');
-			}, loginState)}
-	>
-		<img alt="icon" src={logo} class="h-32" />
-		<h1 class="text-4xl opacity-80">CloudJam Login</h1>
-		<Input bind:value={loginRequest.email} placeholder="Please enter your Email" type="email" />
-		<Input bind:value={loginRequest.password} placeholder="Please enter your Password" type="password" />
-		<Button class="w-full cursor-pointer" type="submit" variant="default">
-			{#if loginState.loading}
-				<Loader />
+	<Card class="mt-[10%] w-96">
+		<form
+			class="flex flex-col items-center gap-4"
+			onsubmit={() =>
+				Submit(async () => {
+					setToken((await Glue.auth.login(loginRequest)).token);
+					goto('/profile');
+				}, loginState)}
+		>
+			<img alt="icon" src={logo} class="h-32" />
+			<h1 class="text-4xl opacity-80">CloudJam Login</h1>
+			<Input bind:value={loginRequest.email} placeholder="Please enter your Email" type="email" />
+			<Input bind:value={loginRequest.password} placeholder="Please enter your Password" type="password" />
+			<Button class="w-full cursor-pointer" type="submit" variant="default">
+				{#if loginState.loading}
+					<Loader />
+				{/if}
+				Login
+			</Button>
+			{#if loginState.error}
+				<Alert.Root>
+					<OctagonAlert />
+					<Alert.Title>Authentication failed</Alert.Title>
+					<Alert.Description class="whitespace-pre-line">{loginState.error}</Alert.Description>
+				</Alert.Root>
 			{/if}
-			Login
-		</Button>
-		{#if loginState.error}
-			<Alert.Root>
-				<OctagonAlert />
-				<Alert.Title>Authentication failed</Alert.Title>
-				<Alert.Description class="whitespace-pre-line">{loginState.error}</Alert.Description>
-			</Alert.Root>
-		{/if}
-	</form>
+		</form>
+	</Card>
 </div>
