@@ -1,23 +1,24 @@
 <!-- ported from shad (eventually we should make this simpler and better) -->
 <script lang="ts">
+	import Spinner from '$lib/components/shad/spinner/spinner.svelte';
 	import type { Snippet } from 'svelte';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
 	import { cn } from 'tailwind-variants';
 
-	type Variant = 'primary' | 'secondary' | 'destructive';
+	type Variant = 'primary' | 'jam' | 'destructive';
 
 	interface Props extends HTMLButtonAttributes {
-		processing: boolean;
-		hint?: string;
 		variant: Variant;
+		hint?: string;
+		processing?: boolean;
 		class?: string;
 		children: Snippet;
 	}
 
 	const variants: Record<Variant, string> = {
-		primary: '',
-		secondary: '',
-		destructive: ''
+		primary: 'glass text-primary/80 hover:text-primary',
+		jam: 'jam-glass text-jam/60 hover:text-jam/80',
+		destructive: 'destructive-glass text-destructive/60 hover:text-destructive/80'
 	};
 
 	let { processing, hint, variant, class: className, children, ...restProps }: Props = $props();
@@ -26,7 +27,7 @@
 <button
 	disabled={processing}
 	class={cn(
-		'relative flex cursor-pointer items-center justify-center rounded-md glass px-3 py-2 transition-all active:translate-y-px ',
+		'relative flex cursor-pointer items-center justify-center rounded-md px-3 py-1.5 transition-all active:translate-y-px ',
 		variants[variant],
 		className
 	)}

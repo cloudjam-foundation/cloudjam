@@ -3,14 +3,14 @@
 	import * as Popover from '$lib/components/shad/popover';
 	import * as Field from '$lib/components/shad/field';
 	import { useSidebar } from '$lib/components/shad/sidebar';
-	import AvatarRenderer from '$lib/components/custom/renderers/AvatarRenderer.svelte';
+	import Avatar from '$lib/components/custom/sidebar/Avatar.svelte';
 	import { Skeleton } from '$lib/components/shad/skeleton';
 	import { ChevronsUpDownIcon, CogIcon, SunIcon, MoonIcon, LoaderCircleIcon, LogOutIcon } from '@lucide/svelte';
 	import { mode, resetMode, setMode } from 'mode-watcher';
-	import { Button, buttonVariants } from '$lib/components/shad/button';
 	import { toast } from 'svelte-sonner';
 	import { setToken } from '$lib';
 	import { goto } from '$app/navigation';
+	import Button from '../buttons/Button.svelte';
 
 	const sidebar = useSidebar();
 	let { pubId, email, loading = $bindable(true) }: { pubId: string; email: string; loading: boolean } = $props();
@@ -60,7 +60,7 @@
 				>
 					{#if loading}
 						<div
-							class="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground"
+							class="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
 						>
 							<Skeleton class="h-8 w-8 rounded-full" />
 						</div>
@@ -71,9 +71,9 @@
 						</div>
 					{:else}
 						<div
-							class="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground"
+							class="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
 						>
-							<AvatarRenderer {pubId} name={email} width="6" height="6" />
+							<Avatar {pubId} name={email} width="6" height="6" />
 						</div>
 						<div class="grid flex-1 text-start text-sm leading-tight">
 							<span>{email}</span>
@@ -92,7 +92,7 @@
 			sideOffset={15}
 		>
 			<Popover.Header class="flex flex-col items-center">
-				<AvatarRenderer {pubId} name={email} width="w-20" height="h-20" />
+				<Avatar {pubId} name={email} width="w-20" height="h-20" />
 				<Popover.Title class="inline-flex items-center text-2xl font-bold">
 					{email}
 				</Popover.Title>
@@ -100,17 +100,12 @@
 			</Popover.Header>
 
 			<Field.Group>
-				<Field.Title>
-					<CogIcon class="h-4 w-4" />
-					Settings
-				</Field.Title>
-
 				<Field.Content>
 					<Field.Group>
 						<Field.Field orientation="horizontal" class="w-full">
 							<Field.Label>Theme</Field.Label>
 							<Button
-								variant="outline"
+								variant="primary"
 								class="mr-auto ml-auto"
 								onclick={async () => await toggleTheme()}
 								disabled={themeChanging}
@@ -129,18 +124,28 @@
 				</Field.Content>
 			</Field.Group>
 
-			<!--				<SignOut class="mx-auto">-->
-			<button
+			<Button
+				onclick={() => {
+					goto('/profile');
+					sidebar.setOpen(false);
+					open = false;
+				}}
+				variant="primary"
+			>
+				<CogIcon />
+				Settings
+			</Button>
+
+			<Button
 				onclick={() => {
 					setToken('');
 					goto('/login');
 				}}
-				class={buttonVariants({ variant: 'destructive' }) + ' mt-4'}
+				variant="destructive"
 			>
-				<LogOutIcon class="mr-2" />
+				<LogOutIcon />
 				Logout
-			</button>
-			<!--				</SignOut>-->
+			</Button>
 		</Popover.Content>
 	</Popover.Root>
 </Sidebar.MenuItem>

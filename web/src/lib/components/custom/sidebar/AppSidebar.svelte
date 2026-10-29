@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Sidebar from '$lib/components/shad/sidebar';
-	import ProfileDropdown from '$lib/components/custom/sidebar/footer/ProfileDropdown.svelte';
+	import Profile from '$lib/components/custom/sidebar/Profile.svelte';
 	import SidebarController from '$lib/components/custom/sidebar/SidebarController.svelte';
 	import SectionRenderer from '$lib/components/custom/sidebar/options/SectionRenderer.svelte';
 	import { adminOptions, hallOfFameOptions, hostOptions, jamOptions, providerOptions } from './sidebarOptions';
@@ -28,7 +28,7 @@
 	});
 </script>
 
-<Sidebar.Root collapsible="icon">
+<Sidebar.Root collapsible="icon" class="dense-glass">
 	<Sidebar.Header>
 		<SidebarController />
 	</Sidebar.Header>
@@ -42,6 +42,6 @@
 	</Sidebar.Content>
 
 	<Sidebar.Footer>
-		<ProfileDropdown bind:loading {pubId} {email} />
+		<Profile bind:loading {pubId} {email} />
 	</Sidebar.Footer>
 </Sidebar.Root>
