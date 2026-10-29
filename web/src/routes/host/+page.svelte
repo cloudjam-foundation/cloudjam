@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Card from '$lib/components/shad/card';
+	import Card from '$lib/components/layout/Card.svelte';
 	import GamepadIcon from '@lucide/svelte/icons/gamepad-2';
 	import WandSparklesIcon from '@lucide/svelte/icons/wand-sparkles';
 </script>
@@ -15,22 +15,18 @@
 	<h1 class="my-8 text-4xl opacity-80">Host</h1>
 	<div class="grid w-full gap-4 md:grid-cols-2">
 		<a href="/host/games/">
-			<Card.Root class="h-full cursor-pointer transition-all duration-200 hover:bg-slate-50/5">
-				<Card.Header>
-					<GamepadIcon class="size-8" />
-					<Card.Title class="text-2xl">Games</Card.Title>
-					<Card.Description>Schedule game events</Card.Description>
-				</Card.Header>
-			</Card.Root>
+			<Card class="cursor-pointer items-start gap-2 duration-300 hover:opacity-70">
+				<GamepadIcon class="size-8" />
+				<h1 class="text-2xl">Games</h1>
+				<p>Schedule game events</p>
+			</Card>
 		</a>
 		<a href="/host/design/">
-			<Card.Root class="h-full cursor-pointer transition-all duration-200 hover:bg-slate-50/5">
-				<Card.Header>
-					<WandSparklesIcon class="size-8" />
-					<Card.Title class="text-2xl">Design</Card.Title>
-					<Card.Description>Design and upload your challenges</Card.Description>
-				</Card.Header>
-			</Card.Root>
+			<Card class="cursor-pointer items-start gap-2 duration-300 hover:opacity-70">
+				<WandSparklesIcon class="size-8" />
+				<h1 class="text-2xl">Design</h1>
+				<p>Design and upload your challenges</p>
+			</Card>
 		</a>
 	</div>
 </div>

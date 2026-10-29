@@ -17,7 +17,7 @@
 <a
 	{href}
 	class={cn(
-		'flex cursor-pointer flex-row items-center justify-center gap-1 rounded-md px-3 py-1.5 text-primary/80 transition-all hover:scale-[0.99] hover:text-primary active:translate-y-px',
+		'flex cursor-pointer flex-row items-center justify-center gap-1 overflow-hidden rounded-md px-3 py-1.5 text-primary/80 transition-all hover:scale-[0.99] hover:text-primary active:translate-y-px',
 		ghost ? 'hover:glass' : 'glass',
 		className
 	)}

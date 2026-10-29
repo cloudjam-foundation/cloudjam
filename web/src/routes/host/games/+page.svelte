@@ -33,7 +33,7 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex w-full flex-col gap-4">
+<div class="flex h-11/12 w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
 		<LinkButton ghost href="/host/">
 			<ChevronLeftIcon />
@@ -44,12 +44,13 @@
 		</LinkButton>
 	</div>
 
-	<div class="rounded-sm p-2">
+	<div class="h-full rounded-sm p-2">
 		<DataTable
+			class="max-h-full"
 			load={async (startAfter: Game | undefined) => {
 				const games: Game[] = [];
 				await Submit(async () => {
-					const resp = await Glue.game.list(create(ListRequestSchema, { limit: 3, startAfter: startAfter?.id }));
+					const resp = await Glue.game.list(create(ListRequestSchema, { limit: 100, startAfter: startAfter?.id }));
 					games.push(...resp.games);
 				}, gamesState);
 				return games;
@@ -57,18 +58,23 @@
 			loadState={gamesState}
 			columns={[
 				{ title: 'Status', width: '90px', render: renderStatus },
-				{ title: 'Name', width: '10%', render: renderName },
-				{ title: 'Description', width: '20%', render: renderDescription },
+				{ title: 'Name', width: '20%', render: renderName },
+				{ title: 'Description', width: '40%', render: renderDescription },
 				{ title: 'From', width: '20%', render: renderFrom },
-				{ title: 'To', width: '20%', render: renderTo },
-				{ title: 'Action', width: '10%', render: renderAction }
+				{ title: 'To', width: '20%', render: renderTo }
 			]}
 		/>
 		{#snippet renderName(game: Game)}
-			<b>{game.name}</b>
+			<LinkButton
+				href={`/host/games/${game.id}`}
+				class="justify-between underline active:scale-[0.99]"
+				data-sveltekit-preload-data="tap"
+			>
+				{game.name}
+			</LinkButton>
 		{/snippet}
 		{#snippet renderDescription(game: Game)}
-			{game.description}
+			<span class="text-primary/60">{game.description}</span>
 		{/snippet}
 		{#snippet renderFrom(game: Game)}
 			{game.from ? timestampDate(game.from).toLocaleString() : ''}
@@ -82,16 +88,6 @@
 				state={status(game)}
 				mapper={{ running: 'StablePositive', upcoming: 'StableWarning', ended: 'StableNeutral' }}
 			/>
-		{/snippet}
-		{#snippet renderAction(game: Game)}
-			<LinkButton
-				href={`/host/games/${game.id}`}
-				class="underline active:scale-[0.99]"
-				data-sveltekit-preload-data="tap"
-			>
-				Open
-				<SquareArrowOutUpRight />
-			</LinkButton>
 		{/snippet}
 	</div>
 

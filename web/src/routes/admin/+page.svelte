@@ -1,8 +1,8 @@
 <script lang="ts">
-	import * as Card from '$lib/components/shad/card';
 	import UsersIcon from '@lucide/svelte/icons/users';
 	import ShieldCheckIcon from '@lucide/svelte/icons/shield-check';
 	import ActivityIcon from '@lucide/svelte/icons/activity';
+	import Card from '$lib/components/layout/Card.svelte';
 </script>
 
 <svelte:head>
@@ -13,34 +13,28 @@
 </svelte:head>
 
 <div class="flex w-full flex-col items-center gap-4">
-	<h1 class="my-8 text-4xl opacity-80">Administration</h1>
+	<h1 class="my-8 text-4xl opacity-80">Host</h1>
 	<div class="grid w-full gap-4 md:grid-cols-3">
 		<a href="/admin/users/">
-			<Card.Root class="h-full cursor-pointer hover:bg-slate-50/5">
-				<Card.Header>
-					<UsersIcon class="size-8" />
-					<Card.Title class="text-2xl">Users</Card.Title>
-					<Card.Description>Invite, manage and scope the users of your hierarchy.</Card.Description>
-				</Card.Header>
-			</Card.Root>
+			<Card class="cursor-pointer items-start gap-2 duration-300 hover:opacity-70">
+				<UsersIcon class="size-8" />
+				<h1 class="text-2xl">Users</h1>
+				<p>Invite, manage and scope the users of your hierarchy</p>
+			</Card>
 		</a>
 		<a href="/admin/roles/">
-			<Card.Root class="h-full cursor-pointer hover:bg-slate-50/5">
-				<Card.Header>
-					<ShieldCheckIcon class="size-8" />
-					<Card.Title class="text-2xl">Roles</Card.Title>
-					<Card.Description>Create roles and configure their rbac permission policies.</Card.Description>
-				</Card.Header>
-			</Card.Root>
+			<Card class="cursor-pointer items-start gap-2 duration-300 hover:opacity-70">
+				<ShieldCheckIcon class="size-8" />
+				<h1 class="text-2xl">Roles</h1>
+				<p>Create roles and configure their rbac permission policies</p>
+			</Card>
 		</a>
 		<a href="/admin/system/">
-			<Card.Root class="h-full cursor-pointer hover:bg-slate-50/5">
-				<Card.Header>
-					<ActivityIcon class="size-8" />
-					<Card.Title class="text-2xl">System</Card.Title>
-					<Card.Description>Observe system logs, metrics and cost analysis.</Card.Description>
-				</Card.Header>
-			</Card.Root>
+			<Card class="cursor-pointer items-start gap-2 duration-300 hover:opacity-70">
+				<ActivityIcon class="size-8" />
+				<h1 class="text-2xl">System</h1>
+				<p>Observe system logs, metrics and cost analysis</p>
+			</Card>
 		</a>
 	</div>
 </div>

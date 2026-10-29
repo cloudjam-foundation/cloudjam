@@ -2,10 +2,9 @@
 	import type { SubmitState } from '$lib';
 	import ProcessingButton from '$lib/components/custom/buttons/ProcessingButton.svelte';
 	import DelaySpinner from '$lib/components/custom/DelaySpinner.svelte';
-	import * as Alert from '$lib/components/shad/alert';
 	import { cn } from '$lib/utils';
-	import { OctagonAlertIcon } from '@lucide/svelte';
 	import { onMount, type Snippet } from 'svelte';
+	import Alert from '$lib/components/custom/Alert.svelte';
 
 	let {
 		load,
@@ -48,11 +47,11 @@
 	<DelaySpinner class="mt-10 flex justify-center" delay={200} />
 {:else if !loadState.forbidden}
 	<div
-		class={cn('overflow-scroll-hidden max-h-96 justify-center rounded-md p-2', className)}
+		class={cn('overflow-scroll-hidden justify-center rounded-md p-2', className)}
 		style="container-type: scroll-state;"
 	>
 		<div
-			class="overlay sticky top-0 z-10 grid w-full rounded-md p-2 transition-all"
+			class="sticky top-0 z-10 grid w-full rounded-md overlay-glass p-2 transition-all"
 			style="grid-template-columns: {gridTemplateColumns};"
 		>
 			{#each columns as column}
@@ -64,10 +63,15 @@
 
 		<div class="p-2">
 			<table bind:this={table} class="w-full table-fixed">
+				<colgroup>
+					{#each columns as column}
+						<col style="width: {column.width};" />
+					{/each}
+				</colgroup>
 				<thead>
 					<tr>
-						{#each columns as column}
-							<th class="invisible text-start" style="width: {column.width};"> </th>
+						{#each columns as _}
+							<th class="invisible text-start"> </th>
 						{/each}
 					</tr>
 				</thead>
@@ -102,35 +106,6 @@
 		</div>
 	</div>
 	{#if loadState.error}
-		<Alert.Root variant="destructive">
-			<OctagonAlertIcon />
-			<Alert.Title>Failed to load data</Alert.Title>
-			<Alert.Description>{loadState.error}</Alert.Description>
-		</Alert.Root>
+		<Alert title="Failed to load data" message={loadState.error} animation={true} />
 	{/if}
 {/if}
-
-<style>
-	@container scroll-state(scrollable: top) {
-		.overlay {
-			box-shadow:
-				rgba(255, 255, 255, 0.08) 0px 4px 6px 0px,
-				rgba(255, 255, 255, 0.2) 0px 0px 0px 1px;
-			background-color: rgba(255, 255, 255, 0.04);
-			backdrop-filter: blur(8px);
-
-			/* animation: appear 400ms ease-out both; */
-		}
-	}
-
-	@keyframes appear {
-		from {
-			transform: scale(0.99);
-			backdrop-filter: blur(0px);
-		}
-		to {
-			transform: scale(1);
-			backdrop-filter: blur(8px);
-		}
-	}
-</style>

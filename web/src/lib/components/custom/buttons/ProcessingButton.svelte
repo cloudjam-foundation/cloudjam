@@ -27,7 +27,7 @@
 <button
 	disabled={processing}
 	class={cn(
-		'glass relative flex cursor-pointer items-center justify-center rounded-md px-3 py-2 transition-all active:translate-y-px ',
+		'relative flex cursor-pointer items-center justify-center overflow-hidden rounded-md glass px-3 py-2 transition-all active:translate-y-px ',
 		variants[variant],
 		className
 	)}

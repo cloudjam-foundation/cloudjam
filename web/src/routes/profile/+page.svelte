@@ -12,11 +12,11 @@
 	import Input from '$lib/components/shad/input/input.svelte';
 	import * as Dialog from '$lib/components/shad/dialog';
 	import Card from '$lib/components/layout/Card.svelte';
-	import Alert from './Alert.svelte';
 	import { resolve } from '$app/paths';
 	import Button from '$lib/components/custom/buttons/Button.svelte';
 	import LinkButton from '$lib/components/custom/buttons/LinkButton.svelte';
 	import StaticBadge from '$lib/components/custom/badges/StaticBadge.svelte';
+	import Alert from '$lib/components/custom/Alert.svelte';
 
 	let user: User | undefined = $state();
 
