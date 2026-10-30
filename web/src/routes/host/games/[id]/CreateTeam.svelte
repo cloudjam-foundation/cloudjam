@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import * as Alert from '$lib/components/shad/alert';
-	import { Button } from '$lib/components/shad/button';
-	import * as Card from '$lib/components/shad/card';
+	import Alert from '$lib/components/custom/Alert.svelte';
+	import Button from '$lib/components/custom/buttons/Button.svelte';
+	import Card from '$lib/components/layout/Card.svelte';
+	import Input from '$lib/components/shad/input/input.svelte';
 	import LabelInput from '$lib/components/shad/label-input/label-input.svelte';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { CreateRequestSchema } from '$lib/sdk/v1/play/team/team_pb';
 	import { TeamSchema } from '$lib/sdk/v1/play/team_pb';
 	import { create } from '@bufbuild/protobuf';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 
 	let { game, oncreated }: { game: Game; oncreated: () => void } = $props();
 
@@ -24,29 +24,22 @@
 	}
 </script>
 
-<Card.Root class="w-full">
-	<Card.Header>
-		<Card.Title>Create Team</Card.Title>
-		<Card.Description>Creates a team of the selected game. Players are attached afterwards.</Card.Description>
-	</Card.Header>
-	<Card.Content>
-		<form class="flex flex-col gap-4" onsubmit={createTeam}>
-			<div class="grid gap-4 md:grid-cols-2">
-				<LabelInput
-					bind:value={init.name}
-					label="Name"
-					placeholder="Name of the team"
-					validation={Glue.Validate(TeamSchema, init).violation.name}
-				/>
-			</div>
-			<Button type="submit" class="cursor-pointer self-start">Create</Button>
-			{#if createState.error}
-				<Alert.Root variant="destructive">
-					<AlertCircleIcon />
-					<Alert.Title>{createState.forbidden ? 'Permission denied' : 'Failed to create team'}</Alert.Title>
-					<Alert.Description>{createState.error}</Alert.Description>
-				</Alert.Root>
-			{/if}
-		</form>
-	</Card.Content>
-</Card.Root>
+<Card class="w-full items-start">
+	<div>
+		<h1 class="text-xl font-semibold text-primary/80">Create Team</h1>
+		<p class="text-primary/60">Creates a team of the selected game. Players are attached afterwards</p>
+	</div>
+	<form class="flex flex-col gap-2" onsubmit={createTeam}>
+		<div class="flex flex-row items-center justify-center gap-2">
+			<Input bind:value={init.name} placeholder="Name of the team" />
+			<Button processing={createState.loading} variant="primary" type="submit" class="self-start">Create</Button>
+		</div>
+		{#if createState.error}
+			<Alert
+				title={createState.forbidden ? 'Permission denied' : 'Failed to create team'}
+				message={createState.error}
+				animation={true}
+			/>
+		{/if}
+	</form>
+</Card>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
+	import Alert from '$lib/components/custom/Alert.svelte';
 	import Markdown from '$lib/components/custom/Markdown.svelte';
-	import * as Alert from '$lib/components/shad/alert';
 	import { Badge } from '$lib/components/shad/badge';
 	import { Button } from '$lib/components/shad/button';
 	import * as Card from '$lib/components/shad/card';
@@ -48,11 +48,7 @@
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-6">
 		{#if challenge.error}
-			<Alert.Root variant="destructive">
-				<AlertCircleIcon />
-				<Alert.Title>Challenge reported an error</Alert.Title>
-				<Alert.Description class="font-mono text-xs break-all">{challenge.error}</Alert.Description>
-			</Alert.Root>
+			<Alert title="Challenge reported an error" message={challenge.error} />
 		{/if}
 
 		{#if challenge.description.length}
@@ -174,11 +170,7 @@
 					{/if}
 				</div>
 				{#if removeState.error}
-					<Alert.Root variant="destructive">
-						<AlertCircleIcon />
-						<Alert.Title>Failed to delete challenge</Alert.Title>
-						<Alert.Description>{removeState.error}</Alert.Description>
-					</Alert.Root>
+					<Alert title="Failed to delete challenge" message={removeState.error} />
 				{/if}
 			{/if}
 		</div>

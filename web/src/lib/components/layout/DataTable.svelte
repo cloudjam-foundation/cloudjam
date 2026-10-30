@@ -10,11 +10,13 @@
 		load,
 		loadState,
 		columns,
+		onRowClick,
 		class: className
 	}: {
 		load: (startAfter: T | undefined) => Promise<T[]>;
 		loadState: SubmitState;
 		columns: { title: string; width: string; render: Snippet<[data: T]> }[];
+		onRowClick?: (row: T) => void;
 		class?: string;
 	} = $props();
 
@@ -25,16 +27,24 @@
 	async function appendData(startAfter?: T) {
 		const newData = await load(startAfter);
 		if (pageSize === null) pageSize = newData.length;
-		else if (newData.length < pageSize) exhausted = true;
+		if (newData.length < pageSize || newData.length === 1) exhausted = true;
 		data.push(...newData);
 	}
 
 	let table: HTMLTableElement | undefined = $state();
-	const gridTemplateColumns = $derived.by(() => {
-		if (!table) return '';
-		return Array.from(table.querySelectorAll('thead th'))
-			.map((th) => `${th.getBoundingClientRect().width}px`)
-			.join(' ');
+	// here we just manually map the tables space calculations to the header grid.
+	// It seems most stable to do this in javascript with raw pixels and a observer...
+	let gridTemplateColumns = $state('');
+	$effect(() => {
+		if (!table) return;
+		const headers = Array.from(table.querySelectorAll('thead th'));
+		const updateColumns = () => {
+			gridTemplateColumns = headers.map((th) => `${th.getBoundingClientRect().width}px`).join(' ');
+		};
+		const observer = new ResizeObserver(updateColumns);
+		headers.forEach((th) => observer.observe(th));
+		updateColumns();
+		return () => observer.disconnect();
 	});
 
 	onMount(() => {
@@ -45,6 +55,8 @@
 
 {#if data.length < 1 && loadState.loading}
 	<DelaySpinner class="mt-10 flex justify-center" delay={200} />
+{:else if loadState.error}
+	<Alert title="Failed to load data" message={loadState.error} />
 {:else if !loadState.forbidden}
 	<div
 		class={cn('overflow-scroll-hidden justify-center rounded-md p-2', className)}
@@ -77,7 +89,7 @@
 				</thead>
 				<tbody>
 					{#each data as row}
-						<tr>
+						<tr onclick={() => onRowClick?.(row)} class={onRowClick ? 'cursor-pointer hover:bg-foreground/3' : ''}>
 							{#each columns as column}
 								<td class="overflow-scroll-hidden border-t border-primary/20 p-1 text-nowrap">
 									{@render column.render(row)}
@@ -105,7 +117,4 @@
 			</table>
 		</div>
 	</div>
-	{#if loadState.error}
-		<Alert title="Failed to load data" message={loadState.error} animation={true} />
-	{/if}
 {/if}

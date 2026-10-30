@@ -1,10 +1,8 @@
 <script lang="ts">
-	import * as Alert from '$lib/components/shad/alert';
 	import { Badge } from '$lib/components/shad/badge';
-	import { Button } from '$lib/components/shad/button';
+	import Button from '$lib/components/custom/buttons/Button.svelte';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import ChallengeSection from './ChallengeSection.svelte';
@@ -13,6 +11,7 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import { gameState } from './state.svelte.js';
 	import DelaySpinner from '$lib/components/custom/DelaySpinner.svelte';
+	import Alert from '$lib/components/custom/Alert.svelte';
 
 	let { data } = $props();
 
@@ -40,7 +39,7 @@
 {:else}
 	<div class="flex w-full flex-col gap-4">
 		<div class="flex flex-row items-center gap-2">
-			<Button variant="ghost" size="icon" class="cursor-pointer" onclick={() => goto('/host/games')}>
+			<Button variant="ghost" class="cursor-pointer" onclick={() => goto('/host/games')}>
 				<ChevronLeftIcon />
 			</Button>
 			<h1 class="text-3xl opacity-80">{data.game?.name ?? 'Game'}</h1>
@@ -49,7 +48,7 @@
 				<Badge variant="outline">scope: {data.game.scope}</Badge>
 			{/if}
 			<Button
-				variant="outline"
+				variant={'primary'}
 				class="ml-auto cursor-pointer font-mono text-xs"
 				title="Copy game id"
 				onclick={() => navigator.clipboard.writeText(data.game?.id ?? '')}
@@ -74,11 +73,7 @@
 		</div>
 
 		{#if gameState.forbidden}
-			<Alert.Root>
-				<AlertCircleIcon />
-				<Alert.Title>Permission Denied</Alert.Title>
-				<Alert.Description>You are not allowed to open this game</Alert.Description>
-			</Alert.Root>
+			<Alert title="Permission Denied" message="You are not allowed to open this game" animation={true} />
 		{:else if tab === 'overview'}
 			{#if data.game}
 				<GamePanel game={data.game} refresh={() => invalidateAll()} deleted={() => goto('/host/games')} />
@@ -94,11 +89,7 @@
 		{/if}
 
 		{#if gameState.error}
-			<Alert.Root variant="destructive">
-				<AlertCircleIcon />
-				<Alert.Title>Failed to load the game</Alert.Title>
-				<Alert.Description>{gameState.error}</Alert.Description>
-			</Alert.Root>
+			<Alert title="Failed to load the game" message={gameState.error} animation={true} />
 		{/if}
 	</div>
 {/if}

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import * as Alert from '$lib/components/shad/alert';
 	import { Badge } from '$lib/components/shad/badge';
 	import { Button } from '$lib/components/shad/button';
 	import * as Table from '$lib/components/shad/table';
@@ -15,6 +14,9 @@
 	import ChallengePanel from './ChallengePanel.svelte';
 	import CreateChallenge from './CreateChallenge.svelte';
 	import { ChevronDownIcon, ChevronRightIcon } from '@lucide/svelte';
+	import Alert from '$lib/components/custom/Alert.svelte';
+	import DataTable from '$lib/components/layout/DataTable.svelte';
+	import StaticBadge from '$lib/components/custom/badges/StaticBadge.svelte';
 
 	let { gameId }: { gameId: string } = $props();
 
@@ -70,12 +72,39 @@
 	{/if}
 
 	{#if challengesState.forbidden}
-		<Alert.Root>
-			<AlertCircleIcon />
-			<Alert.Title>Permission Denied</Alert.Title>
-			<Alert.Description>You are not allowed to list the challenges of this game</Alert.Description>
-		</Alert.Root>
+		<Alert
+			title="Permission Denied"
+			message="You are not allowed to list the challenges of this game"
+			animation={true}
+		/>
 	{:else}
+		<DataTable
+			class="max-h-full"
+			load={async (startAfter: Team | undefined) => {
+				const teams: Team[] = [];
+				await Submit(async () => {
+					const resp = await Glue.team.list(create(ListTeamRequestSchema, { limit: 100, startAfter: startAfter?.id }));
+					teams.push(...resp.teams);
+				}, teamsState);
+				return teams;
+			}}
+			onRowClick={(game) => {}}
+			loadState={teamsState}
+			columns={[
+				{ title: 'Name', width: '20%', render: renderName },
+				{ title: 'Players', width: '40%', render: renderPlayers },
+				{ title: 'Score', width: '20px', render: renderScore }
+			]}
+		/>
+		{#snippet renderName(team: Team)}
+			{team.name}
+		{/snippet}
+		{#snippet renderPlayers(team: Team)}
+			<span class="text-primary/60">{team.description}</span>
+		{/snippet}
+		{#snippet renderScore(team: Team)}
+			<StaticBadge variant="jam" text={team.score.toString()} />
+		{/snippet}
 		<Table.Root>
 			<Table.Header>
 				<Table.Row>
@@ -137,10 +166,6 @@
 	{/if}
 
 	{#if challengesState.error}
-		<Alert.Root variant="destructive">
-			<AlertCircleIcon />
-			<Alert.Title>Failed to load challenges</Alert.Title>
-			<Alert.Description>{challengesState.error}</Alert.Description>
-		</Alert.Root>
+		<Alert title="Failed to load challenges" message={challengesState.error} animation={true} />
 	{/if}
 </div>

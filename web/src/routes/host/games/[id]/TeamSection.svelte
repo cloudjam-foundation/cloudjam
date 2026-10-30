@@ -1,123 +1,95 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import * as Alert from '$lib/components/shad/alert';
-	import { Button } from '$lib/components/shad/button';
-	import * as Table from '$lib/components/shad/table';
 	import { ListRequestSchema } from '$lib/sdk/v1/play/team/team_pb';
 	import type { Team } from '$lib/sdk/v1/play/team_pb';
 	import { create } from '@bufbuild/protobuf';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import PlusIcon from '@lucide/svelte/icons/plus';
-	import { onMount } from 'svelte';
 	import CreateTeam from './CreateTeam.svelte';
 	import TeamPanel from './TeamPanel.svelte';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
-	import { ChevronDownIcon, ChevronRightIcon } from '@lucide/svelte';
+	import StaticBadge from '$lib/components/custom/badges/StaticBadge.svelte';
+	import DataTable from '$lib/components/layout/DataTable.svelte';
+	import Alert from '$lib/components/custom/Alert.svelte';
+	import DynamicBadge from '$lib/components/custom/badges/DynamicBadge.svelte';
+	import { toSvg } from 'jdenticon';
+	import Button from '$lib/components/custom/buttons/Button.svelte';
+	import { ClosedCaptionIcon, XIcon } from '@lucide/svelte';
 
 	let { game }: { game: Game } = $props();
 
-	const limit = 100;
-
-	let teams: Team[] = $state([]);
-	let exhausted = $state(true);
-
 	let selected: Team | undefined = $state();
+	let openSelected = $state(false);
 	let creating = $state(false);
 
 	let teamsState: SubmitState = $state({ error: '', forbidden: false, loading: false });
-
-	function load(startAfter?: string) {
-		Submit(async () => {
-			const resp = await Glue.team.list(
-				create(ListRequestSchema, { gameId: game.id, limit: limit, startAfter: startAfter })
-			);
-			teams = startAfter ? [...teams, ...resp.teams] : resp.teams;
-			exhausted = resp.teams.length < limit;
-		}, teamsState);
-	}
-
-	onMount(() => load());
 </script>
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
 		<h2 class="text-xl opacity-80">Teams</h2>
-		<Button variant="outline" class="ml-auto cursor-pointer" onclick={() => (creating = !creating)}>
-			<PlusIcon /> Create Team
+		<Button variant="primary" class="ml-auto cursor-pointer" onclick={() => (creating = !creating)}>
+			{#if creating}
+				<XIcon /> Close Menu
+			{:else}
+				<PlusIcon /> Create Team
+			{/if}
 		</Button>
 	</div>
 
 	{#if creating}
-		<CreateTeam {game} oncreated={() => load()} />
+		<CreateTeam {game} oncreated={() => {}} />
 	{/if}
 
 	{#if teamsState.forbidden}
-		<Alert.Root>
-			<AlertCircleIcon />
-			<Alert.Title>Permission Denied</Alert.Title>
-			<Alert.Description>You are not allowed to list the teams of this game</Alert.Description>
-		</Alert.Root>
+		<Alert title="Permission Denied" message="You are not allowed to list the teams of this game" />
 	{:else}
-		<Table.Root>
-			<Table.Header>
-				<Table.Row>
-					<Table.Head>Name</Table.Head>
-					<Table.Head>Players</Table.Head>
-					<Table.Head>Score</Table.Head>
-				</Table.Row>
-			</Table.Header>
-			<Table.Body>
-				{#each teams as team (team.id)}
-					<Table.Row class="cursor-pointer" onclick={() => (selected = selected?.id === team.id ? undefined : team)}>
-						<Table.Cell class="flex flex-row items-center gap-2 font-medium">
-							{#if selected && selected.id === team.id}
-								<ChevronDownIcon />
-							{:else}
-								<ChevronRightIcon />
-							{/if}
-							{team.name}
-						</Table.Cell>
-						<Table.Cell>
-							{Object.values(team.players)
-								.map((player) => player.username)
-								.join(', ')}
-						</Table.Cell>
-						<Table.Cell>{team.score}</Table.Cell>
-					</Table.Row>
-				{:else}
-					<Table.Row>
-						<Table.Cell colspan={3}>
-							<p class="text-muted-foreground p-4 text-sm italic">
-								{teamsState.loading ? 'Loading teams…' : 'No teams in this game yet.'}
-							</p>
-						</Table.Cell>
-					</Table.Row>
+		<DataTable
+			class="max-h-[80vh]"
+			load={async (startAfter: Team | undefined) => {
+				const teams: Team[] = [];
+				await Submit(async () => {
+					const resp = await Glue.team.list(
+						create(ListRequestSchema, { gameId: game.id, limit: 100, startAfter: startAfter?.id })
+					);
+					teams.push(...resp.teams);
+				}, teamsState);
+				return teams;
+			}}
+			onRowClick={(team) => {
+				selected = team;
+				openSelected = true;
+			}}
+			loadState={teamsState}
+			columns={[
+				{ title: 'Name', width: '30%', render: renderName },
+				{ title: 'Players', width: '60%', render: renderPlayers },
+				{ title: 'Score', width: '30px', render: renderScore }
+			]}
+		/>
+		{#snippet renderName(team: Team)}
+			{team.name}
+		{/snippet}
+		{#snippet renderPlayers(team: Team)}
+			<div class="flex flex-row items-center gap-1">
+				{#each Object.entries(team.players) as [_, player]}
+					<DynamicBadge variant={'primary'}>
+						<img
+							alt="user profile"
+							src={`data:image/svg+xml;base64,${btoa(toSvg(player.pubId, 16))}`}
+							height="3rem"
+							class="rounded-lg bg-primary/5"
+						/>
+						{player.username}
+					</DynamicBadge>
 				{/each}
-			</Table.Body>
-		</Table.Root>
-		{#if !exhausted}
-			<Button
-				variant="outline"
-				class="cursor-pointer self-center"
-				disabled={teamsState.loading}
-				onclick={() => load(teams.at(-1)?.id)}
-			>
-				Load More
-			</Button>
-		{/if}
+			</div>
+		{/snippet}
+		{#snippet renderScore(team: Team)}
+			<StaticBadge variant="jam" text={team.score.toString()} />
+		{/snippet}
 	{/if}
 
 	{#if selected}
-		{#key selected.id}
-			<TeamPanel team={selected} refresh={() => load()} />
-		{/key}
-	{/if}
-
-	{#if teamsState.error}
-		<Alert.Root variant="destructive">
-			<AlertCircleIcon />
-			<Alert.Title>Failed to load teams</Alert.Title>
-			<Alert.Description>{teamsState.error}</Alert.Description>
-		</Alert.Root>
+		<TeamPanel bind:open={openSelected} team={selected} refresh={() => {}} />
 	{/if}
 </div>

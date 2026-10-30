@@ -5,7 +5,7 @@
 	import type { HTMLButtonAttributes } from 'svelte/elements';
 	import { cn } from 'tailwind-variants';
 
-	type Variant = 'primary' | 'jam' | 'destructive';
+	type Variant = 'primary' | 'ghost' | 'jam' | 'destructive';
 
 	interface Props extends HTMLButtonAttributes {
 		variant: Variant;
@@ -17,6 +17,7 @@
 
 	const variants: Record<Variant, string> = {
 		primary: 'glass text-primary/80 hover:text-primary',
+		ghost: 'hover:bg-primary/5 text-primary/80 hover:text-primary',
 		jam: 'jam-glass text-jam/60 hover:text-jam/80',
 		destructive: 'destructive-glass text-destructive/60 hover:text-destructive/80'
 	};
