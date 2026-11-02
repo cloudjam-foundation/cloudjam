@@ -1,9 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/state';
-
-	import { Glue, Submit, type SubmitState } from '$lib';
-	import { Badge } from '$lib/components/shad/badge';
-	import { Button } from '$lib/components/shad/button';
 	import { ProviderType } from '$lib/sdk/v1/cloud/provider_pb';
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import AccountSection from './AccountSection.svelte';
@@ -11,6 +6,8 @@
 	import ProviderPanel from './ProviderPanel.svelte';
 	import { goto } from '$app/navigation';
 	import TabPage from '$lib/components/layout/TabPage.svelte';
+	import StaticBadge from '$lib/components/custom/badges/StaticBadge.svelte';
+	import Button from '$lib/components/custom/buttons/Button.svelte';
 
 	let { data } = $props();
 </script>
@@ -24,21 +21,15 @@
 
 {#snippet type()}
 	{#if data.provider}
-		<Badge variant="secondary">{ProviderType[data.provider.type]}</Badge>
-	{/if}
-{/snippet}
-
-{#snippet scope()}
-	{#if data.provider}
-		<Badge variant="outline">scope: {data.provider.scope}</Badge>
+		<StaticBadge text={ProviderType[data.provider.type]} variant="primary" />
 	{/if}
 {/snippet}
 
 {#snippet uuid()}
 	<Button
-		variant="outline"
-		class="ml-auto cursor-pointer font-mono text-xs"
-		title="Copy provider id"
+		variant={'primary'}
+		class="ml-auto font-mono text-xs"
+		title="Copy game id"
 		onclick={() => navigator.clipboard.writeText(data.provider?.id ?? '')}
 	>
 		<CopyIcon />
@@ -62,7 +53,7 @@
 
 <TabPage
 	title={data.provider?.name.toUpperCase() ?? 'Provider'}
-	headers={[type, scope, uuid]}
+	headers={[type, uuid]}
 	back={() => goto('/provider')}
 	dataState={data.providerState}
 	tabs={['overview', 'accounts', 'definitions']}

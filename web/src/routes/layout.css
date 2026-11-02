@@ -25,7 +25,7 @@
 		--color-surface-300: var(--color-black);
 	}
 
-	--jam: #3a0770;
+	--jam: #831df0;
 	--background: oklch(1 0 0);
 	--deep-background: oklch(0.9733 0 77.29);
 	--foreground: oklch(0.145 0 0);
@@ -54,7 +54,7 @@
 }
 
 .dark {
-	--jam: #3a0770;
+	--jam: #831df0;
 	--background: oklch(0.145 0 0);
 	--deep-background: oklch(0 0 0);
 	--foreground: oklch(0.985 0 0);

@@ -1,55 +1,21 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import * as Alert from '$lib/components/shad/alert';
-	import { Badge } from '$lib/components/shad/badge';
-	import { Button } from '$lib/components/shad/button';
-	import * as Table from '$lib/components/shad/table';
-	import { ListRequestSchema as ListRolesRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
-	import type { Role } from '$lib/sdk/v1/admin/role_pb';
 	import { ListRequestSchema } from '$lib/sdk/v1/admin/user/user_pb';
 	import type { User } from '$lib/sdk/v1/admin/user_pb';
 	import { create } from '@bufbuild/protobuf';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import PlusIcon from '@lucide/svelte/icons/plus';
 	import { toSvg } from 'jdenticon';
-	import { onMount } from 'svelte';
-	import UserPanel from './UserPanel.svelte';
-	import { ChevronDownIcon, ChevronRightIcon } from '@lucide/svelte';
+	import Button from '$lib/components/custom/buttons/Button.svelte';
+	import Card from '$lib/components/layout/Card.svelte';
+	import Input from '$lib/components/shad/input/input.svelte';
+	import { goto } from '$app/navigation';
+	import LinkButton from '$lib/components/custom/buttons/LinkButton.svelte';
+	import DataTable from '$lib/components/layout/DataTable.svelte';
 
-	const limit = 100;
+	let id = $state('');
 
-	let users: User[] = $state([]);
-	let exhausted = $state(true);
-
-	let roles: Role[] = $state([]);
-	let rolesForbidden = $state(false);
-
-	let selected: User | undefined = $state();
-
-	function roleName(id: string): string {
-		return roles.find((role) => role.id === id)?.name ?? id;
-	}
-
-	let userState: SubmitState = $state({ error: '', forbidden: false, loading: false });
-
-	function load() {
-		Submit(async () => {
-			const resp = await Glue.user.list(create(ListRequestSchema, { limit: limit }));
-			users = resp.users;
-			exhausted = resp.users.length < limit;
-		}, userState);
-	}
-
-	let roleState: SubmitState = $state({ error: '', forbidden: false, loading: false });
-
-	onMount(() => {
-		load();
-		// roles are only used to resolve names and attach them to users; if the requestor
-		Submit(async () => {
-			roles = (await Glue.role.list(create(ListRolesRequestSchema, { limit: limit }))).roles;
-		}, roleState);
-	});
+	let usersState: SubmitState = $state({ error: '', loading: true, forbidden: false });
 </script>
 
 <svelte:head>
@@ -59,94 +25,74 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex w-full flex-col gap-4">
+<div class="flex h-11/12 w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" size="icon" class="cursor-pointer" href="/admin/">
+		<Button variant="ghost" onclick={() => goto('/admin')}>
 			<ChevronLeftIcon />
 		</Button>
-		<h1 class="text-3xl opacity-80">Users</h1>
-		<Button variant="outline" class="ml-auto cursor-pointer" href="/admin/users/new/">
+		<h1 class="text-3xl opacity-80">Games</h1>
+		<LinkButton class="ml-auto" href="/admin/users/new/">
 			<PlusIcon /> Invite User
-		</Button>
+		</LinkButton>
 	</div>
 
-	{#if userState.forbidden}
-		<Alert.Root>
-			<AlertCircleIcon />
-			<Alert.Title>Permission Denied</Alert.Title>
-			<Alert.Description>You are not allowed to list users in your scope</Alert.Description>
-		</Alert.Root>
+	{#if usersState.forbidden}
+		<div class="flex h-full w-full items-center justify-center">
+			<Card>
+				<div class="flex flex-col items-start gap-1">
+					<h1 class="text-2xl font-bold text-primary/80">Find User</h1>
+					<p class="text-primary/60">You are not allowed to list users, find the one you need by its id</p>
+				</div>
+				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(`/admin/users/${id}`)}>
+					<Input class="w-full" bind:value={id} placeholder="User ID" />
+					<Button type="submit" variant="primary" disabled={!id.trim()}>Open</Button>
+				</form>
+			</Card>
+		</div>
 	{:else}
-		<Table.Root>
-			<Table.Header>
-				<Table.Row>
-					<Table.Head></Table.Head>
-					<Table.Head>Username</Table.Head>
-					<Table.Head>Email</Table.Head>
-					<Table.Head>Organization</Table.Head>
-					<Table.Head>Role</Table.Head>
-					<Table.Head>Created</Table.Head>
-					<Table.Head></Table.Head>
-				</Table.Row>
-			</Table.Header>
-			<Table.Body>
-				{#each users as user (user.id)}
-					<Table.Row class="cursor-pointer" onclick={() => (selected = selected?.id === user.id ? undefined : user)}>
-						<Table.Cell class="flex flex-row items-center gap-2">
-							<ChevronRightIcon
-								class="transition-all duration-150 ease-in-out {selected && selected.id === user.id ? 'rotate-90' : ''}"
-							/>
-							<img
-								alt="user profile"
-								src={`data:image/svg+xml;base64,${btoa(toSvg(user.pubId, 30))}`}
-								height="4rem"
-								class="rounded-md bg-primary/5"
-							/>
-						</Table.Cell>
-						<Table.Cell class="font-medium">{user.username}</Table.Cell>
-						<Table.Cell>{user.email}</Table.Cell>
-						<Table.Cell>{user.organization}</Table.Cell>
-						<Table.Cell>{roleName(user.role)}</Table.Cell>
-						<Table.Cell>{new Date(Number(user.createdAt) * 1000).toLocaleDateString()}</Table.Cell>
-						<Table.Cell>
-							{#if user.privileged}
-								<Badge variant="secondary">privileged</Badge>
-							{/if}
-						</Table.Cell>
-					</Table.Row>
-				{/each}
-			</Table.Body>
-		</Table.Root>
-		{#if !exhausted}
-			<Button
-				variant="outline"
-				class="cursor-pointer self-center"
-				disabled={userState.loading}
-				onclick={() =>
-					Submit(async () => {
-						const resp = await Glue.user.list(
-							create(ListRequestSchema, { limit: limit, startAfter: users.at(-1)?.id })
-						);
-						users = [...users, ...resp.users];
-						exhausted = resp.users.length < limit;
-					}, userState)}
-			>
-				Load More
-			</Button>
-		{/if}
-	{/if}
-
-	{#if selected}
-		{#key selected.id}
-			<UserPanel user={selected} {roles} {rolesForbidden} refresh={() => load()} />
-		{/key}
-	{/if}
-
-	{#if userState.error}
-		<Alert.Root variant="destructive">
-			<AlertCircleIcon />
-			<Alert.Title>Failed to load users</Alert.Title>
-			<Alert.Description>{userState.error}</Alert.Description>
-		</Alert.Root>
+		<div class="h-full rounded-sm p-2">
+			<DataTable
+				class="max-h-full"
+				load={async (startAfter: User | undefined) => {
+					const users: User[] = [];
+					await Submit(async () => {
+						const resp = await Glue.user.list(create(ListRequestSchema, { limit: 100, startAfter: startAfter?.id }));
+						users.push(...resp.users);
+					}, usersState);
+					return users;
+				}}
+				onRowClick={(game) => {
+					goto(`/admin/users/${game.id}`);
+				}}
+				loadState={usersState}
+				columns={[
+					{ title: '#', width: '4rem', render: renderIcon },
+					{ title: 'Username', width: '25%', render: renderUsername },
+					{ title: 'Email', width: '25%', render: renderEmail },
+					{ title: 'Organization', width: '25%', render: renderOrganization },
+					{ title: 'Role', width: '25%', render: renderRole }
+				]}
+			/>
+			{#snippet renderIcon(user: User)}
+				<img
+					alt="user profile"
+					src={`data:image/svg+xml;base64,${btoa(toSvg(user.pubId, 30))}`}
+					height="4rem"
+					class="rounded-md bg-primary/5"
+				/>
+			{/snippet}
+			{#snippet renderUsername(user: User)}
+				{user.username}
+			{/snippet}
+			{#snippet renderEmail(user: User)}
+				{user.email}
+			{/snippet}
+			{#snippet renderOrganization(user: User)}
+				{user.organization}
+			{/snippet}
+			{#snippet renderRole(user: User)}
+				{user.role}
+			{/snippet}
+		</div>
 	{/if}
 </div>

@@ -14,7 +14,6 @@
 	import { jpegDataURL } from '$lib/utils';
 	import { create, enumToJson } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 
 	let { challenge, teams, refresh }: { challenge: Challenge; teams: Team[]; refresh: () => void } = $props();
 

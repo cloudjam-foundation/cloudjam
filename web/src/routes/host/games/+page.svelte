@@ -36,31 +36,31 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-{#if gamesState.forbidden}
-	<div class="flex h-full w-full items-center justify-center">
-		<Card>
-			<div class="flex flex-col items-start gap-1">
-				<h1 class="text-2xl font-bold text-primary/80">Find Game</h1>
-				<p class="text-primary/60">You are not allowed to list games, find the one you need by its id</p>
-			</div>
-			<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(`/host/games/${id}`)}>
-				<Input class="w-full" bind:value={id} placeholder="Game id" />
-				<Button type="submit" variant="primary" disabled={!id.trim()}>Open</Button>
-			</form>
-		</Card>
+<div class="flex h-11/12 w-full flex-col gap-4">
+	<div class="flex flex-row items-center gap-2">
+		<Button variant="ghost" onclick={() => goto('/host')}>
+			<ChevronLeftIcon />
+		</Button>
+		<h1 class="text-3xl opacity-80">Games</h1>
+		<LinkButton class="ml-auto" href="/host/games/new/">
+			<PlusIcon /> Host Game
+		</LinkButton>
 	</div>
-{:else}
-	<div class="flex h-11/12 w-full flex-col gap-4">
-		<div class="flex flex-row items-center gap-2">
-			<Button variant="ghost" class="cursor-pointer" onclick={() => goto('/host')}>
-				<ChevronLeftIcon />
-			</Button>
-			<h1 class="text-3xl opacity-80">Games</h1>
-			<LinkButton class="ml-auto" href="/host/games/new/">
-				<PlusIcon /> Host Game
-			</LinkButton>
-		</div>
 
+	{#if gamesState.forbidden}
+		<div class="flex h-full w-full items-center justify-center">
+			<Card>
+				<div class="flex flex-col items-start gap-1">
+					<h1 class="text-2xl font-bold text-primary/80">Find Game</h1>
+					<p class="text-primary/60">You are not allowed to list games, find the one you need by its id</p>
+				</div>
+				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(`/host/games/${id}`)}>
+					<Input class="w-full" bind:value={id} placeholder="Game id" />
+					<Button type="submit" variant="primary" disabled={!id.trim()}>Open</Button>
+				</form>
+			</Card>
+		</div>
+	{:else}
 		<div class="h-full rounded-sm p-2">
 			<DataTable
 				class="max-h-full"
@@ -104,5 +104,5 @@
 				/>
 			{/snippet}
 		</div>
-	</div>
-{/if}
+	{/if}
+</div>

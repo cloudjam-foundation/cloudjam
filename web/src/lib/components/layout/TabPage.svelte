@@ -1,10 +1,9 @@
 <script lang="ts">
-	import * as Alert from '$lib/components/shad/alert';
-	import { Button } from '$lib/components/shad/button';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import type { Snippet } from 'svelte';
 	import type { SubmitState } from '$lib';
+	import Button from '$lib/components/custom/buttons/Button.svelte';
+	import Alert from '$lib/components/custom/Alert.svelte';
 
 	let {
 		title,
@@ -27,7 +26,7 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" size="icon" class="cursor-pointer" onclick={() => back()}>
+		<Button variant="ghost" onclick={() => back()}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">{title}</h1>
@@ -51,20 +50,12 @@
 	</div>
 
 	{#if dataState.forbidden}
-		<Alert.Root>
-			<AlertCircleIcon />
-			<Alert.Title>Permission Denied</Alert.Title>
-			<Alert.Description>You are not allowed to open this provider</Alert.Description>
-		</Alert.Root>
+		<Alert title="Permission Denied" message="You are not allowed to open this section" />
 	{:else}
 		{@render tabPages[selected]()}
 	{/if}
 
 	{#if dataState.error}
-		<Alert.Root variant="destructive">
-			<AlertCircleIcon />
-			<Alert.Title>Something went wrong</Alert.Title>
-			<Alert.Description>{dataState.error}</Alert.Description>
-		</Alert.Root>
+		<Alert title="Something went wrong" message={dataState.error} />
 	{/if}
 </div>

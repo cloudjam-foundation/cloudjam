@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { Badge } from '$lib/components/shad/badge';
 	import Button from '$lib/components/custom/buttons/Button.svelte';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
@@ -12,6 +11,8 @@
 	import { gameState } from './state.svelte.js';
 	import DelaySpinner from '$lib/components/custom/DelaySpinner.svelte';
 	import Alert from '$lib/components/custom/Alert.svelte';
+	import StaticBadge from '$lib/components/custom/badges/StaticBadge.svelte';
+	import StateBadge from '$lib/components/custom/badges/StateBadge.svelte';
 
 	let { data } = $props();
 
@@ -44,12 +45,19 @@
 			</Button>
 			<h1 class="text-3xl opacity-80">{data.game?.name ?? 'Game'}</h1>
 			{#if data.game}
-				<Badge variant="secondary">{status(data.game)}</Badge>
-				<Badge variant="outline">scope: {data.game.scope}</Badge>
+				<StateBadge
+					text={status(data.game)}
+					state={status(data.game)}
+					mapper={{
+						upcoming: 'StableWarning',
+						running: 'RunningPositive',
+						ended: 'StableNeutral'
+					}}
+				/>
 			{/if}
 			<Button
 				variant={'primary'}
-				class="ml-auto cursor-pointer font-mono text-xs"
+				class="ml-auto font-mono text-xs"
 				title="Copy game id"
 				onclick={() => navigator.clipboard.writeText(data.game?.id ?? '')}
 			>
