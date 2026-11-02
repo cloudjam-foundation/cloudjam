@@ -3,14 +3,15 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { onMount } from 'svelte';
 	import { ModeWatcher } from 'mode-watcher';
-	import * as Sidebar from '$lib/components/shad/sidebar';
-	import AppSidebar from '$lib/components/custom/sidebar/AppSidebar.svelte';
+	import AppSidebar from '$lib/components/sidebar/AppSidebar.svelte';
 	import { loadScopes } from '$lib/scopes.svelte';
 	import { getSubject } from '$lib';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/env';
 	import { page } from '$app/state';
-	import Background from '$lib/components/layout/Background.svelte';
+	import Background from '$lib/components/Background.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import PanelLeftIcon from '@lucide/svelte/icons/panel-left';
 
 	let { children } = $props();
 
@@ -32,18 +33,15 @@
 <div class="relative isolate min-h-screen w-full overflow-hidden">
 	<Background />
 	{#if page.route.id !== '/login' && page.route.id !== '/register'}
-		<Sidebar.Provider>
+		<div class="flex min-h-svh w-full">
 			<AppSidebar />
-			<span class="absolute md:hidden">
-				<Sidebar.Trigger />
-			</span>
 
 			<main class="overflow-scroll-hidden h-dvh min-w-0 flex-1">
 				<section class="h-full min-w-0 p-3 sm:p-5">
 					{@render children?.()}
 				</section>
 			</main>
-		</Sidebar.Provider>
+		</div>
 	{:else}
 		<main class="overflow-scroll-hidden h-dvh min-w-0 flex-1">
 			<section class="h-full min-w-0 p-3 sm:p-5">

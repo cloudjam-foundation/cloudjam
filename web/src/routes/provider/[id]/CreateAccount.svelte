@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import * as Alert from '$lib/components/shad/alert';
-	import { Button } from '$lib/components/shad/button';
-	import * as Card from '$lib/components/shad/card';
-	import { Input } from '$lib/components/shad/input';
+	import Alert from '$lib/components/Alert.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Card from '$lib/components/Card.svelte';
 	import { CreateRequestSchema } from '$lib/sdk/v1/cloud/account/account_pb';
 	import { AccountSchema } from '$lib/sdk/v1/cloud/account_pb';
 	import { create } from '@bufbuild/protobuf';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 
 	let { providerId, oncreated }: { providerId: string; oncreated: () => void } = $props();
 
@@ -18,52 +17,52 @@
 	let request = $derived(create(CreateRequestSchema, { init: { ...init, providerId: providerId } }));
 </script>
 
-<Card.Root class="w-full">
-	<Card.Header>
-		<Card.Title>Provision Account</Card.Title>
-		<Card.Description>
+<Card class="w-full items-start">
+	<div>
+		<h1 class="text-xl font-semibold text-primary/80">Provision Account</h1>
+		<p class="text-primary/60">
 			Creates a sandbox account on the provider. Provisioning runs asynchronously; the account joins the pool once it
 			reaches the ready state.
-		</Card.Description>
-	</Card.Header>
-	<Card.Content>
-		<form
-			class="flex flex-col gap-4"
-			onsubmit={() =>
-				Submit(async () => {
-					await Glue.account.create(request);
-					init = create(AccountSchema, { id: crypto.randomUUID() });
-					oncreated();
-				}, createState)}
+		</p>
+	</div>
+	<form
+		class="flex w-full flex-col gap-4"
+		onsubmit={() =>
+			Submit(async () => {
+				await Glue.account.create(request);
+				init = create(AccountSchema, { id: crypto.randomUUID() });
+				oncreated();
+			}, createState)}
+	>
+		<div class="grid gap-4 md:grid-cols-2">
+			<Input
+				bind:value={init.name}
+				label="Name"
+				placeholder="Name of the account"
+				validation={Glue.Validate(AccountSchema, init).violation.name}
+			/>
+			<Input
+				bind:value={init.description}
+				label="Description"
+				placeholder="Purpose of the account"
+				validation={Glue.Validate(AccountSchema, init).violation.description}
+			/>
+		</div>
+		<Button
+			type="submit"
+			variant="primary"
+			class="self-start"
+			processing={createState.loading}
+			disabled={createState.loading || Boolean(Glue.Validate(CreateRequestSchema, request).error)}
 		>
-			<div class="grid gap-4 md:grid-cols-2">
-				<div class="flex flex-col gap-1">
-					<label for="create-name" class="text-sm">Name</label>
-					<Input id="create-name" bind:value={init.name} placeholder="Name of the account" />
-					<p class="text-xs text-destructive {init.name ? '' : 'hidden'}">
-						{Glue.Validate(AccountSchema, init).violation.name ?? ''}
-					</p>
-				</div>
-				<div class="flex flex-col gap-1">
-					<label for="create-description" class="text-sm">Description</label>
-					<Input id="create-description" bind:value={init.description} placeholder="Purpose of the account" />
-					<p class="text-xs text-destructive">{Glue.Validate(AccountSchema, init).violation.description ?? ''}</p>
-				</div>
-			</div>
-			<Button
-				type="submit"
-				class="cursor-pointer self-start"
-				disabled={createState.loading || Boolean(Glue.Validate(CreateRequestSchema, request).error)}
-			>
-				Provision
-			</Button>
-			{#if createState.error}
-				<Alert.Root variant="destructive">
-					<AlertCircleIcon />
-					<Alert.Title>{createState.forbidden ? 'Permission denied' : 'Failed to provision account'}</Alert.Title>
-					<Alert.Description>{createState.error}</Alert.Description>
-				</Alert.Root>
-			{/if}
-		</form>
-	</Card.Content>
-</Card.Root>
+			Provision
+		</Button>
+		{#if createState.error}
+			<Alert
+				title={createState.forbidden ? 'Permission denied' : 'Failed to provision account'}
+				message={createState.error}
+				animation={true}
+			/>
+		{/if}
+	</form>
+</Card>

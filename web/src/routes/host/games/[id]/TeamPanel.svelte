@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/custom/Alert.svelte';
-	import DynamicBadge from '$lib/components/custom/badges/DynamicBadge.svelte';
-	import StaticBadge from '$lib/components/custom/badges/StaticBadge.svelte';
-	import Button from '$lib/components/custom/buttons/Button.svelte';
-	import OptionalSelect from '$lib/components/custom/OptionalSelect.svelte';
-	import Popup from '$lib/components/layout/Popup.svelte';
-	import { Input } from '$lib/components/shad/input';
-	import { Separator } from '$lib/components/shad/separator';
+	import Alert from '$lib/components/Alert.svelte';
+	import DynamicBadge from '$lib/components/DynamicBadge.svelte';
+	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
+	import Popup from '$lib/components/Popup.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Separator from '$lib/components/Separator.svelte';
 	import { ListRequestSchema as ListUsersRequestSchema } from '$lib/sdk/v1/admin/user/user_pb';
 	import type { User } from '$lib/sdk/v1/admin/user_pb';
 	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/play/team/team_pb';
@@ -151,7 +151,6 @@
 				{#if confirmDelete}
 					<Button
 						variant="destructive"
-						class="cursor-pointer"
 						disabled={removeState.loading}
 						onclick={() =>
 							Submit(async () => {

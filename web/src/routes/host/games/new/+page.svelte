@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import CreateGame from './CreateGame.svelte';
-	import Button from '$lib/components/custom/buttons/Button.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
 </script>
 
@@ -14,7 +14,7 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" class="cursor-pointer" onclick={() => goto('/host/games')}>
+		<Button variant="ghost" onclick={() => goto('/host/games')}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">Host Game</h1>

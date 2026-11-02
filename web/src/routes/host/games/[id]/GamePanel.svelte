@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/custom/Alert.svelte';
-	import StaticBadge from '$lib/components/custom/badges/StaticBadge.svelte';
-	import Button from '$lib/components/custom/buttons/Button.svelte';
-	import Card from '$lib/components/layout/Card.svelte';
-	import { Input } from '$lib/components/shad/input';
-	import { Separator } from '$lib/components/shad/separator';
+	import Alert from '$lib/components/Alert.svelte';
+	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Separator from '$lib/components/Separator.svelte';
 	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/play/game/game_pb';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { create } from '@bufbuild/protobuf';
@@ -100,7 +100,6 @@
 				{#if confirmDelete}
 					<Button
 						variant="destructive"
-						class="cursor-pointer"
 						disabled={removeState.loading}
 						onclick={() =>
 							Submit(async () => {

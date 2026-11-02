@@ -6,12 +6,12 @@
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import PlusIcon from '@lucide/svelte/icons/plus';
 	import { toSvg } from 'jdenticon';
-	import Button from '$lib/components/custom/buttons/Button.svelte';
-	import Card from '$lib/components/layout/Card.svelte';
-	import Input from '$lib/components/shad/input/input.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import Input from '$lib/components/Input.svelte';
 	import { goto } from '$app/navigation';
-	import LinkButton from '$lib/components/custom/buttons/LinkButton.svelte';
-	import DataTable from '$lib/components/layout/DataTable.svelte';
+	import LinkButton from '$lib/components/LinkButton.svelte';
+	import DataTable from '$lib/components/DataTable.svelte';
 
 	let id = $state('');
 
@@ -30,7 +30,7 @@
 		<Button variant="ghost" onclick={() => goto('/admin')}>
 			<ChevronLeftIcon />
 		</Button>
-		<h1 class="text-3xl opacity-80">Games</h1>
+		<h1 class="text-3xl opacity-80">Users</h1>
 		<LinkButton class="ml-auto" href="/admin/users/new/">
 			<PlusIcon /> Invite User
 		</LinkButton>
@@ -53,6 +53,7 @@
 		<div class="h-full rounded-sm p-2">
 			<DataTable
 				class="max-h-full"
+				limit={100}
 				load={async (startAfter: User | undefined) => {
 					const users: User[] = [];
 					await Submit(async () => {
@@ -61,8 +62,8 @@
 					}, usersState);
 					return users;
 				}}
-				onRowClick={(game) => {
-					goto(`/admin/users/${game.id}`);
+				onRowClick={(user) => {
+					goto(`/admin/users/${user.id}`);
 				}}
 				loadState={usersState}
 				columns={[

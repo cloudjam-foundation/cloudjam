@@ -1,10 +1,11 @@
 <script lang="ts">
-	import * as Chart from '$lib/components/shad/chart/index.js';
+	import type { ChartConfig } from '$lib/components/chart/chart';
+	import ChartContainer from '$lib/components/chart/ChartContainer.svelte';
+	import ChartTooltip from '$lib/components/chart/ChartTooltip.svelte';
 	import { scaleUtc } from 'd3-scale';
-	import { Area, AreaChart, ChartClipPath } from 'layerchart';
 	import { curveNatural } from 'd3-shape';
+	import { Area, AreaChart, ChartClipPath } from 'layerchart';
 	import { cubicInOut } from 'svelte/easing';
-	import ChartContainer from '$lib/components/shad/chart/chart-container.svelte';
 
 	let {
 		timeFormat,
@@ -16,7 +17,7 @@
 		to = $bindable()
 	}: {
 		timeFormat: any;
-		labels: Chart.ChartConfig;
+		labels: ChartConfig;
 		data: any[];
 		brushDisabled?: boolean;
 		unit?: string;
@@ -84,7 +85,7 @@
 		{/snippet}
 		{#snippet tooltip({ context })}
 			{#if Number(context) !== 0}
-				<Chart.Tooltip
+				<ChartTooltip
 					class="overflow-scroll-hidden pointer-events-auto! z-50 max-h-72 w-max"
 					labelFormatter={(v: Date) => {
 						return v.toLocaleDateString('en-US', {
@@ -95,7 +96,6 @@
 							hour12: false
 						});
 					}}
-					indicator="line"
 				>
 					{#snippet formatter({ value, name, item })}
 						<div
@@ -109,7 +109,7 @@
 							</span>
 						</div>
 					{/snippet}
-				</Chart.Tooltip>
+				</ChartTooltip>
 			{/if}
 		{/snippet}
 	</AreaChart>

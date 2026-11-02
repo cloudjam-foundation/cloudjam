@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import * as Alert from '$lib/components/shad/alert';
-	import { Button } from '$lib/components/shad/button';
-	import * as Card from '$lib/components/shad/card';
-	import * as Chart from '$lib/components/shad/chart/index.js';
-	import { Input } from '$lib/components/shad/input';
-	import * as Select from '$lib/components/shad/select';
+	import Alert from '$lib/components/Alert.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import type { ChartConfig } from '$lib/components/chart/chart';
+	import Input from '$lib/components/Input.svelte';
+	import Select from '$lib/components/Select.svelte';
+	import Card from '$lib/components/Card.svelte';
 	import {
 		AggregateLogsRequestSchema,
 		AggregateWindow,
@@ -13,7 +13,6 @@
 	} from '$lib/sdk/v1/admin/system/system_pb';
 	import { create, enumToJson } from '@bufbuild/protobuf';
 	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import ResetIcon from '@lucide/svelte/icons/rotate-ccw';
 	import ZoomOutIcon from '@lucide/svelte/icons/zoom-out';
 	import LogPanel from './LogPanel.svelte';
@@ -52,7 +51,7 @@
 	let challenge = $state('');
 	let limit = $state('50');
 
-	let labels: Chart.ChartConfig = $state({});
+	let labels: ChartConfig = $state({});
 	let data: any[] = $state([]);
 	let counts: Record<string, number> = $state({});
 
@@ -103,7 +102,7 @@
 			}
 		}
 
-		const config: Chart.ChartConfig = {};
+		const config: ChartConfig = {};
 		for (let i = 0; i < found.length; i++) {
 			config[found[i]] = {
 				label: found[i],
@@ -123,32 +122,26 @@
 </script>
 
 {#if levelState.forbidden}
-	<Alert.Root>
-		<AlertCircleIcon />
-		<Alert.Title>Permission Denied</Alert.Title>
-		<Alert.Description>You are not allowed to view this section</Alert.Description>
-	</Alert.Root>
+	<Alert title="Permission Denied" message="You are not allowed to view this section" />
 {:else}
-	<Card.Root class="w-full">
-		<Card.Header class="flex items-center justify-start gap-12 space-y-0 border-b py-5 sm:flex-row">
+	<Card class="w-full items-start gap-6">
+		<div class="flex w-full flex-col items-start gap-4 border-b pb-5 sm:flex-row sm:items-center sm:gap-12">
 			{#each ['ERROR', 'WARN', 'INFO', 'DEBUG'] as name (name)}
 				<div>
-					<Card.Title class="text-3xl" style="color: {levelColors[name]}">{counts[name] ?? 0}</Card.Title>
-					<Card.Description>{name.toLowerCase()}</Card.Description>
+					<h1 class="text-3xl font-semibold" style="color: {levelColors[name]}">{counts[name] ?? 0}</h1>
+					<p class="text-primary/60">{name.toLowerCase()}</p>
 				</div>
 			{/each}
 
-			<div class="ml-auto flex items-center gap-2">
-				<span class="text-xs text-muted-foreground">
+			<div class="flex items-center gap-2 sm:ml-auto">
+				<span class="text-xs text-primary/60">
 					{from.toLocaleDateString(undefined, { hour: '2-digit', minute: '2-digit' })}
 					–
 					{to.toLocaleDateString(undefined, { hour: '2-digit', minute: '2-digit' })}
 				</span>
 				<Button
-					variant="outline"
-					size="icon"
+					variant="primary"
 					title="Zoom out"
-					class="cursor-pointer"
 					onclick={() => {
 						const span = to.getTime() - from.getTime();
 						from = new Date(from.getTime() - span / 2);
@@ -158,91 +151,56 @@
 					<ZoomOutIcon />
 				</Button>
 				<Button
-					variant="outline"
-					size="icon"
+					variant="primary"
 					title="Reset"
-					class="cursor-pointer"
 					onclick={() => ((from = new Date(Date.now() - 24 * 60 * 60 * 1000)), (to = new Date()))}
 				>
 					<ResetIcon />
 				</Button>
 			</div>
-		</Card.Header>
-		<Card.Content class="flex flex-col gap-6">
-			<div>
-				<Card.Title>Log Volume</Card.Title>
-				<Card.Description>
-					Log lines per severity in {enumToJson(AggregateWindowSchema, window)?.toString().toLowerCase()}s. Drag on the
-					chart to zoom into a range.
-				</Card.Description>
-			</div>
-			<ZoomChart
-				timeFormat={zoomTimeformat(from, to)}
-				{labels}
-				{data}
-				unit={`lines / ${enumToJson(AggregateWindowSchema, window)?.toString().toLowerCase()}`}
-				bind:from
-				bind:to
-			/>
+		</div>
 
-			<div class="flex flex-row flex-wrap items-end gap-2">
-				<label class="flex flex-col gap-1 text-sm">
-					Level
-					<Select.Root type="single" bind:value={level}>
-						<Select.Trigger class="w-40 cursor-pointer">
-							{levels.find((item) => item.value === level)?.label}
-						</Select.Trigger>
-						<Select.Content>
-							{#each levels as item (item.value)}
-								<Select.Item value={item.value} label={item.label}>{item.label}</Select.Item>
-							{/each}
-						</Select.Content>
-					</Select.Root>
-				</label>
-				<label class="flex flex-col gap-1 text-sm">
-					System
-					<Input class="w-56" bind:value={system} placeholder="e.g. server" />
-				</label>
-				<label class="flex flex-col gap-1 text-sm">
-					Procedure
-					<Input class="w-72" bind:value={procedure} placeholder="e.g. /v1.admin.user.UserService/List" />
-				</label>
-				<label class="flex flex-col gap-1 text-sm">
-					Challenge
-					<Input class="w-72" bind:value={challenge} placeholder="00000000-00000000-00000000-00000000" />
-				</label>
-				<label class="flex flex-col gap-1 text-sm">
-					Lines
-					<Select.Root type="single" bind:value={limit}>
-						<Select.Trigger class="w-32 cursor-pointer">
-							{limits.find((item) => item.value === limit)?.label}
-						</Select.Trigger>
-						<Select.Content>
-							{#each limits as item (item.value)}
-								<Select.Item value={item.value} label={item.label}>{item.label}</Select.Item>
-							{/each}
-						</Select.Content>
-					</Select.Root>
-				</label>
-				<Button
-					variant="outline"
-					class="cursor-pointer"
-					disabled={!level && !system && !procedure && !challenge}
-					onclick={() => ((level = ''), (system = ''), (procedure = ''), (challenge = ''))}
-				>
-					Clear
-				</Button>
+		<div>
+			<h2 class="text-xl font-semibold text-primary/80">Log Volume</h2>
+			<p class="text-sm text-primary/60">
+				Log lines per severity in {enumToJson(AggregateWindowSchema, window)?.toString().toLowerCase()}s. Drag on the
+				chart to zoom into a range.
+			</p>
+		</div>
+		<ZoomChart
+			timeFormat={zoomTimeformat(from, to)}
+			{labels}
+			{data}
+			unit={`lines / ${enumToJson(AggregateWindowSchema, window)?.toString().toLowerCase()}`}
+			bind:from
+			bind:to
+		/>
+
+		<div class="flex flex-row flex-wrap items-end gap-2">
+			<div class="flex flex-col gap-1 text-sm">
+				Level
+				<Select bind:value={level} class="w-40" items={levels} />
 			</div>
-		</Card.Content>
-	</Card.Root>
+			<Input class="w-56" bind:value={system} label="System" placeholder="e.g. server" />
+			<Input class="w-72" bind:value={procedure} label="Procedure" placeholder="e.g. /v1.admin.user.UserService/List" />
+			<Input class="w-72" bind:value={challenge} label="Challenge" placeholder="00000000-00000000-00000000-00000000" />
+			<div class="flex flex-col gap-1 text-sm">
+				Lines
+				<Select bind:value={limit} class="w-32" items={limits} />
+			</div>
+			<Button
+				variant="primary"
+				disabled={!level && !system && !procedure && !challenge}
+				onclick={() => ((level = ''), (system = ''), (procedure = ''), (challenge = ''))}
+			>
+				Clear
+			</Button>
+		</div>
+	</Card>
 
 	<LogPanel {from} {to} {level} {challenge} bind:system bind:procedure limit={Number(limit)} />
 
 	{#if levelState.error}
-		<Alert.Root variant="destructive">
-			<AlertCircleIcon />
-			<Alert.Title>Failed to load log data</Alert.Title>
-			<Alert.Description>{levelState.error}</Alert.Description>
-		</Alert.Root>
+		<Alert title="Failed to load log data" message={levelState.error} animation={true} />
 	{/if}
 {/if}

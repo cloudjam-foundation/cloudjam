@@ -7,12 +7,12 @@
 	import CreateTeam from './CreateTeam.svelte';
 	import TeamPanel from './TeamPanel.svelte';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
-	import StaticBadge from '$lib/components/custom/badges/StaticBadge.svelte';
-	import DataTable from '$lib/components/layout/DataTable.svelte';
-	import Alert from '$lib/components/custom/Alert.svelte';
-	import DynamicBadge from '$lib/components/custom/badges/DynamicBadge.svelte';
+	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import DataTable from '$lib/components/DataTable.svelte';
+	import Alert from '$lib/components/Alert.svelte';
+	import DynamicBadge from '$lib/components/DynamicBadge.svelte';
 	import { toSvg } from 'jdenticon';
-	import Button from '$lib/components/custom/buttons/Button.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import { ClosedCaptionIcon, XIcon } from '@lucide/svelte';
 
 	let { game }: { game: Game } = $props();
@@ -27,7 +27,7 @@
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
 		<h2 class="text-xl opacity-80">Teams</h2>
-		<Button variant="primary" class="ml-auto cursor-pointer" onclick={() => (creating = !creating)}>
+		<Button variant="primary" class="ml-auto" onclick={() => (creating = !creating)}>
 			{#if creating}
 				<XIcon /> Close Menu
 			{:else}
@@ -45,6 +45,7 @@
 	{:else}
 		<DataTable
 			class="max-h-[80vh]"
+			limit={100}
 			load={async (startAfter: Team | undefined) => {
 				const teams: Team[] = [];
 				await Submit(async () => {

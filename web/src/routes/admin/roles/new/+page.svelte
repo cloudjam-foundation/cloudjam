@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { Button } from '$lib/components/shad/button';
+	import Button from '$lib/components/Button.svelte';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import CreateRole from './CreateRole.svelte';
 </script>
@@ -14,7 +14,7 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" size="icon" class="cursor-pointer" href="/admin/roles/">
+		<Button variant="ghost" onclick={() => goto('/admin/roles')}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">Create Role</h1>

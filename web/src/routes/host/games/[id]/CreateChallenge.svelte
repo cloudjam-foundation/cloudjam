@@ -1,19 +1,18 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import * as Alert from '$lib/components/shad/alert';
-	import { Button } from '$lib/components/shad/button';
-	import * as Card from '$lib/components/shad/card';
-	import Input from '$lib/components/shad/input/input.svelte';
-	import * as Select from '$lib/components/shad/select';
+	import Alert from '$lib/components/Alert.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import Select from '$lib/components/Select.svelte';
 	import { ListRequestSchema as ListDefinitionRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';
-	import { ListRequestSchema as ListProviderRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb';
 	import type { Definition } from '$lib/sdk/v1/cloud/definition_pb';
+	import { ListRequestSchema as ListProviderRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb';
+	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb';
 	import { CreateRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb';
 	import { ChallengeSchema, type Challenge } from '$lib/sdk/v1/play/challenge_pb';
 	import type { Team } from '$lib/sdk/v1/play/team_pb';
 	import { create } from '@bufbuild/protobuf';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
-	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb';
 	import { onMount } from 'svelte';
 
 	let {
@@ -82,84 +81,65 @@
 	onMount(() => loadProviders());
 </script>
 
-<Card.Root class="w-full">
-	<Card.Header>
-		<Card.Title>Provision Challenges</Card.Title>
-		<Card.Description>
+<Card class="w-full items-start">
+	<div>
+		<h1 class="text-xl font-semibold text-primary/80">Provision Challenges</h1>
+		<p class="text-primary/60">
 			Rollout a challenge to the specified teams. The details are revealed once the team starts the challenge.
-		</Card.Description>
-	</Card.Header>
-	<Card.Content>
-		<form class="flex flex-col gap-4" onsubmit={createChallenges}>
-			<div class="grid gap-4 md:grid-cols-2">
-				<div class="flex flex-col gap-1">
-					<label for="select-provider" class="text-sm">Provider</label>
-					{#if providers.length > 0}
-						<Select.Root type="single" bind:value={blueprint.definitionProviderId}>
-							<Select.Trigger id="select-provider" class="w-full cursor-pointer">
-								{providers.find((provider) => provider.id === blueprint.definitionProviderId)?.name ??
-									'Select provider'}
-							</Select.Trigger>
-							<Select.Content>
-								{#each providers as provider (provider.id)}
-									<Select.Item value={provider.id} label={provider.name}>{provider.name}</Select.Item>
-								{/each}
-							</Select.Content>
-						</Select.Root>
-					{:else}
-						<Input id="select-provider" bind:value={blueprint.definitionProviderId} placeholder="Definition ID" />
-					{/if}
-				</div>
-
-				<div class="flex flex-col gap-1">
-					<label for="select-definition" class="text-sm">Definition</label>
-					{#if definitions.length > 0}
-						<Select.Root type="single" bind:value={blueprint.definitionId}>
-							<Select.Trigger id="select-definition" class="w-full cursor-pointer">
-								{definitions.find((definition) => definition.id === blueprint.definitionId)?.name ??
-									'Select definition'}
-							</Select.Trigger>
-							<Select.Content>
-								{#each definitions as definition (definition.id)}
-									<Select.Item value={definition.id} label={definition.name}>{definition.name}</Select.Item>
-								{/each}
-							</Select.Content>
-						</Select.Root>
-					{:else}
-						<Input id="select-definition" bind:value={blueprint.definitionId} placeholder="Definition ID" />
-					{/if}
-				</div>
-
-				<div class="flex flex-col gap-1">
-					<label for="select-teams" class="text-sm">Teams</label>
-					{#if teams.length > 0}
-						<Select.Root type="multiple" bind:value={assignedTeams}>
-							<Select.Trigger id="select-teams" class="w-full cursor-pointer">
-								{#if assignedTeams.length < 1}
-									Select Teams
-								{:else}
-									{assignedTeams.map((teamId) => teams.find((team) => team.id === teamId)?.name ?? teamId).join(', ')}
-								{/if}
-							</Select.Trigger>
-							<Select.Content>
-								{#each teams as team (team.id)}
-									<Select.Item value={team.id} label={team.name}>{team.name}</Select.Item>
-								{/each}
-							</Select.Content>
-						</Select.Root>
-					{:else}
-						<Input id="select-teams" bind:value={assignedTeams} placeholder="Comma separated team ids" />
-					{/if}
-				</div>
+		</p>
+	</div>
+	<form class="flex w-full flex-col gap-4" onsubmit={createChallenges}>
+		<div class="grid gap-4 md:grid-cols-2">
+			<div class="flex flex-col gap-1">
+				<span class="text-sm">Provider</span>
+				{#if providers.length > 0}
+					<Select
+						bind:value={blueprint.definitionProviderId}
+						class="w-full"
+						placeholder="Select provider"
+						items={providers.map((provider) => ({ value: provider.id, label: provider.name }))}
+					/>
+				{:else}
+					<Input id="select-provider" bind:value={blueprint.definitionProviderId} placeholder="Definition ID" />
+				{/if}
 			</div>
-			<Button type="submit" class="cursor-pointer self-start">Rollout</Button>
-			{#if createState.error}
-				<Alert.Root variant="destructive">
-					<AlertCircleIcon />
-					<Alert.Title>{createState.forbidden ? 'Permission denied' : 'Failed to hand out challenge'}</Alert.Title>
-					<Alert.Description>{createState.error}</Alert.Description>
-				</Alert.Root>
-			{/if}
-		</form>
-	</Card.Content>
-</Card.Root>
+
+			<div class="flex flex-col gap-1">
+				<span class="text-sm">Definition</span>
+				{#if definitions.length > 0}
+					<Select
+						bind:value={blueprint.definitionId}
+						class="w-full"
+						placeholder="Select definition"
+						items={definitions.map((definition) => ({ value: definition.id, label: definition.name }))}
+					/>
+				{:else}
+					<Input id="select-definition" bind:value={blueprint.definitionId} placeholder="Definition ID" />
+				{/if}
+			</div>
+
+			<div class="flex flex-col gap-1">
+				<span class="text-sm">Teams</span>
+				{#if teams.length > 0}
+					<Select
+						multiple={true}
+						bind:value={assignedTeams}
+						class="w-full"
+						placeholder="Select Teams"
+						items={teams.map((team) => ({ value: team.id, label: team.name }))}
+					/>
+				{:else}
+					<Input id="select-teams" bind:value={assignedTeams} placeholder="Comma separated team ids" />
+				{/if}
+			</div>
+		</div>
+		<Button type="submit" variant="primary" processing={createState.loading} class="self-start">Rollout</Button>
+		{#if createState.error}
+			<Alert
+				title={createState.forbidden ? 'Permission denied' : 'Failed to hand out challenge'}
+				message={createState.error}
+				animation={true}
+			/>
+		{/if}
+	</form>
+</Card>

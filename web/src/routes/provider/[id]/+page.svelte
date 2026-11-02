@@ -5,9 +5,9 @@
 	import DefinitionSection from './DefinitionSection.svelte';
 	import ProviderPanel from './ProviderPanel.svelte';
 	import { goto } from '$app/navigation';
-	import TabPage from '$lib/components/layout/TabPage.svelte';
-	import StaticBadge from '$lib/components/custom/badges/StaticBadge.svelte';
-	import Button from '$lib/components/custom/buttons/Button.svelte';
+	import TabPage from '$lib/components/TabPage.svelte';
+	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import Button from '$lib/components/Button.svelte';
 
 	let { data } = $props();
 </script>

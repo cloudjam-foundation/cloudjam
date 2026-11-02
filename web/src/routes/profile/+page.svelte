@@ -9,14 +9,14 @@
 	import Gauge from './Gauge.svelte';
 	import { goto } from '$app/navigation';
 	import { CircleCheck, CircleX, LogOut, Pencil, ShieldCheck } from '@lucide/svelte';
-	import Input from '$lib/components/shad/input/input.svelte';
-	import * as Dialog from '$lib/components/shad/dialog';
-	import Card from '$lib/components/layout/Card.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Dialog from '$lib/components/Dialog.svelte';
+	import Card from '$lib/components/Card.svelte';
 	import { resolve } from '$app/paths';
-	import Button from '$lib/components/custom/buttons/Button.svelte';
-	import LinkButton from '$lib/components/custom/buttons/LinkButton.svelte';
-	import StaticBadge from '$lib/components/custom/badges/StaticBadge.svelte';
-	import Alert from '$lib/components/custom/Alert.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import LinkButton from '$lib/components/LinkButton.svelte';
+	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import Alert from '$lib/components/Alert.svelte';
 
 	let user: User | undefined = $state();
 
@@ -24,6 +24,7 @@
 	let updateState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let resetState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let edit = $state(false);
+	let resetOpen = $state(false);
 
 	onMount(async () => {
 		Submit(async () => {
@@ -90,38 +91,34 @@
 				</form>
 				<div class="h-1 w-full rounded-2xl bg-neutral/80 lg:h-64 lg:w-1"></div>
 				<div class="flex w-full flex-col items-start justify-center gap-8 lg:flex-row">
-					<Dialog.Root>
-						<Dialog.Trigger>
-							<Button variant="primary">Change Password</Button>
-						</Dialog.Trigger>
-						<Dialog.Content>
-							<Dialog.Header>
-								<Dialog.Title>Reset password?</Dialog.Title>
-								<Dialog.Description>This will take you back to the registration process.</Dialog.Description>
-							</Dialog.Header>
-							<Button
-								processing={resetState.loading}
-								onclick={() => {
-									Submit(async () => {
-										const resp = await Glue.user.resetPassword(
-											create(ResetPasswordRequestSchema, {
-												email: user?.email,
-												expires: timestampFromDate(new Date(Date.now() + 10 * 60 * 1000)) // expires in 10 minutes
-											})
-										);
-										goto(resolve(`/register?email=${user!.email}&username=${user!.username}&code=${resp.code}`));
-									}, resetState);
-								}}
-								variant="destructive"
-							>
-								Yes, proceed
-							</Button>
+					<Button variant="primary" onclick={() => (resetOpen = true)}>Change Password</Button>
+					<Dialog
+						bind:open={resetOpen}
+						title="Reset password?"
+						description="This will take you back to the registration process."
+					>
+						<Button
+							processing={resetState.loading}
+							onclick={() => {
+								Submit(async () => {
+									const resp = await Glue.user.resetPassword(
+										create(ResetPasswordRequestSchema, {
+											email: user?.email,
+											expires: timestampFromDate(new Date(Date.now() + 10 * 60 * 1000)) // expires in 10 minutes
+										})
+									);
+									goto(resolve(`/register?email=${user!.email}&username=${user!.username}&code=${resp.code}`));
+								}, resetState);
+							}}
+							variant="destructive"
+						>
+							Yes, proceed
+						</Button>
 
-							{#if resetState.error}
-								<Alert title="Failed to reset" message={resetState.error} animation={true} />
-							{/if}
-						</Dialog.Content>
-					</Dialog.Root>
+						{#if resetState.error}
+							<Alert title="Failed to reset" message={resetState.error} animation={true} />
+						{/if}
+					</Dialog>
 				</div>
 			{:else}
 				<div class="flex w-full flex-col items-start gap-1">

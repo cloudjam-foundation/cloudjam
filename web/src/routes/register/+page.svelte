@@ -1,15 +1,15 @@
 <script lang="ts">
-	import logo from '$lib/assets/favicon.svg';
-	import { create } from '@bufbuild/protobuf';
-	import { RegisterRequestSchema } from '$lib/sdk/v1/auth/auth_pb';
-	import { Glue, Submit, type SubmitState } from '$lib';
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
 	import { page } from '$app/state';
-	import Input from '$lib/components/shad/input/input.svelte';
-	import Button from '$lib/components/shad/button/button.svelte';
-	import * as Alert from '$lib/components/shad/alert';
-	import { Loader, OctagonAlert } from '@lucide/svelte';
+	import { Glue, Submit, type SubmitState } from '$lib';
+	import logo from '$lib/assets/favicon.svg';
+	import Alert from '$lib/components/Alert.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import { RegisterRequestSchema } from '$lib/sdk/v1/auth/auth_pb';
+	import { create } from '@bufbuild/protobuf';
+	import { onMount } from 'svelte';
 
 	let registerRequest = $state(create(RegisterRequestSchema, {}));
 
@@ -31,54 +31,55 @@
 </svelte:head>
 
 <div class="flex w-full items-center justify-center">
-	<form
-		class="mt-[10%] flex w-96 flex-col items-center gap-4 rounded-2xl border-[0.05rem] border-neutral/40 p-7 shadow-sm shadow-primary/20"
-		onsubmit={() =>
-			Submit(async () => {
-				await Glue.auth.register(registerRequest);
-				goto('/login');
-			}, registerState)}
-	>
-		<img alt="icon" src={logo} class="h-32" />
-		<h1 class="text-4xl opacity-80">Registration</h1>
-		<Input bind:value={registerRequest.email} class="w-full" placeholder="Please enter your Email" type="email" />
-		<Input
-			bind:value={registerRequest.code}
-			class="w-full"
-			placeholder="Please enter your registration code"
-			type="text"
-		/>
-		<hr class="w-full border border-neutral/40" />
-		<Input bind:value={registerRequest.username} class="w-full" placeholder="Create a creative username" type="text" />
-		<Input
-			bind:value={registerRequest.password}
-			class="w-full"
-			placeholder="Create a supersecret password"
-			type="password"
-		/>
-		<Input
-			bind:value={registerRequest.confirmPassword}
-			class="w-full"
-			placeholder="Confirm your supersecret password"
-			type="password"
-		/>
-		<Button
-			class="w-full cursor-pointer"
-			type="submit"
-			disabled={Boolean(Glue.Validate(RegisterRequestSchema, registerRequest).error)}
-			variant="default"
+	<Card class="mt-[10%] w-96">
+		<form
+			class="flex w-full flex-col items-center gap-4"
+			onsubmit={() =>
+				Submit(async () => {
+					await Glue.auth.register(registerRequest);
+					goto('/login');
+				}, registerState)}
 		>
-			Register
-			{#if registerState.loading}
-				<Loader />
+			<img alt="icon" src={logo} class="h-32" />
+			<h1 class="text-4xl opacity-80">Registration</h1>
+			<Input bind:value={registerRequest.email} class="w-full" placeholder="Please enter your Email" type="email" />
+			<Input
+				bind:value={registerRequest.code}
+				class="w-full"
+				placeholder="Please enter your registration code"
+				type="text"
+			/>
+			<hr class="w-full border border-neutral/40" />
+			<Input
+				bind:value={registerRequest.username}
+				class="w-full"
+				placeholder="Create a creative username"
+				type="text"
+			/>
+			<Input
+				bind:value={registerRequest.password}
+				class="w-full"
+				placeholder="Create a supersecret password"
+				type="password"
+			/>
+			<Input
+				bind:value={registerRequest.confirmPassword}
+				class="w-full"
+				placeholder="Confirm your supersecret password"
+				type="password"
+			/>
+			<Button
+				class="w-full"
+				type="submit"
+				variant="primary"
+				processing={registerState.loading}
+				disabled={Boolean(Glue.Validate(RegisterRequestSchema, registerRequest).error)}
+			>
+				Register
+			</Button>
+			{#if registerState.error}
+				<Alert title="Registration failed" message={registerState.error} animation={true} />
 			{/if}
-		</Button>
-		{#if registerState.error}
-			<Alert.Root>
-				<OctagonAlert />
-				<Alert.Title>Registration failed</Alert.Title>
-				<Alert.Description class="whitespace-pre-line">{registerState.error}</Alert.Description>
-			</Alert.Root>
-		{/if}
-	</form>
+		</form>
+	</Card>
 </div>

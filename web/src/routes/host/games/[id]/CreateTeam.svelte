@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/custom/Alert.svelte';
-	import Button from '$lib/components/custom/buttons/Button.svelte';
-	import Card from '$lib/components/layout/Card.svelte';
-	import Input from '$lib/components/shad/input/input.svelte';
-	import LabelInput from '$lib/components/shad/label-input/label-input.svelte';
+	import Alert from '$lib/components/Alert.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import Input from '$lib/components/Input.svelte';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { CreateRequestSchema } from '$lib/sdk/v1/play/team/team_pb';
 	import { TeamSchema } from '$lib/sdk/v1/play/team_pb';

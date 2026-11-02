@@ -1,22 +1,18 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import { Input } from '$lib/components/shad/input';
 	import { ListRequestSchema } from '$lib/sdk/v1/play/game/game_pb';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import PlusIcon from '@lucide/svelte/icons/plus';
-	import StateBadge from '$lib/components/custom/badges/StateBadge.svelte';
-	import LinkButton from '$lib/components/custom/buttons/LinkButton.svelte';
-	import DataTable from '$lib/components/layout/DataTable.svelte';
-	import ProcessingButton from '$lib/components/custom/buttons/ProcessingButton.svelte';
-	import { SquareArrowOutUpRight } from '@lucide/svelte';
-	import Alert from '$lib/components/custom/Alert.svelte';
-	import Card from '$lib/components/layout/Card.svelte';
-	import { gameState } from './[id]/state.svelte';
-	import Button from '$lib/components/custom/buttons/Button.svelte';
+	import StateBadge from '$lib/components/StateBadge.svelte';
+	import LinkButton from '$lib/components/LinkButton.svelte';
+	import DataTable from '$lib/components/DataTable.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
 
 	let id = $state('');
 
@@ -64,6 +60,7 @@
 		<div class="h-full rounded-sm p-2">
 			<DataTable
 				class="max-h-full"
+				limit={100}
 				load={async (startAfter: Game | undefined) => {
 					const games: Game[] = [];
 					await Submit(async () => {

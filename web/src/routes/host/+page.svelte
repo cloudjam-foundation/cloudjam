@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Card from '$lib/components/layout/Card.svelte';
+	import Card from '$lib/components/Card.svelte';
 	import GamepadIcon from '@lucide/svelte/icons/gamepad-2';
 	import WandSparklesIcon from '@lucide/svelte/icons/wand-sparkles';
 </script>

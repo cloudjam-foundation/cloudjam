@@ -1,25 +1,26 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import * as Alert from '$lib/components/shad/alert';
-	import * as Card from '$lib/components/shad/card';
-	import * as Table from '$lib/components/shad/table';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
-	import { create } from '@bufbuild/protobuf';
-	import { durationFromMs } from '@bufbuild/protobuf/wkt';
-	import * as Chart from '$lib/components/shad/chart/index.js';
-	import ZoomChart from './ZoomChart.svelte';
-	import { AggregateCostRequestSchema } from '$lib/sdk/v1/cloud/account/account_pb';
-	import OptionalSelect, { type Suggestion } from '$lib/components/custom/OptionalSelect.svelte';
-	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb';
-	import { onMount } from 'svelte';
+	import Alert from '$lib/components/Alert.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import ProcessingButton from '$lib/components/ProcessingButton.svelte';
+	import type { ChartConfig } from '$lib/components/chart/chart';
+	import OptionalSelect, { type Suggestion } from '$lib/components/OptionalSelect.svelte';
+	import Separator from '$lib/components/Separator.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import DataTable from '$lib/components/DataTable.svelte';
+	import {
+		AggregateCostRequestSchema,
+		ListRequestSchema as ListAccountRequestSchema
+	} from '$lib/sdk/v1/cloud/account/account_pb';
 	import type { Account } from '$lib/sdk/v1/cloud/account_pb';
 	import { ListRequestSchema as ListProviderRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb';
-	import { ListRequestSchema as ListAccountRequestSchema } from '$lib/sdk/v1/cloud/account/account_pb';
-	import ProcessingButton from '$lib/components/custom/buttons/ProcessingButton.svelte';
+	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb';
+	import { create } from '@bufbuild/protobuf';
+	import { durationFromMs } from '@bufbuild/protobuf/wkt';
 	import { ChartNoAxesCombinedIcon, ZoomOutIcon } from '@lucide/svelte';
-	import Separator from '$lib/components/shad/separator/separator.svelte';
-	import Button from '$lib/components/shad/button/button.svelte';
 	import ResetIcon from '@lucide/svelte/icons/rotate-ccw';
+	import { onMount } from 'svelte';
+	import ZoomChart from './ZoomChart.svelte';
 
 	let { providerId, accountId, timewindow }: { providerId: string; accountId: string; timewindow: string } = $props();
 
@@ -54,16 +55,26 @@
 		{ id: String(now.getTime() - new Date(now.getFullYear(), 1, 1).getTime()), title: 'This Year' }
 	];
 
-	let costLabels: Chart.ChartConfig = $state({});
+	let costLabels: ChartConfig = $state({});
 	let costData: any[] = $state([]);
 	let totalCost: number = $state(0);
 	let serviceCost: Record<string, number> = $state({});
+	// bumping the version remounts the service table with the freshly aggregated data.
+	let version = $state(0);
+
+	type ServiceCost = { service: string; cost: number };
+	const serviceRows = $derived<ServiceCost[]>(
+		Object.entries(serviceCost)
+			.toSorted((a, b) => b[1] - a[1])
+			.map(([service, cost]) => ({ service, cost: Math.round(cost * 100) / 100 }))
+			.filter((row) => row.cost > 0)
+	);
 
 	async function loadCost(
 		providerId: string,
 		accountId: string,
 		window: number
-	): Promise<[number, Record<string, number>, Chart.ChartConfig, any[]]> {
+	): Promise<[number, Record<string, number>, ChartConfig, any[]]> {
 		let bucket = 24 * 60 * 60 * 1000; // bucket is always daily
 		let totalCost = 0;
 		let serviceCost: Record<string, number> = {};
@@ -95,7 +106,7 @@
 				}
 			}
 		}
-		const labels: Chart.ChartConfig = {};
+		const labels: ChartConfig = {};
 		for (let i = 0; i < services.length; i++) {
 			labels[safe(services[i])] = {
 				label: services[i],
@@ -111,16 +122,14 @@
 	let chartFrom = $state(new Date());
 </script>
 
-<Card.Root class="w-full">
-	<Card.Header class="flex items-center justify-start gap-20 space-y-0 border-b py-5 sm:flex-row">
+<Card class="w-full items-start gap-8">
+	<div class="flex w-full flex-col items-start gap-4 border-b pb-5 sm:flex-row sm:items-center sm:gap-20">
 		<div>
-			<Card.Title class="text-4xl">
-				{Math.round(totalCost * 100) / 100} $
-			</Card.Title>
-			<Card.Description class="text-xl">total account cost</Card.Description>
+			<h1 class="text-4xl font-semibold text-primary/90">{Math.round(totalCost * 100) / 100} $</h1>
+			<p class="text-xl text-primary/60">total account cost</p>
 		</div>
 
-		<div class="ml-auto flex items-center gap-2">
+		<div class="flex flex-wrap items-center gap-2 sm:ml-auto">
 			<OptionalSelect
 				bind:value={timewindow}
 				placeholder="Select Timewindow"
@@ -149,6 +158,7 @@
 						[totalCost, serviceCost, costLabels, costData] = await loadCost(providerId, accountId, Number(timewindow));
 						chartFrom = new Date(now.getTime() - Number(timewindow));
 						chartTo = now;
+						version++;
 					}, aggregateState);
 				}}
 			>
@@ -156,88 +166,74 @@
 				Aggregate Cost
 			</ProcessingButton>
 		</div>
-	</Card.Header>
-	<Card.Content class="flex flex-col gap-8">
-		{#if aggregateState.error}
-			<Alert.Root variant="destructive">
-				<AlertCircleIcon />
-				<Alert.Title>Failed to load chart data</Alert.Title>
-				<Alert.Description>{aggregateState.error}</Alert.Description>
-			</Alert.Root>
-		{:else if aggregateState.forbidden}
-			<Alert.Root variant="destructive">
-				<AlertCircleIcon />
-				<Alert.Title>Permission Denied</Alert.Title>
-				<Alert.Description>You are not allowed to view this section</Alert.Description>
-			</Alert.Root>
-		{:else if costData.length > 0}
-			<ZoomChart
-				timeFormat={(v: any) => {
-					return v.toLocaleDateString('en-US', {
-						month: '2-digit',
-						day: '2-digit'
-					});
+	</div>
+
+	{#if aggregateState.error}
+		<Alert title="Failed to load chart data" message={aggregateState.error} />
+	{:else if aggregateState.forbidden}
+		<Alert title="Permission Denied" message="You are not allowed to view this section" />
+	{:else if costData.length > 0}
+		<ZoomChart
+			timeFormat={(v: any) => {
+				return v.toLocaleDateString('en-US', {
+					month: '2-digit',
+					day: '2-digit'
+				});
+			}}
+			labels={costLabels}
+			data={costData}
+			unit={`$ / day`}
+			bind:from={chartFrom}
+			bind:to={chartTo}
+		/>
+
+		<div class="flex flex-row items-center gap-2">
+			<Button
+				variant="primary"
+				title="Zoom out"
+				onclick={() => {
+					const span = chartTo.getTime() - chartFrom.getTime();
+					chartFrom = new Date(Math.max(chartFrom.getTime() - span / 2, now.getTime() - Number(timewindow)));
+					chartTo = new Date(Math.min(chartTo.getTime() + span / 2, now.getTime()));
 				}}
-				labels={costLabels}
-				data={costData}
-				unit={`$ / day`}
-				bind:from={chartFrom}
-				bind:to={chartTo}
+			>
+				<ZoomOutIcon />
+			</Button>
+			<Button
+				variant="primary"
+				title="Reset"
+				onclick={() => {
+					chartFrom = new Date(now.getTime() - Number(timewindow));
+					chartTo = now;
+				}}
+			>
+				<ResetIcon />
+			</Button>
+		</div>
+
+		<Separator />
+
+		{#key version}
+			<DataTable
+				class="max-h-[60vh] w-full"
+				limit={Infinity}
+				load={async () => serviceRows}
+				loadState={{ error: '', loading: false, forbidden: false }}
+				columns={[
+					{ title: 'Service', width: '70%', render: renderService },
+					{ title: 'Cost', width: '30%', render: renderCost }
+				]}
 			/>
-
-			<div class="flex flex-row items-center gap-2">
-				<Button
-					variant="outline"
-					size="icon"
-					title="Zoom out"
-					class="cursor-pointer"
-					onclick={() => {
-						const span = chartTo.getTime() - chartFrom.getTime();
-						chartFrom = new Date(Math.max(chartFrom.getTime() - span / 2, now.getTime() - Number(timewindow)));
-						chartTo = new Date(Math.min(chartTo.getTime() + span / 2, now.getTime()));
-					}}
-				>
-					<ZoomOutIcon />
-				</Button>
-				<Button
-					variant="outline"
-					size="icon"
-					title="Reset"
-					class="cursor-pointer"
-					onclick={() => {
-						chartFrom = new Date(now.getTime() - Number(timewindow));
-						chartTo = now;
-					}}
-				>
-					<ResetIcon />
-				</Button>
-			</div>
-
-			<Separator />
-
-			<Table.Root>
-				<Table.Header>
-					<Table.Row>
-						<Table.Head class="font-bold">Service</Table.Head>
-						<Table.Head class="w-min font-bold">Cost</Table.Head>
-					</Table.Row>
-				</Table.Header>
-				<Table.Body>
-					{#each Object.entries(serviceCost).toSorted((a, b) => b[1] - a[1]) as [service, cost]}
-						{@const roundedCost = Math.round(cost * 100) / 100}
-						{#if roundedCost > 0}
-							<Table.Row class="odd:bg-muted/20">
-								<Table.Cell>{service}</Table.Cell>
-								<Table.Cell>{roundedCost.toFixed(2)} $</Table.Cell>
-							</Table.Row>
-						{/if}
-					{/each}
-				</Table.Body>
-			</Table.Root>
-		{:else}
-			<div class="flex h-52 w-full items-center justify-center">
-				<span class="text-4xl text-muted">No Cost Report</span>
-			</div>
-		{/if}
-	</Card.Content>
-</Card.Root>
+		{/key}
+		{#snippet renderService(row: ServiceCost)}
+			{row.service}
+		{/snippet}
+		{#snippet renderCost(row: ServiceCost)}
+			{row.cost.toFixed(2)} $
+		{/snippet}
+	{:else}
+		<div class="flex h-52 w-full items-center justify-center">
+			<span class="text-4xl text-muted">No Cost Report</span>
+		</div>
+	{/if}
+</Card>

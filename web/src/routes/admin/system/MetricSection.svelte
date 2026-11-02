@@ -1,11 +1,9 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import * as Alert from '$lib/components/shad/alert';
-	import * as Card from '$lib/components/shad/card';
-	import { Button } from '$lib/components/shad/button';
-	import ZoomOutIcon from '@lucide/svelte/icons/zoom-out';
-	import ResetIcon from '@lucide/svelte/icons/rotate-ccw';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
+	import Alert from '$lib/components/Alert.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import type { ChartConfig } from '$lib/components/chart/chart';
+	import Card from '$lib/components/Card.svelte';
 	import {
 		AggregateHitsRequestSchema,
 		AggregateLatencyRequestSchema,
@@ -14,7 +12,8 @@
 	} from '$lib/sdk/v1/admin/system/system_pb';
 	import { create, enumToJson } from '@bufbuild/protobuf';
 	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
-	import * as Chart from '$lib/components/shad/chart/index.js';
+	import ResetIcon from '@lucide/svelte/icons/rotate-ccw';
+	import ZoomOutIcon from '@lucide/svelte/icons/zoom-out';
 	import ZoomChart from './ZoomChart.svelte';
 
 	// safe generates "layerchart" safe identifiers / keys.
@@ -74,10 +73,10 @@
 		return new Date(Math.min(to.getTime(), topClamp.getTime()));
 	}
 
-	let hitLabels: Chart.ChartConfig = $state({});
+	let hitLabels: ChartConfig = $state({});
 	let hitData: any[] = $state([]);
 	let totalHits: number = $state(0);
-	let latencyLabels: Chart.ChartConfig = $state({});
+	let latencyLabels: ChartConfig = $state({});
 	let latencyData: any[] = $state([]);
 	let overallLatency: number = $state(0);
 
@@ -86,7 +85,7 @@
 		bucket: number,
 		from: Date,
 		to: Date
-	): Promise<[number, Chart.ChartConfig, any[]]> {
+	): Promise<[number, ChartConfig, any[]]> {
 		let overallHits = 0;
 		const resp = await Glue.system.aggregateHits(
 			create(AggregateHitsRequestSchema, {
@@ -114,7 +113,7 @@
 				}
 			}
 		}
-		const labels: Chart.ChartConfig = {};
+		const labels: ChartConfig = {};
 		for (let i = 0; i < endpoints.length; i++) {
 			labels[safe(endpoints[i])] = {
 				label: endpoints[i],
@@ -129,7 +128,7 @@
 		bucket: number,
 		from: Date,
 		to: Date
-	): Promise<[number, Chart.ChartConfig, any[]]> {
+	): Promise<[number, ChartConfig, any[]]> {
 		let overallLatency = 0;
 		let overallLatencyCount = 0;
 		const resp = await Glue.system.aggregateLatency(
@@ -159,7 +158,7 @@
 				}
 			}
 		}
-		const labels: Chart.ChartConfig = {};
+		const labels: ChartConfig = {};
 		for (let i = 0; i < endpoints.length; i++) {
 			labels[safe(endpoints[i])] = {
 				label: endpoints[i],
@@ -184,45 +183,31 @@
 </script>
 
 {#if scanState.error}
-	<Alert.Root>
-		<AlertCircleIcon />
-		<Alert.Title>Failed to load chart data</Alert.Title>
-		<Alert.Description>{scanState.error}</Alert.Description>
-	</Alert.Root>
+	<Alert title="Failed to load chart data" message={scanState.error} />
 {:else if scanState.forbidden}
-	<Alert.Root>
-		<AlertCircleIcon />
-		<Alert.Title>Permission Denied</Alert.Title>
-		<Alert.Description>You are not allowed to view this section</Alert.Description>
-	</Alert.Root>
+	<Alert title="Permission Denied" message="You are not allowed to view this section" />
 {:else}
-	<Card.Root class="w-full">
-		<Card.Header class="flex items-center justify-start gap-20 space-y-0 border-b py-5 sm:flex-row">
+	<Card class="w-full items-start gap-8">
+		<div class="flex w-full flex-col items-start gap-4 border-b pb-5 sm:flex-row sm:items-center sm:gap-20">
 			<div>
-				<Card.Title class="text-4xl">
-					{totalHits}
-				</Card.Title>
-				<Card.Description class="text-xl">requests served</Card.Description>
+				<h1 class="text-4xl font-semibold text-primary/90">{totalHits}</h1>
+				<p class="text-xl text-primary/60">requests served</p>
 			</div>
 
 			<div>
-				<Card.Title class="text-4xl">
-					{overallLatency} ms
-				</Card.Title>
-				<Card.Description class="text-xl">avg latency delivered</Card.Description>
+				<h1 class="text-4xl font-semibold text-primary/90">{overallLatency} ms</h1>
+				<p class="text-xl text-primary/60">avg latency delivered</p>
 			</div>
 
-			<div class="ml-auto flex items-center gap-2">
-				<span class="text-xs text-muted-foreground">
+			<div class="flex items-center gap-2 sm:ml-auto">
+				<span class="text-xs text-primary/60">
 					{from.toLocaleDateString(undefined, { hour: '2-digit', minute: '2-digit' })}
 					–
 					{to.toLocaleDateString(undefined, { hour: '2-digit', minute: '2-digit' })}
 				</span>
 				<Button
-					variant="outline"
-					size="icon"
+					variant="primary"
 					title="Zoom out"
-					class="cursor-pointer"
 					onclick={() => {
 						const span = to.getTime() - from.getTime();
 						from = new Date(from.getTime() - span / 2);
@@ -232,10 +217,8 @@
 					<ZoomOutIcon />
 				</Button>
 				<Button
-					variant="outline"
-					size="icon"
+					variant="primary"
 					title="Reset"
-					class="cursor-pointer"
 					onclick={() => {
 						from = initialFrom;
 						to = clampEnd(window, new Date());
@@ -244,35 +227,34 @@
 					<ResetIcon />
 				</Button>
 			</div>
-		</Card.Header>
-		<Card.Content class="flex flex-col gap-8">
-			<div>
-				<Card.Title>Endpoint Requests</Card.Title>
-				<Card.Description>
-					Hit count per endpoint in {enumToJson(AggregateWindowSchema, window)?.toString().toLowerCase()}s
-				</Card.Description>
-			</div>
-			<ZoomChart
-				timeFormat={zoomTimeformat(from, to)}
-				labels={hitLabels}
-				data={hitData}
-				unit={`requests / ${enumToJson(AggregateWindowSchema, window)?.toString().toLowerCase()}`}
-				bind:from
-				bind:to
-			/>
+		</div>
 
-			<div>
-				<Card.Title>Endpoint Latency</Card.Title>
-				<Card.Description>Average endpoint latency in milliseconds</Card.Description>
-			</div>
-			<ZoomChart
-				timeFormat={zoomTimeformat(from, to)}
-				labels={latencyLabels}
-				data={latencyData}
-				unit="ms"
-				bind:from
-				bind:to
-			/>
-		</Card.Content>
-	</Card.Root>
+		<div>
+			<h2 class="text-xl font-semibold text-primary/80">Endpoint Requests</h2>
+			<p class="text-sm text-primary/60">
+				Hit count per endpoint in {enumToJson(AggregateWindowSchema, window)?.toString().toLowerCase()}s
+			</p>
+		</div>
+		<ZoomChart
+			timeFormat={zoomTimeformat(from, to)}
+			labels={hitLabels}
+			data={hitData}
+			unit={`requests / ${enumToJson(AggregateWindowSchema, window)?.toString().toLowerCase()}`}
+			bind:from
+			bind:to
+		/>
+
+		<div>
+			<h2 class="text-xl font-semibold text-primary/80">Endpoint Latency</h2>
+			<p class="text-sm text-primary/60">Average endpoint latency in milliseconds</p>
+		</div>
+		<ZoomChart
+			timeFormat={zoomTimeformat(from, to)}
+			labels={latencyLabels}
+			data={latencyData}
+			unit="ms"
+			bind:from
+			bind:to
+		/>
+	</Card>
 {/if}

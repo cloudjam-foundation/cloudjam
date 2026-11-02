@@ -1,14 +1,13 @@
 <script lang="ts">
-	import logo from '$lib/assets/favicon.svg';
-	import { create } from '@bufbuild/protobuf';
-	import { LoginRequestSchema } from '$lib/sdk/v1/auth/auth_pb';
-	import { Glue, setToken, Submit, type SubmitState } from '$lib';
 	import { goto } from '$app/navigation';
-	import { Loader, OctagonAlert } from '@lucide/svelte';
-	import Input from '$lib/components/shad/input/input.svelte';
-	import Button from '$lib/components/shad/button/button.svelte';
-	import * as Alert from '$lib/components/shad/alert';
-	import Card from '$lib/components/layout/Card.svelte';
+	import { Glue, setToken, Submit, type SubmitState } from '$lib';
+	import logo from '$lib/assets/favicon.svg';
+	import Alert from '$lib/components/Alert.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import { LoginRequestSchema } from '$lib/sdk/v1/auth/auth_pb';
+	import { create } from '@bufbuild/protobuf';
 
 	let loginState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let loginRequest = $state(create(LoginRequestSchema, {}));
@@ -35,18 +34,9 @@
 			<h1 class="text-4xl opacity-80">CloudJam Login</h1>
 			<Input bind:value={loginRequest.email} placeholder="Please enter your Email" type="email" />
 			<Input bind:value={loginRequest.password} placeholder="Please enter your Password" type="password" />
-			<Button class="w-full cursor-pointer" type="submit" variant="default">
-				{#if loginState.loading}
-					<Loader />
-				{/if}
-				Login
-			</Button>
+			<Button class="w-full" type="submit" variant="primary" processing={loginState.loading}>Login</Button>
 			{#if loginState.error}
-				<Alert.Root>
-					<OctagonAlert />
-					<Alert.Title>Authentication failed</Alert.Title>
-					<Alert.Description class="whitespace-pre-line">{loginState.error}</Alert.Description>
-				</Alert.Root>
+				<Alert title="Authentication failed" message={loginState.error} animation={true} />
 			{/if}
 		</form>
 	</Card>

@@ -1,24 +1,16 @@
 <script lang="ts">
-	import Button from '$lib/components/custom/buttons/Button.svelte';
+	import { goto } from '$app/navigation';
+	import StateBadge from '$lib/components/StateBadge.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import TabPage from '$lib/components/TabPage.svelte';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import ChallengeSection from './ChallengeSection.svelte';
 	import GamePanel from './GamePanel.svelte';
 	import TeamSection from './TeamSection.svelte';
-	import { goto, invalidateAll } from '$app/navigation';
-	import { gameState } from './state.svelte.js';
-	import DelaySpinner from '$lib/components/custom/DelaySpinner.svelte';
-	import Alert from '$lib/components/custom/Alert.svelte';
-	import StaticBadge from '$lib/components/custom/badges/StaticBadge.svelte';
-	import StateBadge from '$lib/components/custom/badges/StateBadge.svelte';
 
 	let { data } = $props();
-
-	const tabs = ['overview', 'teams', 'challenges'] as const;
-
-	let tab: (typeof tabs)[number] = $state('overview');
 
 	function status(game: Game): string {
 		const now = Date.now();
@@ -35,69 +27,53 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-{#if gameState.loading}
-	<DelaySpinner class="mt-10 flex justify-center" delay={200} />
-{:else}
-	<div class="flex w-full flex-col gap-4">
-		<div class="flex flex-row items-center gap-2">
-			<Button variant="ghost" class="cursor-pointer" onclick={() => goto('/host/games')}>
-				<ChevronLeftIcon />
-			</Button>
-			<h1 class="text-3xl opacity-80">{data.game?.name ?? 'Game'}</h1>
-			{#if data.game}
-				<StateBadge
-					text={status(data.game)}
-					state={status(data.game)}
-					mapper={{
-						upcoming: 'StableWarning',
-						running: 'RunningPositive',
-						ended: 'StableNeutral'
-					}}
-				/>
-			{/if}
-			<Button
-				variant={'primary'}
-				class="ml-auto font-mono text-xs"
-				title="Copy game id"
-				onclick={() => navigator.clipboard.writeText(data.game?.id ?? '')}
-			>
-				<CopyIcon />
-				{data.game?.id}
-			</Button>
-		</div>
+{#snippet state()}
+	{#if data.game}
+		<StateBadge
+			text={status(data.game)}
+			state={status(data.game)}
+			mapper={{
+				upcoming: 'StableWarning',
+				running: 'RunningPositive',
+				ended: 'StableNeutral'
+			}}
+		/>
+	{/if}
+{/snippet}
 
-		<div class="flex flex-row gap-2 border-b">
-			{#each tabs as name (name)}
-				<button
-					type="button"
-					class="cursor-pointer border-b-2 px-4 py-2 capitalize transition-all duration-200 {tab === name
-						? 'border-primary'
-						: 'border-transparent opacity-60 hover:opacity-100'}"
-					onclick={() => (tab = name)}
-				>
-					{name}
-				</button>
-			{/each}
-		</div>
+{#snippet uuid()}
+	<Button
+		variant="primary"
+		class="ml-auto font-mono text-xs"
+		title="Copy game id"
+		onclick={() => navigator.clipboard.writeText(data.game?.id ?? '')}
+	>
+		<CopyIcon />
+		{data.game?.id}
+	</Button>
+{/snippet}
 
-		{#if gameState.forbidden}
-			<Alert title="Permission Denied" message="You are not allowed to open this game" animation={true} />
-		{:else if tab === 'overview'}
-			{#if data.game}
-				<GamePanel game={data.game} refresh={() => invalidateAll()} deleted={() => goto('/host/games')} />
-			{/if}
-		{:else if tab === 'teams'}
-			{#if data.game}
-				<TeamSection game={data.game} />
-			{/if}
-		{:else if tab === 'challenges'}
-			{#if data.game}
-				<ChallengeSection gameId={data.game.id} />
-			{/if}
-		{/if}
+{#snippet overview()}
+	{#if data.game}
+		<GamePanel game={data.game} refresh={() => data.refresh()} deleted={() => goto('/host/games')} />
+	{/if}
+{/snippet}
 
-		{#if gameState.error}
-			<Alert title="Failed to load the game" message={gameState.error} animation={true} />
-		{/if}
-	</div>
-{/if}
+{#snippet teams()}
+	{#if data.game}
+		<TeamSection game={data.game} />
+	{/if}
+{/snippet}
+
+{#snippet challenges()}
+	<ChallengeSection gameId={data.game?.id ?? ''} />
+{/snippet}
+
+<TabPage
+	title={data.game?.name ?? 'Game'}
+	headers={[state, uuid]}
+	back={() => goto('/host/games')}
+	dataState={data.gameState}
+	tabs={['overview', 'teams', 'challenges']}
+	tabPages={[overview, teams, challenges]}
+/>

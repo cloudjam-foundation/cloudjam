@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/custom/Alert.svelte';
-	import Button from '$lib/components/custom/buttons/Button.svelte';
-	import OptionalSelect, { type Suggestion } from '$lib/components/custom/OptionalSelect.svelte';
-	import Card from '$lib/components/layout/Card.svelte';
-	import { Input } from '$lib/components/shad/input';
-	import LabelInput from '$lib/components/shad/label-input/label-input.svelte';
+	import Alert from '$lib/components/Alert.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import OptionalSelect, { type Suggestion } from '$lib/components/OptionalSelect.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import Input from '$lib/components/Input.svelte';
 	import { scopes } from '$lib/scopes.svelte';
 	import { CreateRequestSchema } from '$lib/sdk/v1/play/game/game_pb';
 	import { GameSchema } from '$lib/sdk/v1/play/game_pb';
@@ -44,13 +43,13 @@
 			}, createState)}
 	>
 		<div class="grid gap-4 md:grid-cols-2">
-			<LabelInput
+			<Input
 				bind:value={init.name}
 				label={'Name'}
 				placeholder={'Name of the game'}
 				validation={Glue.Validate(GameSchema, init).violation.name}
 			/>
-			<LabelInput
+			<Input
 				bind:value={init.description}
 				label={'Description'}
 				placeholder={'What the game is about'}

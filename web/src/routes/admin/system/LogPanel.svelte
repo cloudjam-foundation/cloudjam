@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import * as Alert from '$lib/components/shad/alert';
-	import { Badge } from '$lib/components/shad/badge';
-	import { Button } from '$lib/components/shad/button';
-	import * as Card from '$lib/components/shad/card';
-	import * as Table from '$lib/components/shad/table';
+	import Alert from '$lib/components/Alert.svelte';
+	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Dialog from '$lib/components/Dialog.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import DataTable from '$lib/components/DataTable.svelte';
 	import { ScanLogsRequestSchema, type Log } from '$lib/sdk/v1/admin/system/system_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate, timestampFromDate } from '@bufbuild/protobuf/wkt';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
-	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import RefreshIcon from '@lucide/svelte/icons/refresh-cw';
+	import XIcon from '@lucide/svelte/icons/x';
 
 	let {
 		from,
@@ -31,172 +31,168 @@
 		limit: number;
 	} = $props();
 
-	const severities: Record<string, { short: string; level: string; row: string }> = {
-		DEBUG: { short: 'DBG', level: 'text-sky-500', row: 'bg-sky-500/5 hover:bg-sky-500/10' },
-		INFO: { short: 'INF', level: 'text-emerald-500', row: 'bg-emerald-500/5 hover:bg-emerald-500/10' },
-		WARN: { short: 'WRN', level: 'text-amber-500', row: 'bg-amber-500/10 hover:bg-amber-500/20' },
-		ERROR: { short: 'ERR', level: 'text-red-500', row: 'bg-red-500/10 hover:bg-red-500/20' }
+	const severities: Record<string, { short: string; level: string }> = {
+		DEBUG: { short: 'DBG', level: 'text-sky-500' },
+		INFO: { short: 'INF', level: 'text-emerald-500' },
+		WARN: { short: 'WRN', level: 'text-amber-500' },
+		ERROR: { short: 'ERR', level: 'text-red-500' }
 	};
 
 	let scanState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 
-	let logs: Log[] = $state([]);
-	let expanded = $state('');
+	let count = $state(0);
 	let nonce = $state(0);
 
-	const key = (log: Log, index: number) => `${index}-${log.timestamp?.seconds ?? 0}`;
+	// the table is remounted (and therefore rescanned) whenever a filter or the nonce changes.
+	const scanKey = $derived([from.getTime(), to.getTime(), level, system, procedure, challenge, limit, nonce].join('-'));
 
-	$effect(() => {
-		nonce;
-		Submit(async () => {
-			const resp = await Glue.system.scanLogs(
-				create(ScanLogsRequestSchema, {
-					from: timestampFromDate(from),
-					to: timestampFromDate(to),
-					system: system,
-					procedure: procedure,
-					level: level,
-					limit: limit,
-					challenge: challenge
-				})
-			);
-			logs = resp.logs;
-		}, scanState);
-	});
+	let selected: Log | undefined = $state();
+	let selectedOpen = $state(false);
 </script>
 
-<Card.Root class="w-full">
-	<Card.Header class="flex flex-row items-center gap-2 space-y-0 border-b py-5">
-		<div class="grid flex-1 gap-1">
-			<Card.Title>
-				{#if challenge}
-					Challenge Logs ({challenge})
-				{:else}
-					System Logs
-				{/if}
-			</Card.Title>
-		</div>
-		<div class="flex flex-row flex-wrap items-center gap-1">
+<Card class="w-full items-start">
+	<div class="flex w-full flex-row flex-wrap items-center gap-2 border-b pb-5">
+		<h1 class="text-2xl font-semibold text-primary/90">
+			{#if challenge}
+				Challenge Logs ({challenge})
+			{:else}
+				System Logs
+			{/if}
+		</h1>
+		<div class="ml-auto flex flex-row flex-wrap items-center gap-1">
 			{#if level}
-				<Badge variant="secondary">{level}</Badge>
+				<StaticBadge variant="primary" text={level} />
 			{/if}
 			{#if system}
-				<Badge variant="secondary" class="cursor-pointer" onclick={() => (system = '')}>system: {system}</Badge>
+				<Button variant="primary" class="px-2 py-0.5 text-xs" onclick={() => (system = '')}>
+					system: {system}
+					<XIcon class="size-3" />
+				</Button>
 			{/if}
 			{#if procedure}
-				<Badge variant="secondary" class="cursor-pointer" onclick={() => (procedure = '')}>
+				<Button variant="primary" class="px-2 py-0.5 text-xs" onclick={() => (procedure = '')}>
 					procedure: {procedure}
-				</Badge>
+					<XIcon class="size-3" />
+				</Button>
 			{/if}
-			<Button
-				variant="outline"
-				size="icon"
-				title="Refresh"
-				class="cursor-pointer"
-				disabled={scanState.loading}
-				onclick={() => nonce++}
-			>
+			<Button variant="primary" title="Refresh" disabled={scanState.loading} onclick={() => nonce++}>
 				<RefreshIcon />
 			</Button>
 		</div>
-	</Card.Header>
-	<Card.Content>
-		{#if scanState.forbidden}
-			<p class="text-sm text-muted-foreground italic">You are not allowed to read the system logs.</p>
-		{:else}
-			<Table.Root class="w-full table-fixed">
-				<Table.Header>
-					<Table.Row>
-						<Table.Head class="w-8"></Table.Head>
-						<Table.Head class="w-37.5">Time</Table.Head>
-						<Table.Head class="w-15">Level</Table.Head>
-						<Table.Head class="w-32.5">System</Table.Head>
-						<Table.Head class="w-60">Procedure</Table.Head>
-						<Table.Head>Message</Table.Head>
-					</Table.Row>
-				</Table.Header>
-				<Table.Body>
-					{#each logs as log, index (key(log, index))}
-						{@const open = expanded === key(log, index)}
-						<Table.Row
-							class="h-9 cursor-pointer {severities[log.level]?.row ?? ''}"
-							onclick={() => (expanded = open ? '' : key(log, index))}
-						>
-							<Table.Cell class="text-muted-foreground">
-								<ChevronRightIcon class="size-4 transition-transform duration-200 {open ? 'rotate-90' : ''}" />
-							</Table.Cell>
-							<Table.Cell class="truncate font-mono text-xs opacity-70">
-								{log.timestamp ? timestampDate(log.timestamp).toLocaleString('en-GB') : ''}
-							</Table.Cell>
-							<Table.Cell class="font-mono text-xs font-bold {severities[log.level]?.level ?? ''}">
-								{severities[log.level]?.short ?? log.level}
-							</Table.Cell>
-							<Table.Cell class="truncate">
-								<button
-									type="button"
-									class="max-w-full cursor-pointer truncate text-left hover:underline"
-									title="Filter by {log.system}"
-									onclick={(e) => (e.stopPropagation(), (system = system === log.system ? '' : log.system))}
-								>
-									{log.system || '-'}
-								</button>
-							</Table.Cell>
-							<Table.Cell class="truncate font-mono text-xs">
-								<button
-									type="button"
-									class="max-w-full cursor-pointer truncate text-left hover:underline"
-									title="Filter by {log.procedure}"
-									onclick={(e) => (e.stopPropagation(), (procedure = procedure === log.procedure ? '' : log.procedure))}
-								>
-									{log.procedure || '-'}
-								</button>
-							</Table.Cell>
-							<Table.Cell class="truncate font-mono text-xs">{log.message}</Table.Cell>
-						</Table.Row>
-						{#if open}
-							<Table.Row class="bg-muted/30">
-								<Table.Cell colspan={6}>
-									<div class="flex flex-col gap-3 p-2">
-										<div class="flex flex-row items-center gap-2">
-											<span class="text-sm font-medium">Log line</span>
-											<Button
-												variant="outline"
-												size="icon"
-												title="Copy log line"
-												class="cursor-pointer"
-												onclick={() => navigator.clipboard.writeText(JSON.stringify(log, null, 2))}
-											>
-												<CopyIcon />
-											</Button>
-										</div>
-										<pre class="font-mono text-xs whitespace-pre-wrap">{log.message}</pre>
-										<span class="text-sm font-medium">Trace</span>
-										<pre
-											class="overflow-x-auto font-mono text-xs whitespace-pre-wrap text-muted-foreground">{log.trace ||
-												'no trace attached'}</pre>
-									</div>
-								</Table.Cell>
-							</Table.Row>
-						{/if}
-					{:else}
-						<Table.Row>
-							<Table.Cell colspan={6}>
-								<p class="text-muted-foreground p-4 text-sm italic">
-									{scanState.loading ? 'Loading logs…' : 'No logs matched the selected range and filters.'}
-								</p>
-							</Table.Cell>
-						</Table.Row>
-					{/each}
-				</Table.Body>
-			</Table.Root>
+	</div>
+
+	{#if scanState.forbidden}
+		<p class="text-sm text-primary/60 italic">You are not allowed to read the system logs.</p>
+	{:else}
+		{#key scanKey}
+			<DataTable
+				class="max-h-[70vh] w-full"
+				limit={Infinity}
+				load={async () => {
+					let logs: Log[] = [];
+					await Submit(async () => {
+						const resp = await Glue.system.scanLogs(
+							create(ScanLogsRequestSchema, {
+								from: timestampFromDate(from),
+								to: timestampFromDate(to),
+								system: system,
+								procedure: procedure,
+								level: level,
+								limit: limit,
+								challenge: challenge
+							})
+						);
+						logs = resp.logs;
+					}, scanState);
+					count = logs.length;
+					return logs;
+				}}
+				loadState={scanState}
+				onRowClick={(log) => {
+					selected = log;
+					selectedOpen = true;
+				}}
+				columns={[
+					{ title: 'Time', width: '150px', render: renderTime },
+					{ title: 'Level', width: '60px', render: renderLevel },
+					{ title: 'System', width: '130px', render: renderSystem },
+					{ title: 'Procedure', width: '240px', render: renderProcedure },
+					{ title: 'Message', width: '100%', render: renderMessage }
+				]}
+			/>
+		{/key}
+		{#if count === 0 && !scanState.loading}
+			<p class="text-sm text-primary/60 italic">No logs matched the selected range and filters.</p>
 		{/if}
-	</Card.Content>
-</Card.Root>
+		{#snippet renderTime(log: Log)}
+			<span class="font-mono text-xs opacity-70">
+				{log.timestamp ? timestampDate(log.timestamp).toLocaleString('en-GB') : ''}
+			</span>
+		{/snippet}
+		{#snippet renderLevel(log: Log)}
+			<span class="font-mono text-xs font-bold {severities[log.level]?.level ?? ''}">
+				{severities[log.level]?.short ?? log.level}
+			</span>
+		{/snippet}
+		{#snippet renderSystem(log: Log)}
+			<button
+				type="button"
+				class="max-w-full cursor-pointer truncate text-left hover:underline"
+				title="Filter by {log.system}"
+				onclick={(e) => (e.stopPropagation(), (system = system === log.system ? '' : log.system))}
+			>
+				{log.system || '-'}
+			</button>
+		{/snippet}
+		{#snippet renderProcedure(log: Log)}
+			<button
+				type="button"
+				class="max-w-full cursor-pointer truncate text-left font-mono text-xs hover:underline"
+				title="Filter by {log.procedure}"
+				onclick={(e) => (e.stopPropagation(), (procedure = procedure === log.procedure ? '' : log.procedure))}
+			>
+				{log.procedure || '-'}
+			</button>
+		{/snippet}
+		{#snippet renderMessage(log: Log)}
+			<span class="font-mono text-xs">{log.message}</span>
+		{/snippet}
+	{/if}
+</Card>
 
 {#if scanState.error}
-	<Alert.Root variant="destructive">
-		<AlertCircleIcon />
-		<Alert.Title>Failed to load log data</Alert.Title>
-		<Alert.Description>{scanState.error}</Alert.Description>
-	</Alert.Root>
+	<Alert title="Failed to load log data" message={scanState.error} animation={true} />
+{/if}
+
+{#if selected}
+	<Dialog
+		bind:open={selectedOpen}
+		title="Log line"
+		description={selected.timestamp ? timestampDate(selected.timestamp).toLocaleString('en-GB') : ''}
+		class="sm:max-w-[90vw]"
+	>
+		<div class="flex flex-row flex-wrap items-center gap-2">
+			<span class="font-mono text-xs font-bold {severities[selected.level]?.level ?? ''}">
+				{severities[selected.level]?.short ?? selected.level}
+			</span>
+			{#if selected.system}
+				<StaticBadge variant="primary" text={`system: ${selected.system}`} />
+			{/if}
+			{#if selected.procedure}
+				<StaticBadge variant="primary" text={`procedure: ${selected.procedure}`} class="font-mono" />
+			{/if}
+			<Button
+				variant="primary"
+				title="Copy log line"
+				class="ml-auto"
+				onclick={() => navigator.clipboard.writeText(JSON.stringify(selected, null, 2))}
+			>
+				<CopyIcon />
+			</Button>
+		</div>
+		<pre class="font-mono text-xs whitespace-pre-wrap">{selected.message}</pre>
+		<span class="text-sm font-medium">Trace</span>
+		<pre class="overflow-x-auto font-mono text-xs whitespace-pre-wrap text-primary/60">{selected.trace ||
+				'no trace attached'}</pre>
+	</Dialog>
 {/if}

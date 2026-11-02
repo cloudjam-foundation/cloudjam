@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Button } from '$lib/components/shad/button';
-	import { Input } from '$lib/components/shad/input';
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
 	import { Info } from '@lucide/svelte';
 	import EyeIcon from '@lucide/svelte/icons/eye';
 	import EyeOffIcon from '@lucide/svelte/icons/eye-off';
@@ -44,19 +44,14 @@
 
 <div class="grid gap-4 md:grid-cols-2">
 	<div class="flex flex-col gap-1">
-		<label for="{uid}-region" class="text-sm">Region</label>
-		<Input id="{uid}-region" bind:value={creds.region} placeholder="us-east-1" />
-		<p class="text-xs text-muted-foreground">Region the organization api is called in.</p>
+		<Input bind:value={creds.region} label="Region" placeholder="us-east-1" />
+		<p class="text-xs text-primary/60">Region the organization api is called in.</p>
 	</div>
 	<div class="flex flex-col gap-1">
-		<label for="{uid}-endpoint" class="text-sm">Endpoint</label>
-		<Input id="{uid}-endpoint" bind:value={creds.endpoint} placeholder="https://localhost:4566 (optional)" />
-		<p class="text-xs text-muted-foreground">Only for emulators like fakecloud, leave empty for real AWS.</p>
+		<Input bind:value={creds.endpoint} label="Endpoint" placeholder="https://localhost:4566 (optional)" />
+		<p class="text-xs text-primary/60">Only for emulators like fakecloud, leave empty for real AWS.</p>
 	</div>
-	<div class="flex flex-col gap-1">
-		<label for="{uid}-access-key" class="text-sm">Access Key ID</label>
-		<Input id="{uid}-access-key" bind:value={creds.access_key} placeholder="AKIA..." />
-	</div>
+	<Input bind:value={creds.access_key} label="Access Key ID" placeholder="AKIA..." />
 	<div class="flex flex-col gap-1">
 		<label for="{uid}-secret-key" class="text-sm">Secret Access Key</label>
 		<div class="flex flex-row items-center gap-2">
@@ -66,13 +61,7 @@
 				bind:value={creds.secret_key}
 				placeholder="Secret access key of the user"
 			/>
-			<Button
-				variant="outline"
-				size="icon"
-				title={reveal ? 'Hide' : 'Reveal'}
-				class="cursor-pointer"
-				onclick={() => (reveal = !reveal)}
-			>
+			<Button variant="ghost" title={reveal ? 'Hide' : 'Reveal'} onclick={() => (reveal = !reveal)}>
 				{#if reveal}
 					<EyeOffIcon />
 				{:else}
@@ -82,12 +71,12 @@
 		</div>
 	</div>
 </div>
-<p class="flex flex-row items-center gap-1 text-xs text-muted-foreground">
+<p class="flex flex-row items-center gap-1 text-xs text-primary/60">
 	<Info size={14} />
 	The specified credentials must have unrestricted AWS Organization access. Please only use this on fully blank AWS root accounts
 	with ZERO workloads in it!
 </p>
-<p class="flex flex-row items-center gap-1 text-xs text-muted-foreground">
+<p class="flex flex-row items-center gap-1 text-xs text-primary/60">
 	<Info size={14} />
 	You must create a dedicated user with "AdministratorAccess" for this. The AWS root account cannot assume other roles!
 </p>

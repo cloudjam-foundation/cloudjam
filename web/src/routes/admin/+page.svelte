@@ -2,7 +2,7 @@
 	import UsersIcon from '@lucide/svelte/icons/users';
 	import ShieldCheckIcon from '@lucide/svelte/icons/shield-check';
 	import ActivityIcon from '@lucide/svelte/icons/activity';
-	import Card from '$lib/components/layout/Card.svelte';
+	import Card from '$lib/components/Card.svelte';
 </script>
 
 <svelte:head>
