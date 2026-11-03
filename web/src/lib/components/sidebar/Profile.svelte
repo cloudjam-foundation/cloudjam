@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { setToken } from '$lib';
-	import Avatar from '$lib/components/sidebar/Avatar.svelte';
 	import { ChevronsUpDownIcon, CogIcon, LoaderCircleIcon, LogOutIcon, MoonIcon, SunIcon } from '@lucide/svelte';
 	import { mode, resetMode, setMode } from 'mode-watcher';
 	import Button from '../Button.svelte';
 	import SidebarButton from './SidebarButton.svelte';
 	import { useSidebar } from './state.svelte';
+	import { toSvg } from 'jdenticon';
 
 	const sidebar = useSidebar();
 	let { pubId, email, loading = $bindable(true) }: { pubId: string; email: string; loading: boolean } = $props();
@@ -64,9 +64,11 @@
 				</span>
 			</div>
 		{:else}
-			<div class="flex aspect-square size-8 items-center justify-center rounded-lg">
-				<Avatar {pubId} name={email} width="w-6" height="h-6" />
-			</div>
+			<img
+				alt={'profile-icon'}
+				src={`data:image/svg+xml;base64,${btoa(toSvg(pubId, 140))}`}
+				class="aspect-square size-5 rounded-full object-cover"
+			/>
 			<div class="grid flex-1 text-start text-sm leading-tight">
 				<span>{email}</span>
 			</div>
@@ -77,22 +79,26 @@
 
 	{#if open}
 		<div
-			class="absolute z-50 flex w-72 min-w-48 animate-in flex-col gap-4 rounded-lg bg-background p-4 text-sm shadow-md ring-1 ring-foreground/10 duration-100 fade-in-0 zoom-in-95 {sidebar.isMobile
+			class="absolute flex w-72 min-w-48 animate-in flex-col gap-4 rounded-lg bg-background p-4 text-sm shadow-md ring-1 ring-foreground/10 duration-100 fade-in-0 {sidebar.isMobile
 				? 'bottom-full left-0 mb-4'
 				: 'bottom-0 left-full ml-4'}"
 		>
 			<div class="flex flex-col items-center gap-2">
-				<Avatar {pubId} name={email} width="w-20" height="h-20" />
-				<h1 class="inline-flex items-center text-center text-2xl font-bold break-all">
+				<img
+					alt={'profile-icon'}
+					src={`data:image/svg+xml;base64,${btoa(toSvg(pubId, 140))}`}
+					class="aspect-square size-20 rounded-full object-cover"
+				/>
+				<h1 class="inline-flex items-center text-center text-xl font-bold break-all">
 					{email}
 				</h1>
 			</div>
 
-			<div class="flex w-full flex-row items-center gap-2">
+			<div class="flex w-full flex-row items-center justify-between gap-2">
 				<span class="text-sm font-medium">Theme</span>
 				<Button
 					variant="primary"
-					class="mr-auto ml-auto"
+					class="ml-auto"
 					onclick={async () => await toggleTheme()}
 					disabled={themeChanging}
 					aria-busy={themeChanging}

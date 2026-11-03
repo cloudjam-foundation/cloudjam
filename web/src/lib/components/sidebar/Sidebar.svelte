@@ -51,7 +51,7 @@
 			{@render header()}
 		</div>
 	{/if}
-	<div class={cn('flex min-h-0 flex-1 flex-col gap-2', sidebar.expanded ? 'overflow-y-auto' : 'overflow-hidden')}>
+	<div class="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
 		{@render children()}
 	</div>
 	{#if footer}

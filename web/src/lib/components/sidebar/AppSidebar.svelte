@@ -28,7 +28,7 @@
 	});
 </script>
 
-<Sidebar class="dense-glass" {header} {footer}>
+<Sidebar class="z-100 dense-glass" {header} {footer}>
 	<SectionRenderer section={jamOptions} />
 	<SectionRenderer section={hostOptions} />
 	<SectionRenderer section={providerOptions} />

@@ -18,6 +18,6 @@
 				<kbd class={kbd}>B</kbd>
 			</kbd>
 		{/if}
-		<SidebarTrigger />
+		<SidebarTrigger class="w-8" />
 	</span>
 {/if}

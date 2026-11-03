@@ -17,6 +17,7 @@
 {:else}
 	<DataTable
 		class="max-h-[80vh]"
+		limit={100}
 		load={async (startAfter: Definition | undefined) => {
 			const definitions: Definition[] = [];
 			await Submit(async () => {
