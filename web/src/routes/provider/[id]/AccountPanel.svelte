@@ -106,48 +106,6 @@
 	<Separator />
 
 	<div class="flex flex-col gap-2">
-		<h1 class="text-xl font-semibold text-primary/80">Cost & Spendings</h1>
-		{#if costState.forbidden}
-			<p class="text-sm text-primary/60 italic">You are not allowed to aggregate cost of this account.</p>
-		{:else}
-			<p class="text-sm text-primary/60">Aggregate account cost report</p>
-			<div class="flex flex-row items-center gap-2">
-				<Button
-					variant="primary"
-					processing={costState.loading}
-					hint={'Aggregating...'}
-					onclick={() =>
-						Submit(async () => {
-							const resp = await Glue.account.aggregateCost(
-								create(AggregateCostRequestSchema, {
-									providerId: account.providerId,
-									id: account.id,
-									window: durationFromMs(6.048e8 * 20)
-								})
-							);
-
-							for (const [name, service] of Object.entries(resp.services)) {
-								for (const cost of service.cost) {
-									totalCost += cost;
-								}
-							}
-						}, costState)}
-				>
-					<HandCoinsIcon />
-					Aggregate Cost
-				</Button>
-				<p>Total Cost: {totalCost}$</p>
-			</div>
-
-			{#if costState.error}
-				<Alert class="p-2" title="Failed to aggregate cost" message={costState.error} animation={true} />
-			{/if}
-		{/if}
-	</div>
-
-	<Separator />
-
-	<div class="flex flex-col gap-2">
 		<h1 class="text-xl font-semibold text-primary/80">Maintenance</h1>
 		{#if fixState.forbidden}
 			<p class="text-sm text-primary/60 italic">You are not allowed to fix this account.</p>

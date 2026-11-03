@@ -22,6 +22,61 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type Feature int32
+
+const (
+	Feature_VisualJam         Feature = 0
+	Feature_VisualLeaderboard Feature = 1
+	Feature_VisualHost        Feature = 2
+	Feature_VisualProvider    Feature = 3
+	Feature_VisualAdmin       Feature = 4
+)
+
+// Enum value maps for Feature.
+var (
+	Feature_name = map[int32]string{
+		0: "VisualJam",
+		1: "VisualLeaderboard",
+		2: "VisualHost",
+		3: "VisualProvider",
+		4: "VisualAdmin",
+	}
+	Feature_value = map[string]int32{
+		"VisualJam":         0,
+		"VisualLeaderboard": 1,
+		"VisualHost":        2,
+		"VisualProvider":    3,
+		"VisualAdmin":       4,
+	}
+)
+
+func (x Feature) Enum() *Feature {
+	p := new(Feature)
+	*p = x
+	return p
+}
+
+func (x Feature) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Feature) Descriptor() protoreflect.EnumDescriptor {
+	return file_v1_admin_role_proto_enumTypes[0].Descriptor()
+}
+
+func (Feature) Type() protoreflect.EnumType {
+	return &file_v1_admin_role_proto_enumTypes[0]
+}
+
+func (x Feature) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Feature.Descriptor instead.
+func (Feature) EnumDescriptor() ([]byte, []int) {
+	return file_v1_admin_role_proto_rawDescGZIP(), []int{0}
+}
+
 type Role struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Scope         string                 `protobuf:"bytes,1,opt,name=scope,proto3" json:"scope,omitempty"`
@@ -30,6 +85,7 @@ type Role struct {
 	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	Builtin       bool                   `protobuf:"varint,5,opt,name=builtin,proto3" json:"builtin,omitempty"`
 	Permissions   map[string]string      `protobuf:"bytes,6,rep,name=permissions,proto3" json:"permissions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Features      []Feature              `protobuf:"varint,7,rep,packed,name=features,proto3,enum=v1.admin.Feature" json:"features,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -106,21 +162,36 @@ func (x *Role) GetPermissions() map[string]string {
 	return nil
 }
 
+func (x *Role) GetFeatures() []Feature {
+	if x != nil {
+		return x.Features
+	}
+	return nil
+}
+
 var File_v1_admin_role_proto protoreflect.FileDescriptor
 
 const file_v1_admin_role_proto_rawDesc = "" +
 	"\n" +
-	"\x13v1/admin/role.proto\x12\bv1.admin\x1a\x1bbuf/validate/validate.proto\"\xbd\x02\n" +
+	"\x13v1/admin/role.proto\x12\bv1.admin\x1a\x1bbuf/validate/validate.proto\"\xec\x02\n" +
 	"\x04Role\x12\x14\n" +
 	"\x05scope\x18\x01 \x01(\tR\x05scope\x12\x0e\n" +
 	"\x02id\x18\x02 \x01(\tR\x02id\x12\x1d\n" +
 	"\x04name\x18\x03 \x01(\tB\t\xbaH\x06r\x04\x10\x04\x18\x14R\x04name\x12+\n" +
 	"\vdescription\x18\x04 \x01(\tB\t\xbaH\x06r\x04\x10\x00\x182R\vdescription\x12\x18\n" +
 	"\abuiltin\x18\x05 \x01(\bR\abuiltin\x12i\n" +
-	"\vpermissions\x18\x06 \x03(\v2\x1f.v1.admin.Role.PermissionsEntryB&\xbaH#\x9a\x01 \b\x01\x10\x14*\x1ar\x18\x10\x01\x18d2\x12^[a-zA-Z0-9,*/.]+$R\vpermissions\x1a>\n" +
+	"\vpermissions\x18\x06 \x03(\v2\x1f.v1.admin.Role.PermissionsEntryB&\xbaH#\x9a\x01 \b\x01\x10\x14*\x1ar\x18\x10\x01\x18d2\x12^[a-zA-Z0-9,*/.]+$R\vpermissions\x12-\n" +
+	"\bfeatures\x18\a \x03(\x0e2\x11.v1.admin.FeatureR\bfeatures\x1a>\n" +
 	"\x10PermissionsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B1Z/codeberg.org/megakuul/cloudjam/pkg/api/v1/adminb\x06proto3"
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01*d\n" +
+	"\aFeature\x12\r\n" +
+	"\tVisualJam\x10\x00\x12\x15\n" +
+	"\x11VisualLeaderboard\x10\x01\x12\x0e\n" +
+	"\n" +
+	"VisualHost\x10\x02\x12\x12\n" +
+	"\x0eVisualProvider\x10\x03\x12\x0f\n" +
+	"\vVisualAdmin\x10\x04B1Z/codeberg.org/megakuul/cloudjam/pkg/api/v1/adminb\x06proto3"
 
 var (
 	file_v1_admin_role_proto_rawDescOnce sync.Once
@@ -134,18 +205,21 @@ func file_v1_admin_role_proto_rawDescGZIP() []byte {
 	return file_v1_admin_role_proto_rawDescData
 }
 
+var file_v1_admin_role_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_v1_admin_role_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_v1_admin_role_proto_goTypes = []any{
-	(*Role)(nil), // 0: v1.admin.Role
-	nil,          // 1: v1.admin.Role.PermissionsEntry
+	(Feature)(0), // 0: v1.admin.Feature
+	(*Role)(nil), // 1: v1.admin.Role
+	nil,          // 2: v1.admin.Role.PermissionsEntry
 }
 var file_v1_admin_role_proto_depIdxs = []int32{
-	1, // 0: v1.admin.Role.permissions:type_name -> v1.admin.Role.PermissionsEntry
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 0: v1.admin.Role.permissions:type_name -> v1.admin.Role.PermissionsEntry
+	0, // 1: v1.admin.Role.features:type_name -> v1.admin.Feature
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_v1_admin_role_proto_init() }
@@ -158,13 +232,14 @@ func file_v1_admin_role_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_v1_admin_role_proto_rawDesc), len(file_v1_admin_role_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_v1_admin_role_proto_goTypes,
 		DependencyIndexes: file_v1_admin_role_proto_depIdxs,
+		EnumInfos:         file_v1_admin_role_proto_enumTypes,
 		MessageInfos:      file_v1_admin_role_proto_msgTypes,
 	}.Build()
 	File_v1_admin_role_proto = out.File

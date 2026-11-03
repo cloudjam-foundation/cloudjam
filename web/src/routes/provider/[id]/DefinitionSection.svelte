@@ -32,9 +32,8 @@
 		columns={[
 			{ title: 'Name', width: '20%', render: renderName },
 			{ title: 'Version', width: '10%', render: renderVersion },
-			{ title: 'Description', width: '30%', render: renderDescription },
-			{ title: 'Digest', width: '30%', render: renderDigest },
-			{ title: 'Scope', width: '10%', render: renderScope }
+			{ title: 'Description', width: '40%', render: renderDescription },
+			{ title: 'Digest', width: '30%', render: renderDigest }
 		]}
 	/>
 	{#snippet renderName(definition: Definition)}
@@ -48,8 +47,5 @@
 	{/snippet}
 	{#snippet renderDigest(definition: Definition)}
 		<span class="font-mono text-xs">{toDigest(definition.hash)}</span>
-	{/snippet}
-	{#snippet renderScope(definition: Definition)}
-		{definition.scope}
 	{/snippet}
 {/if}

@@ -95,17 +95,7 @@ To keep critical code together and reducing dangerous misconfigurations the `rba
 > For OLAP data there is generally no data permission.
 
 
+**Features 🧩**:
 
-## Things to SDK 🧩
-
-List of things that need to be programmed manually and can be abstracted eventually:
-
-1. Data permissions enforcement (avoid manual "scope in auth.Scopes(ctx)" query check)
-2. Automatically create logger with proper request information in rpc methods (could be done by transporting labels via ctx)
-3. Mapping query fields typesafe in Query() db calls (evtl. derive from model struct).
-4. `AttachScope` avoid manual mapping of "Resource"->Models (technically all data just has a scope field so...).
-5. Log errors automatically via rpc middleware instead of manual logging.
-
-> [!IMPORTANT]  
-> Note that implementing those automations opens a can of worms.
-> If something was simple I would've already done it.
+Besides the core permission layer, every role specifies a list of **features**.
+Features provide a user-friendly *"pseudo-security"* layer on top of the actual security to hide things the user has no access to instead of aggressively throwing around 403 errors (yes, AWS, I'm looking at you...)

@@ -6,6 +6,14 @@ import "buf/validate/validate.proto";
 
 option go_package = "codeberg.org/megakuul/cloudjam/pkg/api/v1/admin";
 
+enum Feature {
+  VisualJam = 0;
+  VisualLeaderboard = 1;
+  VisualHost = 2;
+  VisualProvider = 3;
+  VisualAdmin = 4;
+}
+
 message Role {
   string scope = 1;
   string id = 2;
@@ -27,4 +35,5 @@ message Role {
       pattern: "^[a-zA-Z0-9,*/.]+$"
     }
   ];
+  repeated Feature features = 7;
 }

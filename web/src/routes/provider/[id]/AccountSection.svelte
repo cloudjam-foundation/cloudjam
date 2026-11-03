@@ -46,6 +46,7 @@
 		{#key version}
 			<DataTable
 				class="max-h-[80vh]"
+				limit={100}
 				load={async (startAfter: Account | undefined) => {
 					const accounts: Account[] = [];
 					await Submit(async () => {

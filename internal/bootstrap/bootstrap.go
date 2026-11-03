@@ -8,9 +8,15 @@ import (
 	"time"
 
 	"codeberg.org/megakuul/cloudjam/internal/oltp"
+	"codeberg.org/megakuul/cloudjam/pkg/api/v1/admin"
 	"github.com/alexedwards/argon2id"
 	"github.com/google/uuid"
 	"github.com/megakuul/dynamitedb"
+)
+
+const (
+	adminUserID = "00000000-0000-0000-0000-000000000067"
+	adminRoleID = "00000000-0000-0000-0000-000000000069"
 )
 
 // CreateAdministrator creates an administrator account 'admin' with credentials and admin role if not existing already.
@@ -23,7 +29,7 @@ func CreateAdministrator(ctx context.Context, email string, bucket *dynamitedb.B
 	}
 
 	err = dynamitedb.Create(ctx, bucket, &oltp.User{
-		UserID:       dynamitedb.Key("0"),
+		UserID:       dynamitedb.Key(adminUserID),
 		PubID:        dynamitedb.Set(uuid.NewString()),
 		Username:     dynamitedb.Set("admin"),
 		Description:  dynamitedb.Set("Administrator Account"),
@@ -31,7 +37,7 @@ func CreateAdministrator(ctx context.Context, email string, bucket *dynamitedb.B
 		Email:        dynamitedb.Set(email),
 		CreatedAt:    dynamitedb.Set(time.Now()),
 		Privileged:   dynamitedb.Set(true),
-		Role:         dynamitedb.Set("0"),
+		Role:         dynamitedb.Set(adminRoleID),
 		Scope:        dynamitedb.Set(oltp.ScopeAdmin),
 	})
 	if err != nil {
@@ -44,7 +50,7 @@ func CreateAdministrator(ctx context.Context, email string, bucket *dynamitedb.B
 	err = dynamitedb.Put(ctx, bucket, &oltp.Creds{
 		Email:          dynamitedb.Key(email),
 		Active:         dynamitedb.Set(false),
-		UserId:         dynamitedb.Set("0"),
+		UserId:         dynamitedb.Set(adminUserID),
 		Code:           dynamitedb.Set(hash),
 		CodeExpiration: dynamitedb.Set(time.Now().Add(time.Hour * 8760)),
 		Scope:          dynamitedb.Set(oltp.ScopeAdmin),
@@ -54,7 +60,7 @@ func CreateAdministrator(ctx context.Context, email string, bucket *dynamitedb.B
 	}
 
 	err = dynamitedb.Put(ctx, bucket, &oltp.Role{
-		RoleID:      dynamitedb.Key("0"),
+		RoleID:      dynamitedb.Key(adminRoleID),
 		Name:        dynamitedb.Set("admin"),
 		Description: dynamitedb.Set("Provides unlimited administrator access"),
 		Builtin:     dynamitedb.Set(true),
@@ -62,6 +68,11 @@ func CreateAdministrator(ctx context.Context, email string, bucket *dynamitedb.B
 			oltp.ScopeAdmin: "**",
 			oltp.ScopeSelf:  "**",
 		}),
+		Features: dynamitedb.Append(
+			admin.Feature_VisualAdmin,
+			admin.Feature_VisualProvider,
+			admin.Feature_VisualHost,
+		),
 
 		Scope: dynamitedb.Set(oltp.ScopeAdmin),
 	})
