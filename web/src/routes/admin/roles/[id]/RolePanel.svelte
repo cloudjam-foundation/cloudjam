@@ -7,12 +7,13 @@
 	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Separator from '$lib/components/Separator.svelte';
-	import { scopes } from '$lib/scopes.svelte';
+	import { getAssignableScopes } from '$lib/auth.svelte';
 	import { AttachScopeRequestSchema, ConfigureRoleRequestSchema, Resource } from '$lib/sdk/v1/admin/rbac/rbac_pb';
 	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
-	import { RoleSchema, type Role } from '$lib/sdk/v1/admin/role_pb';
+	import { Feature, RoleSchema, type Role } from '$lib/sdk/v1/admin/role_pb';
 	import { create } from '@bufbuild/protobuf';
 	import PermissionEditor from '../PermissionEditor.svelte';
+	import FeatureEditor from '../FeatureEditor.svelte';
 
 	let { role, refresh, deleted }: { role: Role; refresh: () => void; deleted: () => void } = $props();
 
@@ -21,6 +22,10 @@
 	let name = $state(role.name);
 	// svelte-ignore state_referenced_locally
 	let description = $state(role.description);
+	// svelte-ignore state_referenced_locally
+	let features: Record<Feature, boolean> = $state(
+		Object.fromEntries(role.features.map((feature) => [feature, true])) as Record<Feature, boolean>
+	);
 	let attachScope = $state('');
 	let confirmDelete = $state(false);
 	// svelte-ignore state_referenced_locally
@@ -38,12 +43,15 @@
 			...role,
 			name: name,
 			description: description,
+			features: Object.entries(features)
+				.filter(([_, active]) => active)
+				.map(([feature, _]) => Number(feature)),
 			permissions: Object.fromEntries(entries.filter((e) => e.scope).map((e) => [e.scope, e.patterns]))
 		})
 	);
 </script>
 
-<Card class="w-full items-start">
+<Card class="mb-4 w-full items-start">
 	<div>
 		<h1 class="text-2xl font-semibold text-primary/90">{role.name}</h1>
 		<p class="text-primary/60">{role.description}</p>
@@ -62,31 +70,36 @@
 		<p class="text-sm text-primary/60 italic">This role is builtin; its metadata and permissions cannot be modified.</p>
 	{:else}
 		<div class="flex flex-col gap-2">
-			<h2 class="text-xl font-semibold text-primary/80">Metadata</h2>
 			{#if updateState.forbidden}
 				<p class="text-sm text-primary/60 italic">You are not allowed to update this role.</p>
 			{:else}
 				<form
-					class="flex flex-col gap-2"
+					class="flex max-w-160 flex-col gap-3"
 					onsubmit={() =>
 						Submit(async () => {
 							await Glue.role.update(create(UpdateRequestSchema, { mod: mod }));
 							refresh();
 						}, updateState)}
 				>
+					<h2 class="text-xl font-semibold text-primary/80">Metadata</h2>
 					<div class="flex flex-row items-center gap-2">
 						<Input class="max-w-48" bind:value={name} placeholder="Name of the role" />
 						<Input class="max-w-96" bind:value={description} placeholder="Description of the role" />
-						<Button
-							type="submit"
-							variant="primary"
-							processing={updateState.loading}
-							disabled={updateState.loading || Boolean(Glue.Validate(RoleSchema, mod).violation.name)}
-						>
-							Save
-						</Button>
 					</div>
 					<p class="text-xs text-destructive">{Glue.Validate(RoleSchema, mod).violation.name ?? ''}</p>
+
+					<h2 class="text-xl font-semibold text-primary/80">Features</h2>
+					<FeatureEditor bind:features />
+
+					<Button
+						type="submit"
+						variant="primary"
+						class="mt-3 w-60"
+						processing={updateState.loading}
+						disabled={updateState.loading || Boolean(Glue.Validate(RoleSchema, mod).violation.name)}
+					>
+						Save Configuration
+					</Button>
 					{#if updateState.error}
 						<Alert class="p-2" message={updateState.error} animation={true} />
 					{/if}
@@ -108,7 +121,7 @@
 				<PermissionEditor bind:entries />
 				<Button
 					variant="primary"
-					class="self-start"
+					class="mt-3 w-60"
 					processing={configureState.loading}
 					disabled={configureState.loading || Boolean(Glue.Validate(RoleSchema, mod).violation.permissions)}
 					onclick={() =>
@@ -134,31 +147,30 @@
 			<p class="text-sm text-primary/60 italic">You are not allowed to attach scopes.</p>
 		{:else}
 			<p class="text-sm text-primary/60">Moves this role into another scope you possess.</p>
-			<div class="flex flex-row items-center gap-2">
-				<OptionalSelect
-					bind:value={attachScope}
-					placeholder="New scope"
-					suggestions={scopes.map((scope) => ({ id: scope, title: scope }))}
-				/>
-				<Button
-					variant="primary"
-					processing={attachState.loading}
-					disabled={attachState.loading || !attachScope}
-					onclick={() =>
-						Submit(async () => {
-							await Glue.rbac.attachScope(
-								create(AttachScopeRequestSchema, {
-									resource: Resource.RoleData,
-									id: role.id,
-									scope: attachScope
-								})
-							);
-							refresh();
-						}, attachState)}
-				>
-					Attach
-				</Button>
-			</div>
+			<OptionalSelect
+				bind:value={attachScope}
+				placeholder="New scope"
+				suggestions={getAssignableScopes().map((scope) => ({ id: scope, title: scope }))}
+			/>
+			<Button
+				variant="primary"
+				class="mt-3 w-60"
+				processing={attachState.loading}
+				disabled={attachState.loading || !attachScope}
+				onclick={() =>
+					Submit(async () => {
+						await Glue.rbac.attachScope(
+							create(AttachScopeRequestSchema, {
+								resource: Resource.RoleData,
+								id: role.id,
+								scope: attachScope
+							})
+						);
+						refresh();
+					}, attachState)}
+			>
+				Modify Scope
+			</Button>
 			{#if attachState.error}
 				<Alert class="p-2" message={attachState.error} animation={true} />
 			{/if}
@@ -173,10 +185,11 @@
 			{#if removeState.forbidden}
 				<p class="text-sm text-primary/60 italic">You are not allowed to delete this role.</p>
 			{:else}
-				<div class="flex flex-row items-center gap-2">
+				<div class="mt-3 flex w-60 flex-row items-center gap-2">
 					{#if confirmDelete}
 						<Button
 							variant="destructive"
+							class="w-full"
 							disabled={removeState.loading}
 							onclick={() =>
 								Submit(async () => {
@@ -188,7 +201,7 @@
 						</Button>
 						<Button variant="primary" onclick={() => (confirmDelete = false)}>Cancel</Button>
 					{:else}
-						<Button variant="destructive" onclick={() => (confirmDelete = true)}>Delete Role</Button>
+						<Button variant="destructive" class="w-full" onclick={() => (confirmDelete = true)}>Delete Role</Button>
 					{/if}
 				</div>
 				{#if removeState.error}

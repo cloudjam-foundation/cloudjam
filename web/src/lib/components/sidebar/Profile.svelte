@@ -6,10 +6,10 @@
 	import Button from '../Button.svelte';
 	import SidebarButton from './SidebarButton.svelte';
 	import { useSidebar } from './state.svelte';
-	import { toSvg } from 'jdenticon';
+	import type { User } from '$lib/sdk/v1/admin/user_pb';
 
 	const sidebar = useSidebar();
-	let { pubId, email, loading = $bindable(true) }: { pubId: string; email: string; loading: boolean } = $props();
+	let { user, userIcon }: { user: User | undefined; userIcon: string } = $props();
 
 	let open = $state(false);
 	let root: HTMLDivElement | undefined = $state();
@@ -53,8 +53,13 @@
 />
 
 <div bind:this={root} class="relative">
-	<SidebarButton size="lg" disabled={loading} onclick={() => (open = !open)} class={open ? 'bg-foreground/5' : ''}>
-		{#if loading}
+	<SidebarButton
+		size="lg"
+		disabled={!Boolean(user)}
+		onclick={() => (open = !open)}
+		class={open ? 'bg-foreground/5' : ''}
+	>
+		{#if !user}
 			<div class="flex aspect-square size-8 items-center justify-center rounded-lg">
 				<div class="h-8 w-8 animate-pulse rounded-full bg-muted"></div>
 			</div>
@@ -64,13 +69,9 @@
 				</span>
 			</div>
 		{:else}
-			<img
-				alt={'profile-icon'}
-				src={`data:image/svg+xml;base64,${btoa(toSvg(pubId, 140))}`}
-				class="aspect-square size-5 rounded-full object-cover"
-			/>
+			<img alt={'profile-icon'} src={userIcon} class="aspect-square size-5 rounded-full object-cover" />
 			<div class="grid flex-1 text-start text-sm leading-tight">
-				<span>{email}</span>
+				<span>{user.email}</span>
 			</div>
 		{/if}
 
@@ -84,13 +85,9 @@
 				: 'bottom-0 left-full ml-4'}"
 		>
 			<div class="flex flex-col items-center gap-2">
-				<img
-					alt={'profile-icon'}
-					src={`data:image/svg+xml;base64,${btoa(toSvg(pubId, 140))}`}
-					class="aspect-square size-20 rounded-full object-cover"
-				/>
+				<img alt={'profile-icon'} src={userIcon} class="aspect-square size-20 rounded-full object-cover" />
 				<h1 class="inline-flex items-center text-center text-xl font-bold break-all">
-					{email}
+					{user?.username}
 				</h1>
 			</div>
 

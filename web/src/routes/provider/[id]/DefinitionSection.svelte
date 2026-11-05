@@ -2,7 +2,7 @@
 	import { Glue, Submit, type SubmitState } from '$lib';
 	import Alert from '$lib/components/Alert.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
-	import { toDigest } from '$lib/digest';
+	import { toDigest } from '$lib/utils.svelte';
 	import { ListRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';
 	import type { Definition } from '$lib/sdk/v1/cloud/definition_pb';
 	import { create } from '@bufbuild/protobuf';

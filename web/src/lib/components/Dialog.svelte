@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/utils.svelte';
 	import XIcon from '@lucide/svelte/icons/x';
 	import type { Snippet } from 'svelte';
 	import Button from './Button.svelte';

@@ -1,6 +1,6 @@
 <!-- Menu entry of the sidebar, rendered as a link or a button -->
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/utils.svelte';
 	import type { Snippet } from 'svelte';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
 	import { useSidebar } from './state.svelte';

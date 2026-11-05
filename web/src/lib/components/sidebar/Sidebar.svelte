@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/utils.svelte';
 	import type { Snippet } from 'svelte';
 	import SidebarTrigger from './SidebarTrigger.svelte';
 	import { setSidebar } from './state.svelte';

@@ -6,7 +6,7 @@
 	import OptionalSelect, { type Suggestion } from '$lib/components/OptionalSelect.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Input from '$lib/components/Input.svelte';
-	import { scopes } from '$lib/scopes.svelte';
+	import { getAssignableScopes } from '$lib/auth.svelte';
 	import { CreateRequestSchema } from '$lib/sdk/v1/play/game/game_pb';
 	import { GameSchema } from '$lib/sdk/v1/play/game_pb';
 	import { create } from '@bufbuild/protobuf';
@@ -68,7 +68,7 @@
 				<OptionalSelect
 					bind:value={init.scope}
 					placeholder="Scope the game is placed in"
-					suggestions={scopes.map((scope) => ({ id: scope, title: scope })) satisfies Suggestion[]}
+					suggestions={getAssignableScopes().map((scope) => ({ id: scope, title: scope })) satisfies Suggestion[]}
 					class="w-full"
 				/>
 			</label>

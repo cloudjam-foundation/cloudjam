@@ -1,6 +1,6 @@
 <!-- Styled layerchart tooltip listing the hovered series (replaces the shad chart tooltip) -->
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/utils.svelte';
 	import { getChartContext, Tooltip as TooltipPrimitive } from 'layerchart';
 	import type { Snippet } from 'svelte';
 	import type { TooltipPayload } from './chart';

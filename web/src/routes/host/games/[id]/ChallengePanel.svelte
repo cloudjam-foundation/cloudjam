@@ -11,7 +11,7 @@
 	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb';
 	import { ScoreType, ScoreTypeSchema, type Challenge, type ScoreEvent } from '$lib/sdk/v1/play/challenge_pb';
 	import type { Team } from '$lib/sdk/v1/play/team_pb';
-	import { jpegDataURL } from '$lib/utils';
+	import { toDataURL } from '$lib/utils.svelte';
 	import { create, enumToJson } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 
@@ -62,7 +62,7 @@
 			<h1 class="text-xl font-semibold text-primary/80">Infrastructure</h1>
 			{#each Object.entries(challenge.diagrams) as [name, diagram] (name)}
 				<figure class="flex flex-col gap-2">
-					<img class="max-h-96 rounded-md object-contain" src={jpegDataURL(diagram)} alt={name} />
+					<img class="max-h-96 rounded-md object-contain" src={toDataURL(diagram)} alt={name} />
 					<figcaption class="text-center text-xs text-primary/60">{name}</figcaption>
 				</figure>
 			{/each}

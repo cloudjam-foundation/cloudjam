@@ -7,7 +7,7 @@
 	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Select from '$lib/components/Select.svelte';
-	import { scopes } from '$lib/scopes.svelte';
+	import { getAssignableScopes } from '$lib/auth.svelte';
 	import { CreateRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb';
 	import { ProviderSchema, ProviderType } from '$lib/sdk/v1/cloud/provider_pb';
 	import { create } from '@bufbuild/protobuf';
@@ -87,7 +87,7 @@
 					<OptionalSelect
 						bind:value={init.scope}
 						placeholder="Scope the provider is placed in"
-						suggestions={scopes.map((scope) => ({ id: scope, title: scope }))}
+						suggestions={getAssignableScopes().map((scope) => ({ id: scope, title: scope }))}
 					/>
 				</label>
 				<p class="text-xs text-primary/60">You can only attach a scope you possess yourself.</p>

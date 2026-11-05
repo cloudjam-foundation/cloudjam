@@ -4,14 +4,12 @@
 	import { onMount } from 'svelte';
 	import { ModeWatcher } from 'mode-watcher';
 	import AppSidebar from '$lib/components/sidebar/AppSidebar.svelte';
-	import { loadScopes } from '$lib/scopes.svelte';
+	import { getActiveFeatures, getActiveUser, getActiveUserIcon, loadActive } from '$lib/auth.svelte';
 	import { getSubject } from '$lib';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/env';
 	import { page } from '$app/state';
 	import Background from '$lib/components/Background.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import PanelLeftIcon from '@lucide/svelte/icons/panel-left';
 
 	let { children } = $props();
 
@@ -21,9 +19,7 @@
 		}
 	}
 
-	onMount(() => {
-		loadScopes();
-	});
+	onMount(loadActive);
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
@@ -34,7 +30,7 @@
 	<Background />
 	{#if page.route.id !== '/login' && page.route.id !== '/register'}
 		<div class="flex min-h-svh w-full">
-			<AppSidebar />
+			<AppSidebar user={getActiveUser()} userIcon={getActiveUserIcon()} features={getActiveFeatures()} />
 
 			<main class="overflow-scroll-hidden h-dvh min-w-0 flex-1">
 				<section class="h-full min-w-0 p-3 sm:p-5">

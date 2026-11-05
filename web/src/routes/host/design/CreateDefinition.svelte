@@ -5,7 +5,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import Card from '$lib/components/Card.svelte';
-	import { compress } from '$lib/compress';
+	import { compress } from './compress';
 	import { CreateRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';
 	import { CompressionMode, DefinitionSchema } from '$lib/sdk/v1/cloud/definition_pb';
 	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb';

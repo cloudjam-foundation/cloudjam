@@ -1,6 +1,6 @@
 <!-- Wrapper applying the series colors and layerchart style overrides (replaces the shad chart container) -->
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/utils.svelte';
 	import type { Snippet } from 'svelte';
 	import type { ChartConfig } from './chart';
 

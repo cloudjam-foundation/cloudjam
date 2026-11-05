@@ -4,7 +4,7 @@
 	import Input from '$lib/components/Input.svelte';
 	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
 	import Select from '$lib/components/Select.svelte';
-	import { scopes } from '$lib/scopes.svelte';
+	import { getActiveScopes } from '$lib/auth.svelte';
 	import { RBACService } from '$lib/sdk/v1/admin/rbac/rbac_pb';
 	import { RoleService } from '$lib/sdk/v1/admin/role/role_pb';
 	import { SystemService } from '$lib/sdk/v1/admin/system/system_pb';
@@ -73,7 +73,7 @@
 				<OptionalSelect
 					bind:value={entry.scope}
 					placeholder="Scope"
-					suggestions={scopes.map((scope) => ({ id: scope, title: scope }))}
+					suggestions={getActiveScopes().map((scope) => ({ id: scope, title: scope }))}
 				/>
 				<Select
 					multiple={true}

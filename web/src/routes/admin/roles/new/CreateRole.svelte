@@ -5,7 +5,7 @@
 	import Input from '$lib/components/Input.svelte';
 	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
 	import Card from '$lib/components/Card.svelte';
-	import { scopes } from '$lib/scopes.svelte';
+	import { getAssignableScopes } from '$lib/auth.svelte';
 	import { ConfigureRoleRequestSchema } from '$lib/sdk/v1/admin/rbac/rbac_pb';
 	import { CreateRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
 	import { RoleSchema } from '$lib/sdk/v1/admin/role_pb';
@@ -74,7 +74,7 @@
 					<OptionalSelect
 						bind:value={scope}
 						placeholder="Scope the role is placed in"
-						suggestions={scopes.map((scope) => ({ id: scope, title: scope }))}
+						suggestions={getAssignableScopes().map((scope) => ({ id: scope, title: scope }))}
 					/>
 				</label>
 			</div>

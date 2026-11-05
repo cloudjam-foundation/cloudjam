@@ -8,7 +8,7 @@
 	import Card from '$lib/components/Card.svelte';
 	import Select from '$lib/components/Select.svelte';
 	import Separator from '$lib/components/Separator.svelte';
-	import { scopes } from '$lib/scopes.svelte';
+	import { getAssignableScopes } from '$lib/auth.svelte';
 	import { AttachRoleRequestSchema, AttachScopeRequestSchema, Resource } from '$lib/sdk/v1/admin/rbac/rbac_pb';
 	import { ListRequestSchema as ListRolesRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
 	import type { Role } from '$lib/sdk/v1/admin/role_pb';
@@ -151,7 +151,7 @@
 					<OptionalSelect
 						bind:value={attachScope}
 						placeholder="Scope the role is placed in"
-						suggestions={scopes.map((scope) => ({ id: scope, title: scope }))}
+						suggestions={getAssignableScopes().map((scope) => ({ id: scope, title: scope }))}
 					/>
 					<Button
 						variant="primary"

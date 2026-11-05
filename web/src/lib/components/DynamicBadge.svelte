@@ -1,6 +1,6 @@
 <!-- Dynamic badge with a freeform body -->
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/utils.svelte';
 	import type { Snippet } from 'svelte';
 
 	type Variant = 'primary' | 'filled' | 'jam' | 'destructive';
