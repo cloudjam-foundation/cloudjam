@@ -12,15 +12,17 @@
 		open: boolean;
 		title: string;
 		description?: string;
-		badges: Snippet;
-		body: Snippet;
+		badges?: Snippet;
+		body?: Snippet;
 	} = $props();
 </script>
 
 <Dialog bind:open {title} {description} class="sm:max-w-[90vw]">
-	<div class="flex flex-row flex-wrap gap-2">
-		{@render badges()}
-	</div>
+	{#if badges}
+		<div class="flex flex-row flex-wrap gap-2">
+			{@render badges()}
+		</div>
+	{/if}
 
-	{@render body()}
+	{@render body?.()}
 </Dialog>

@@ -1,25 +1,13 @@
 <script lang="ts">
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import { onMount } from 'svelte';
 	import { ModeWatcher } from 'mode-watcher';
 	import AppSidebar from '$lib/components/sidebar/AppSidebar.svelte';
-	import { getActiveFeatures, getActiveUser, getActiveUserIcon, loadActive } from '$lib/auth.svelte';
-	import { getSubject } from '$lib';
-	import { goto } from '$app/navigation';
-	import { browser } from '$app/env';
+	import { getActiveFeatures, getActiveUser, getActiveUserIcon } from '$lib/auth.svelte';
 	import { page } from '$app/state';
 	import Background from '$lib/components/Background.svelte';
 
 	let { children } = $props();
-
-	if (browser && !getSubject()) {
-		if (page.route.id !== '/login' && page.route.id !== '/register') {
-			goto('/login');
-		}
-	}
-
-	onMount(loadActive);
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>

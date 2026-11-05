@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './fonts.css';
+@import './prose.css';
 
 @import '@layerstack/tailwind/core.css';
 @import '@layerstack/tailwind/utils.css';
@@ -218,10 +219,12 @@
 	inherits: true;
 	initial-value: 20deg;
 }
+
 @property --shimmer-image {
 	syntax: '*';
 	inherits: false;
 }
+
 @property --shimmer-text-fill {
 	syntax: '*';
 	inherits: false;
@@ -232,6 +235,7 @@
 		from {
 			background-position: 100% 0;
 		}
+
 		to {
 			background-position: 0 0;
 		}

@@ -4,7 +4,6 @@
 	import Alert from '$lib/components/Alert.svelte';
 	import StaticBadge from '$lib/components/StaticBadge.svelte';
 	import Button from '$lib/components/Button.svelte';
-	import LinkButton from '$lib/components/LinkButton.svelte';
 	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import { toDigest } from '$lib/utils.svelte';
@@ -16,16 +15,21 @@
 	} from '$lib/sdk/v1/cloud/provider/provider_pb';
 	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb';
 	import { create } from '@bufbuild/protobuf';
-	import { CircleQuestionMarkIcon, WandSparklesIcon } from '@lucide/svelte';
+	import { WandSparklesIcon } from '@lucide/svelte';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import { onMount } from 'svelte';
 	import CreateDefinition from './CreateDefinition.svelte';
 	import DefinitionPanel from './DefinitionPanel.svelte';
+	import Help from './Help.svelte';
 
 	let providerId: string = $state('');
 	let provider: Provider | undefined = $state();
 	let providerState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	$effect(() => {
+		if (!providerId) {
+			provider = undefined;
+			return;
+		}
 		Submit(async () => {
 			provider = (await Glue.provider.get(create(GetProviderRequestSchema, { id: providerId }))).provider;
 		}, providerState);
@@ -78,11 +82,7 @@
 			</a>
 		{/if}
 
-		<!-- TODO -->
-		<LinkButton class="ml-auto" href="">
-			<CircleQuestionMarkIcon />
-			Help
-		</LinkButton>
+		<Help class="ml-auto" />
 	</div>
 
 	{#if provider}
