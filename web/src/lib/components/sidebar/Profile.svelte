@@ -7,6 +7,7 @@
 	import SidebarButton from './SidebarButton.svelte';
 	import { useSidebar } from './state.svelte';
 	import type { User } from '$lib/sdk/v1/admin/user_pb';
+	import { resolve } from '$app/paths';
 
 	const sidebar = useSidebar();
 	let { user, userIcon }: { user: User | undefined; userIcon: string } = $props();
@@ -53,12 +54,7 @@
 />
 
 <div bind:this={root} class="relative">
-	<SidebarButton
-		size="lg"
-		disabled={!Boolean(user)}
-		onclick={() => (open = !open)}
-		class={open ? 'bg-foreground/5' : ''}
-	>
+	<SidebarButton size="lg" disabled={!user} onclick={() => (open = !open)} class={open ? 'bg-foreground/5' : ''}>
 		{#if !user}
 			<div class="flex aspect-square size-8 items-center justify-center rounded-lg">
 				<div class="h-8 w-8 animate-pulse rounded-full bg-muted"></div>
@@ -69,7 +65,7 @@
 				</span>
 			</div>
 		{:else}
-			<img alt={'profile-icon'} src={userIcon} class="aspect-square size-5 rounded-full object-cover" />
+			<img alt="profile-icon" src={userIcon} class="aspect-square size-5 rounded-full object-cover" />
 			<div class="grid flex-1 text-start text-sm leading-tight">
 				<span>{user.email}</span>
 			</div>
@@ -85,7 +81,7 @@
 				: 'bottom-0 left-full ml-4'}"
 		>
 			<div class="flex flex-col items-center gap-2">
-				<img alt={'profile-icon'} src={userIcon} class="aspect-square size-20 rounded-full object-cover" />
+				<img alt="profile-icon" src={userIcon} class="aspect-square size-20 rounded-full object-cover" />
 				<h1 class="inline-flex items-center text-center text-xl font-bold break-all">
 					{user?.username}
 				</h1>
@@ -112,7 +108,7 @@
 
 			<Button
 				onclick={() => {
-					goto('/profile');
+					goto(resolve('/profile'));
 					sidebar.setOpen(false);
 					open = false;
 				}}
@@ -125,7 +121,7 @@
 			<Button
 				onclick={() => {
 					setToken('');
-					goto('/login');
+					goto(resolve('/login'));
 				}}
 				variant="destructive"
 			>
