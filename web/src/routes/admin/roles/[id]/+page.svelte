@@ -5,7 +5,7 @@
 	import TabPage from '$lib/components/TabPage.svelte';
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import RolePanel from './RolePanel.svelte';
-	import {resolve} from "$app/paths";
+	import { resolve } from '$app/paths';
 
 	let { data } = $props();
 </script>
