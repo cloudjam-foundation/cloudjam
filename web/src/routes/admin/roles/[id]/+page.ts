@@ -10,6 +10,7 @@ export const trailingSlash = 'always';
 export const ssr = false;
 
 export const load: PageLoad = async ({ params }) => {
+	// TODO: Figure out how to get these to stop throwing ESLint errors.
 	let role = createState<Role | undefined>(undefined);
 	let roleState = createState<SubmitState>({ error: '', forbidden: false, loading: false });
 
