@@ -15,9 +15,9 @@
 	},
 	"devDependencies": {
 		"@eslint/compat": "latest",
+		"@eslint/config-helpers": "^0.7.0",
 		"@eslint/js": "^9.39.2",
 		"@fontsource-variable/inter": "^5.3.0",
-		"@internationalized/date": "^3.12.2",
 		"@lucide/svelte": "^1.31.0",
 		"@mdi/js": "latest",
 		"@sveltejs/adapter-static": "^3.0.10",
@@ -28,7 +28,6 @@
 		"@types/d3-shape": "^3.1.8",
 		"@types/glob-to-regexp": "^0.4.4",
 		"@types/node": "^24",
-		"bits-ui": "^2.18.1",
 		"clsx": "^2.1.1",
 		"eslint": "^9.39.2",
 		"eslint-config-prettier": "^10.1.8",
@@ -41,11 +40,9 @@
 		"prettier-plugin-organize-imports": "^4.3.0",
 		"prettier-plugin-svelte": "^3.4.1",
 		"prettier-plugin-tailwindcss": "^0.7.2",
-		"shadcn-svelte": "^1.7.0",
 		"svelte": "^5.51.0",
 		"svelte-check": "^4.4.2",
 		"svelte-gauge": "^2.0.1",
-		"svelte-sonner": "^1.1.1",
 		"tailwind-merge": "^3.6.0",
 		"tailwind-variants": "^3.3.0",
 		"tailwindcss": "^4.1.18",
@@ -63,14 +60,14 @@
 		"@layerstack/tailwind": "next",
 		"@megakuul/glue-protocol": "^0.1.0",
 		"@tailwindcss/typography": "^0.5.19",
-		"@tanstack/svelte-table": "^9.3.1",
 		"d3-scale": "^4.0.2",
 		"d3-shape": "^3.2.0",
 		"dompurify": "^3.4.14",
 		"glob-to-regexp": "^0.4.1",
+		"highlight.js": "^11.12.0",
 		"jwt-decode": "^4.0.0",
 		"marked": "^18.0.11",
-		"mode-watcher": "^1.1.0",
-		"svelte-ux": "next"
+		"marked-highlight": "^2.2.4",
+		"mode-watcher": "^1.1.0"
 	}
 }

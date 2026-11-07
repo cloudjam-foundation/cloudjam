@@ -2,18 +2,19 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { getSubject, Glue, Submit, type SubmitState } from '$lib';
-	import { Badge } from '$lib/components/shad/badge';
-	import { Button } from '$lib/components/shad/button';
-	import * as Card from '$lib/components/shad/card';
+	import StateBadge from '$lib/components/StateBadge.svelte';
+	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Card from '$lib/components/Card.svelte';
 	import { ListRequestSchema as ListChallengeRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb';
 	import type { Challenge } from '$lib/sdk/v1/play/challenge_pb';
 	import { GetRequestSchema as GetGameRequestSchema } from '$lib/sdk/v1/play/game/game_pb';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { ListRequestSchema as ListTeamsRequestSchema } from '$lib/sdk/v1/play/team/team_pb';
+	import type { Team } from '$lib/sdk/v1/play/team_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import { ChevronLeftIcon, LayersIcon } from '@lucide/svelte';
-	import type { Team } from '$lib/sdk/v1/play/team_pb';
 
 	let gameState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let game: Game | undefined = $state();
@@ -96,18 +97,18 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" size="icon" class="cursor-pointer" onclick={() => goto(`/play`)}>
+		<Button variant="ghost" onclick={() => goto(`/play`)}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">{game?.name ?? 'Game'}</h1>
 		{#if active}
-			<Badge variant="secondary">running</Badge>
+			<StateBadge text="running" state="RunningPositive" mapper={undefined} />
 		{:else}
-			<Badge variant="outline">ended</Badge>
+			<StateBadge text="ended" state="StableNeutral" mapper={undefined} />
 		{/if}
 	</div>
 
-	<p class="text-sm text-muted-foreground">
+	<p class="text-sm text-primary/60">
 		{game?.description}
 	</p>
 
@@ -119,24 +120,22 @@
 					class="w-full cursor-pointer text-left sm:w-80"
 					onclick={() => goto(`/play/${game?.id}/${challenge.id}`)}
 				>
-					<Card.Root class="h-full hover:bg-slate-50/5">
-						<Card.Header>
-							<LayersIcon class="size-8" />
-							<Card.Title class="text-xl">{challenge.title}</Card.Title>
-							<Card.Description>
-								{challenge.description.join('\n').slice(0, 20)}
-								{challenge.description.length < 1 ? '' : '...'}
-							</Card.Description>
-							<div class="flex flex-row flex-wrap gap-1">
-								{#if !challenge.title}
-									<Badge variant="secondary">not discovered</Badge>
-								{/if}
-								{#if challenge.error}
-									<Badge variant="destructive">challenge defect</Badge>
-								{/if}
-							</div>
-						</Card.Header>
-					</Card.Root>
+					<Card class="h-full items-start gap-2 duration-300 hover:opacity-70">
+						<LayersIcon class="size-8" />
+						<h1 class="text-xl">{challenge.title}</h1>
+						<p class="text-primary/60">
+							{challenge.description.join('\n').slice(0, 20)}
+							{challenge.description.length < 1 ? '' : '...'}
+						</p>
+						<div class="flex flex-row flex-wrap gap-1">
+							{#if !challenge.title}
+								<StaticBadge variant="primary" text="not discovered" />
+							{/if}
+							{#if challenge.error}
+								<StaticBadge variant="destructive" text="challenge defect" />
+							{/if}
+						</div>
+					</Card>
 				</button>
 			{/each}
 		</div>

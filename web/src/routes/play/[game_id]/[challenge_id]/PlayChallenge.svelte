@@ -1,20 +1,23 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Markdown from '$lib/components/custom/Markdown.svelte';
-	import * as Alert from '$lib/components/shad/alert';
-	import { Badge } from '$lib/components/shad/badge';
-	import { Button } from '$lib/components/shad/button';
-	import * as Card from '$lib/components/shad/card';
-	import { Separator } from '$lib/components/shad/separator';
-	import Spinner from '$lib/components/shad/spinner/spinner.svelte';
-	import * as Table from '$lib/components/shad/table';
+	import Alert from '$lib/components/Alert.svelte';
+	import DynamicBadge from '$lib/components/DynamicBadge.svelte';
+	import LoadingBadge from '$lib/components/LoadingBadge.svelte';
+	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import LinkButton from '$lib/components/LinkButton.svelte';
+	import Markdown from '$lib/components/Markdown.svelte';
+	import Dialog from '$lib/components/Dialog.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import DataTable from '$lib/components/DataTable.svelte';
+	import Separator from '$lib/components/Separator.svelte';
 	import {
 		CredentialsRequestSchema,
 		StartRequestSchema,
 		UncoverClueRequestSchema
 	} from '$lib/sdk/v1/play/challenge/challenge_pb';
 	import { ScoreType, type Challenge, type ScoreEvent } from '$lib/sdk/v1/play/challenge_pb';
-	import { jpegDataURL } from '$lib/utils';
+	import { toDataURL } from '$lib/utils.svelte';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import {
@@ -24,7 +27,6 @@
 		SquareArrowOutUpRightIcon,
 		ZapIcon
 	} from '@lucide/svelte';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import LightbulbIcon from '@lucide/svelte/icons/lightbulb';
 	import PlayIcon from '@lucide/svelte/icons/play';
@@ -92,45 +94,48 @@
 		}
 	}
 
-	let expandedEvent = $state('');
+	type EventGroup = { key: string; events: ScoreEvent[] };
+	const groups = $derived<EventGroup[]>(
+		Object.entries(group(challenge.scoreEvents)).map(([key, events]) => ({ key, events }))
+	);
+
+	// the history dialog shows every event of the clicked group
+	let history: EventGroup | undefined = $state();
+	let historyOpen = $state(false);
 </script>
 
-<Card.Root class="w-full">
-	<Card.Header>
-		<Card.Title class="text-2xl">
-			{challenge.title || 'Not started yet'}
-			{#if !challenge.ready && challenge.title}
-				<Badge variant="default">
-					<Spinner />
-					Provisioning Challenge
-				</Badge>
-			{/if}
-			{#if adhsSpinner}
-				<Badge variant="outline">
-					<Spinner />
-					Checking Progress
-				</Badge>
-			{/if}
-		</Card.Title>
-		<Card.Description class="flex flex-row gap-1">
-			{#each challenge.scores as score (score.type)}
-				<Badge variant="outline">
-					{#if score.type === ScoreType.Operational}
-						<ZapIcon />
-					{:else if score.type === ScoreType.Design}
-						<DraftingCompassIcon />
-					{/if}
-					<span>{score.value} / {score.maximum}</span>
-				</Badge>
-			{/each}
-			{#if !challenge.title}
-				<Badge variant="default">not started yet</Badge>
-			{/if}
-		</Card.Description>
-		<Card.Action class="flex flex-row gap-2">
+<Card class="w-full items-start">
+	<div class="flex w-full flex-row flex-wrap items-center gap-2">
+		<div class="flex flex-col gap-1">
+			<div class="flex flex-row flex-wrap items-center gap-2">
+				<h1 class="text-2xl font-semibold text-primary/90">{challenge.title || 'Not started yet'}</h1>
+				{#if !challenge.ready && challenge.title}
+					<LoadingBadge text="Provisioning Challenge" />
+				{/if}
+				{#if adhsSpinner}
+					<LoadingBadge text="Checking Progress" />
+				{/if}
+			</div>
+			<div class="flex flex-row flex-wrap gap-1">
+				{#each challenge.scores as score (score.type)}
+					<DynamicBadge variant="primary">
+						{#if score.type === ScoreType.Operational}
+							<ZapIcon class="size-3" />
+						{:else if score.type === ScoreType.Design}
+							<DraftingCompassIcon class="size-3" />
+						{/if}
+						<span>{score.value} / {score.maximum}</span>
+					</DynamicBadge>
+				{/each}
+				{#if !challenge.title}
+					<StaticBadge variant="jam" text="not started yet" />
+				{/if}
+			</div>
+		</div>
+		<div class="ml-auto flex flex-row flex-wrap gap-2">
 			<Button
-				variant="outline"
-				class="cursor-pointer"
+				variant="primary"
+				processing={startState.loading}
 				disabled={!active || startState.loading || Boolean(challenge.title)}
 				onclick={() =>
 					Submit(async () => {
@@ -142,8 +147,7 @@
 			</Button>
 
 			<Button
-				variant="outline"
-				class="cursor-pointer"
+				variant="primary"
 				disabled={!active || !challenge.ready}
 				onclick={() => {
 					clearTimeout(adhsTimeout);
@@ -155,8 +159,8 @@
 			</Button>
 
 			<Button
-				variant="outline"
-				class="cursor-pointer"
+				variant="primary"
+				processing={credsState.loading}
 				disabled={!active || !challenge.ready || credsState.loading || !challenge.title}
 				onclick={() =>
 					Submit(async () => {
@@ -170,190 +174,194 @@
 				<KeyRoundIcon />
 				Credentials
 			</Button>
-		</Card.Action>
-	</Card.Header>
-	<Card.Content class="flex flex-col gap-6">
-		{#if startState.error || credsState.error}
-			<Alert.Root variant="destructive">
-				<AlertCircleIcon />
-				<Alert.Title>Action failed</Alert.Title>
-				<Alert.Description>{startState.error || credsState.error}</Alert.Description>
-			</Alert.Root>
-		{/if}
+		</div>
+	</div>
 
-		{#if credentials}
-			<Alert.Root>
-				<Alert.Title class="flex flex-row items-center gap-3">
-					Account credentials
-					<Button
-						variant="outline"
-						class="cursor-pointer"
-						onclick={() =>
-							navigator.clipboard.writeText(
-								parsedCredentials.env.length
-									? parsedCredentials.env.map(([name, value]) => `export ${name}=${value}`).join('\n')
-									: credentials
-							)}
-					>
-						<CopyIcon /> Copy as environment
-					</Button>
-					<Button variant="secondary" class="cursor-pointer" href={parsedCredentials.url}>
-						<SquareArrowOutUpRightIcon /> Open AWS Console
-					</Button>
-				</Alert.Title>
-			</Alert.Root>
-		{/if}
+	{#if startState.error || credsState.error}
+		<Alert title="Action failed" message={startState.error || credsState.error} animation={true} />
+	{/if}
 
-		{#if challenge.error}
-			<Alert.Root variant="destructive">
-				<AlertCircleIcon />
-				<Alert.Title>Challenge is malfunctioning. Please contact an administrator!</Alert.Title>
-				<Alert.Description class="font-mono text-xs break-all">{challenge.error}</Alert.Description>
-			</Alert.Root>
-		{/if}
+	{#if credentials}
+		<div class="flex w-full flex-row flex-wrap items-center gap-3 rounded-md glass p-3">
+			<span class="font-medium text-primary/90">Account credentials</span>
+			<Button
+				variant="primary"
+				onclick={() =>
+					navigator.clipboard.writeText(
+						parsedCredentials.env.length
+							? parsedCredentials.env.map(([name, value]) => `export ${name}=${value}`).join('\n')
+							: credentials
+					)}
+			>
+				<CopyIcon /> Copy as environment
+			</Button>
+			<LinkButton href={parsedCredentials.url}>
+				<SquareArrowOutUpRightIcon /> Open AWS Console
+			</LinkButton>
+		</div>
+	{/if}
 
-		{#if challenge.description.length}
-			<div class="flex flex-col gap-2">
-				<Card.Title>Briefing</Card.Title>
-				<Markdown source={challenge.description.join('\n\n')} />
-			</div>
-		{/if}
+	{#if challenge.error}
+		<Alert
+			title="Challenge is malfunctioning. Please contact an administrator!"
+			message={challenge.error}
+			class="font-mono text-xs break-all"
+		/>
+	{/if}
 
-		{#if Object.keys(challenge.diagrams).length}
+	{#if challenge.description.length}
+		<div class="flex flex-col gap-2">
+			<h2 class="text-xl font-semibold text-primary/80">Briefing</h2>
+			<Markdown source={challenge.description.join('\n\n')} />
+		</div>
+	{/if}
+
+	{#if Object.keys(challenge.diagrams).length}
+		<Separator />
+
+		<div class="flex flex-col gap-3">
+			<h2 class="text-xl font-semibold text-primary/80">Infrastructure</h2>
+			{#each Object.entries(challenge.diagrams) as [name, diagram] (name)}
+				<figure class="flex flex-col gap-2">
+					<img class="max-h-96 rounded-md object-contain" src={toDataURL(diagram)} alt={name} />
+					<figcaption class="text-center text-xs text-primary/60">{name}</figcaption>
+				</figure>
+			{/each}
+		</div>
+	{/if}
+
+	{#if Object.keys(challenge.assets).length}
+		<Separator />
+
+		<div class="flex flex-col gap-2">
+			<h2 class="text-xl font-semibold text-primary/80">Assets</h2>
+			{#each Object.entries(challenge.assets) as [name, asset] (name)}
+				<div class="flex flex-row items-center gap-2 text-sm">
+					<span class="font-medium">{name}</span>
+					<span class="font-mono text-xs break-all text-primary/60">{asset}</span>
+				</div>
+			{/each}
+		</div>
+	{/if}
+
+	{#if Object.keys(challenge.clues).length}
+		<Separator />
+
+		<div class="flex flex-col gap-2">
+			<h2 class="text-xl font-semibold text-primary/80">Clues</h2>
+			<p class="text-sm text-primary/60">Uncovering a clue usually costs points.</p>
 			<Separator />
+			{#each Object.entries(challenge.clues) as [name, text] (name)}
+				<div class="flex flex-col justify-center gap-2 text-sm">
+					<span class="font-medium">{name}</span>
+					{#if text !== '<hidden>'}
+						<span class="text-primary/60">{text}</span>
+					{:else}
+						<Button
+							variant="primary"
+							class="self-start"
+							processing={clueState.loading}
+							disabled={clueState.loading || challenge.cluePrices[name] === undefined}
+							onclick={() =>
+								Submit(async () => {
+									await Glue.challenge.uncoverClue(
+										create(UncoverClueRequestSchema, {
+											gameId: challenge.gameId,
+											id: challenge.id,
+											clue: name
+										})
+									);
+									refresh();
+								}, clueState)}
+						>
+							<LightbulbIcon /> Uncover ({challenge.cluePrices[name] === undefined
+								? 'price unavailable'
+								: `${-challenge.cluePrices[name]} points`})
+						</Button>
+					{/if}
+				</div>
+			{/each}
+			{#if clueState.error}
+				<Alert class="p-2" message={clueState.error} animation={true} />
+			{/if}
+		</div>
+	{/if}
 
-			<div class="flex flex-col gap-3">
-				<Card.Title>Infrastructure</Card.Title>
-				{#each Object.entries(challenge.diagrams) as [name, diagram] (name)}
-					<figure class="flex flex-col gap-2">
-						<img class="max-h-96 rounded-md object-contain" src={jpegDataURL(diagram)} alt={name} />
-						<figcaption class="text-center text-xs text-muted-foreground">{name}</figcaption>
-					</figure>
-				{/each}
-			</div>
-		{/if}
+	{#if challenge.scoreEvents.length}
+		<Separator />
 
-		{#if Object.keys(challenge.assets).length}
-			<Separator />
+		<div class="flex w-full flex-col gap-2">
+			<h2 class="text-xl font-semibold text-primary/80">System Status</h2>
+			{#key challenge.scoreEvents.length}
+				<DataTable
+					class="max-h-[60vh]"
+					limit={Infinity}
+					load={async () => groups}
+					loadState={{ error: '', loading: false, forbidden: false }}
+					onRowClick={(row) => {
+						history = row;
+						historyOpen = true;
+					}}
+					columns={[
+						{ title: '', width: '40px', render: renderGroupIcon },
+						{ title: 'Time', width: '80px', render: renderGroupTime },
+						{ title: 'Result', width: '110px', render: renderGroupResult },
+						{ title: 'Event', width: '45%', render: renderGroupText },
+						{ title: 'Reason', width: '55%', render: renderGroupReason }
+					]}
+				/>
+			{/key}
+			{#snippet renderGroupIcon(row: EventGroup)}
+				{@render icon(row.events[0])}
+			{/snippet}
+			{#snippet renderGroupTime(row: EventGroup)}
+				{@render time(row.events[0])}
+			{/snippet}
+			{#snippet renderGroupResult(row: EventGroup)}
+				{@render result(row.events[0])}
+			{/snippet}
+			{#snippet renderGroupText(row: EventGroup)}
+				{row.events[0].text}
+			{/snippet}
+			{#snippet renderGroupReason(row: EventGroup)}
+				<span class="text-primary/60">{row.events[0].reason}</span>
+			{/snippet}
+		</div>
+	{/if}
+</Card>
 
-			<div class="flex flex-col gap-2">
-				<Card.Title>Assets</Card.Title>
-				{#each Object.entries(challenge.assets) as [name, asset] (name)}
-					<div class="flex flex-row items-center gap-2 text-sm">
-						<span class="font-medium">{name}</span>
-						<span class="font-mono text-xs break-all text-muted-foreground">{asset}</span>
-					</div>
-				{/each}
-			</div>
-		{/if}
+{#snippet icon(event: ScoreEvent)}
+	{#if event.type === ScoreType.Operational}
+		<ZapIcon class={getOperationColor(event)} />
+	{:else if event.type === ScoreType.Design}
+		<DraftingCompassIcon class={getDesignColor(event)} />
+	{/if}
+{/snippet}
+{#snippet time(event: ScoreEvent)}
+	<span class="font-bold text-primary/60">{kitchenFmt.format(timestampDate(event.timestamp!))}</span>
+{/snippet}
+{#snippet result(event: ScoreEvent)}
+	<StaticBadge variant="primary" text={event.maximum ? `${event.score} / ${event.maximum}` : ''} />
+{/snippet}
 
-		{#if Object.keys(challenge.clues).length}
-			<Separator />
-
-			<div class="flex flex-col gap-2">
-				<Card.Title>Clues</Card.Title>
-				<p class="text-sm text-muted-foreground">Uncovering a clue usually costs points.</p>
-				<Separator />
-				{#each Object.entries(challenge.clues) as [name, text] (name)}
-					<div class="flex flex-col justify-center gap-2 text-sm">
-						<span class="font-medium">{name}</span>
-						{#if text !== '<hidden>'}
-							<span class="text-muted-foreground">{text}</span>
-						{:else}
-							<Button
-								variant="outline"
-								class="cursor-pointer"
-								disabled={clueState.loading || challenge.cluePrices[name] === undefined}
-								onclick={() =>
-									Submit(async () => {
-										await Glue.challenge.uncoverClue(
-											create(UncoverClueRequestSchema, {
-												gameId: challenge.gameId,
-												id: challenge.id,
-												clue: name
-											})
-										);
-										refresh();
-									}, clueState)}
-							>
-								<LightbulbIcon /> Uncover ({challenge.cluePrices[name] === undefined
-									? 'price unavailable'
-									: `${-challenge.cluePrices[name]} points`})
-							</Button>
-						{/if}
-					</div>
-				{/each}
-				{#if clueState.error}
-					<p class="text-xs text-destructive">{clueState.error}</p>
-				{/if}
-			</div>
-		{/if}
-
-		{#if challenge.scoreEvents.length}
-			<Separator />
-
-			<div class="flex flex-col gap-2 overflow-hidden">
-				<Card.Title>System Status</Card.Title>
-				<Table.Root class="overflow-hidden">
-					<Table.Body>
-						{#each Object.entries(group(challenge.scoreEvents)) as [key, events] (key)}
-							{@const topEvent = events[0]}
-							<Table.Row
-								class="cursor-pointer"
-								onclick={() => {
-									if (expandedEvent === key) expandedEvent = '';
-									else expandedEvent = key;
-								}}
-							>
-								<Table.Cell>
-									{#if topEvent.type === ScoreType.Operational}
-										<ZapIcon class={getOperationColor(topEvent)} />
-									{:else if topEvent.type === ScoreType.Design}
-										<DraftingCompassIcon class={getDesignColor(topEvent)} />
-									{/if}
-								</Table.Cell>
-								<Table.Cell class="font-bold text-muted-foreground">
-									{kitchenFmt.format(timestampDate(topEvent.timestamp!))}
-								</Table.Cell>
-								<Table.Cell>
-									<Badge variant="secondary" class="w-20">
-										{topEvent.maximum ? `${topEvent.score} / ${topEvent.maximum}` : ''}
-									</Badge>
-								</Table.Cell>
-								<Table.Cell class="overflow-scroll-hidden max-w-[40vw]">{topEvent.text}</Table.Cell>
-								<Table.Cell class="overflow-scroll-hidden max-w-[30vw] text-muted-foreground">
-									{topEvent.reason}
-								</Table.Cell>
-							</Table.Row>
-							{#if expandedEvent === key}
-								{#each events as event (event)}
-									<Table.Row class="opacity-50">
-										<Table.Cell>
-											{#if event.type === ScoreType.Operational}
-												<ZapIcon class={getOperationColor(event)} />
-											{:else if event.type === ScoreType.Design}
-												<DraftingCompassIcon class={getDesignColor(event)} />
-											{/if}
-										</Table.Cell>
-										<Table.Cell class="font-bold text-muted-foreground">
-											{kitchenFmt.format(timestampDate(event.timestamp!))}
-										</Table.Cell>
-										<Table.Cell>
-											<Badge variant="secondary" class="w-20">
-												{event.maximum ? `${event.score} / ${event.maximum}` : ''}
-											</Badge>
-										</Table.Cell>
-										<Table.Cell class="overflow-scroll-hidden max-w-[40vw]">{event.text}</Table.Cell>
-										<Table.Cell class="overflow-scroll-hidden max-w-[30vw] text-muted-foreground">
-											{event.reason}
-										</Table.Cell>
-									</Table.Row>
-								{/each}
-							{/if}
-						{/each}
-					</Table.Body>
-				</Table.Root>
-			</div>
-		{/if}
-	</Card.Content>
-</Card.Root>
+{#if history}
+	<Dialog bind:open={historyOpen} title={history.key} description="Every check of this event, newest first">
+		{#key history.key}
+			<DataTable
+				class="max-h-[60vh]"
+				limit={Infinity}
+				load={async () => history?.events ?? []}
+				loadState={{ error: '', loading: false, forbidden: false }}
+				columns={[
+					{ title: '', width: '40px', render: icon },
+					{ title: 'Time', width: '80px', render: time },
+					{ title: 'Result', width: '110px', render: result },
+					{ title: 'Reason', width: '100%', render: reason }
+				]}
+			/>
+		{/key}
+	</Dialog>
+{/if}
+{#snippet reason(event: ScoreEvent)}
+	<span class="text-primary/60">{event.reason}</span>
+{/snippet}

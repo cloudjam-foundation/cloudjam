@@ -1,24 +1,24 @@
 <script lang="ts">
-	import OptionalSelect from '$lib/components/custom/OptionalSelect.svelte';
-	import { Badge } from '$lib/components/shad/badge';
-	import { Button } from '$lib/components/shad/button';
-	import { Input } from '$lib/components/shad/input';
-	import * as Select from '$lib/components/shad/select';
-	import { scopes } from '$lib/scopes.svelte';
+	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
+	import Select from '$lib/components/Select.svelte';
+	import { getActiveScopes } from '$lib/auth.svelte';
 	import { RBACService } from '$lib/sdk/v1/admin/rbac/rbac_pb';
 	import { RoleService } from '$lib/sdk/v1/admin/role/role_pb';
 	import { SystemService } from '$lib/sdk/v1/admin/system/system_pb';
 	import { UserService } from '$lib/sdk/v1/admin/user/user_pb';
-	import globToRegex from 'glob-to-regexp';
-	import PlusIcon from '@lucide/svelte/icons/plus';
-	import Trash2Icon from '@lucide/svelte/icons/trash-2';
-	import { ProviderService } from '$lib/sdk/v1/cloud/provider/provider_pb';
 	import { AuthService } from '$lib/sdk/v1/auth/auth_pb';
 	import { AccountService } from '$lib/sdk/v1/cloud/account/account_pb';
 	import { DefinitionService } from '$lib/sdk/v1/cloud/definition/definition_pb';
-	import { GameService } from '$lib/sdk/v1/play/game/game_pb';
+	import { ProviderService } from '$lib/sdk/v1/cloud/provider/provider_pb';
 	import { ChallengeService } from '$lib/sdk/v1/play/challenge/challenge_pb';
+	import { GameService } from '$lib/sdk/v1/play/game/game_pb';
 	import { TeamService } from '$lib/sdk/v1/play/team/team_pb';
+	import PlusIcon from '@lucide/svelte/icons/plus';
+	import Trash2Icon from '@lucide/svelte/icons/trash-2';
+	import globToRegex from 'glob-to-regexp';
 
 	let { entries = $bindable() }: { entries: { scope: string; patterns: string }[] } = $props();
 
@@ -73,58 +73,43 @@
 				<OptionalSelect
 					bind:value={entry.scope}
 					placeholder="Scope"
-					suggestions={scopes.map((scope) => ({ id: scope, title: scope }))}
+					suggestions={getActiveScopes().map((scope) => ({ id: scope, title: scope }))}
 				/>
-				<Select.Root type="multiple" value={selected(entry.patterns)} onValueChange={(picked) => apply(entry, picked)}>
-					<Select.Trigger class="w-48 cursor-pointer">
-						{selected(entry.patterns).length} function(s) picked
-					</Select.Trigger>
-					<Select.Content>
-						{#each services as service (service.name)}
-							<Select.Group>
-								<Select.GroupHeading>{service.name}</Select.GroupHeading>
-								{#each service.functions as fn (fn.procedure)}
-									<Select.Item value={fn.procedure} label={fn.label}>{fn.label}</Select.Item>
-								{/each}
-							</Select.Group>
-						{/each}
-					</Select.Content>
-				</Select.Root>
+				<Select
+					multiple={true}
+					value={selected(entry.patterns)}
+					onchange={(picked) => apply(entry, picked)}
+					class="w-48"
+					placeholder={`${selected(entry.patterns).length} function(s) picked`}
+					groups={services.map((service) => ({
+						label: service.name,
+						items: service.functions.map((fn) => ({ value: fn.procedure, label: fn.label }))
+					}))}
+				/>
 				<Input
 					class="max-w-96 font-mono"
 					bind:value={entry.patterns}
 					placeholder="Patterns (e.g. /v1.admin.user.UserService/*)"
 				/>
-				<Button
-					variant="ghost"
-					size="icon"
-					title="Remove permission"
-					class="cursor-pointer"
-					onclick={() => (entries = entries.filter((_, x) => x !== i))}
-				>
+				<Button variant="ghost" title="Remove permission" onclick={() => (entries = entries.filter((_, x) => x !== i))}>
 					<Trash2Icon />
 				</Button>
 			</div>
 			<div class="flex flex-row flex-wrap items-center gap-1">
-				<span class="text-xs text-muted-foreground">grants:</span>
+				<span class="text-xs text-primary/60">grants:</span>
 				{#if granted(entry.patterns).length === functions.length}
-					<Badge variant="secondary">every function</Badge>
+					<StaticBadge variant="jam" text="every function" />
 				{:else}
 					{#each granted(entry.patterns) as label (label)}
-						<Badge variant="outline">{label}</Badge>
+						<StaticBadge variant="primary" text={label} />
 					{:else}
-						<span class="text-muted-foreground text-xs italic">no known function</span>
+						<span class="text-xs text-primary/60 italic">no known function</span>
 					{/each}
 				{/if}
 			</div>
 		</div>
 	{/each}
-	<Button
-		variant="outline"
-		size="sm"
-		class="cursor-pointer self-start"
-		onclick={() => (entries = [...entries, { scope: '', patterns: '' }])}
-	>
+	<Button variant="primary" class="self-start" onclick={() => (entries = [...entries, { scope: '', patterns: '' }])}>
 		<PlusIcon /> Add Permission
 	</Button>
 </div>

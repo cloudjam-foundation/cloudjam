@@ -2,22 +2,23 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import * as Card from '$lib/components/shad/card';
-	import { Badge } from '$lib/components/shad/badge';
-	import { Button } from '$lib/components/shad/button';
+	import DynamicBadge from '$lib/components/DynamicBadge.svelte';
+	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import { GetRequestSchema as GetDefinitionRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';
+	import type { Definition } from '$lib/sdk/v1/cloud/definition_pb';
 	import { GetRequestSchema as GetChallengeRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb';
 	import type { Challenge } from '$lib/sdk/v1/play/challenge_pb';
 	import { GetRequestSchema as GetGameRequestSchema } from '$lib/sdk/v1/play/game/game_pb';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { GetRequestSchema as GetTeamRequestSchema } from '$lib/sdk/v1/play/team/team_pb';
+	import type { Team } from '$lib/sdk/v1/play/team_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import { ChevronLeftIcon, LockIcon } from '@lucide/svelte';
-	import type { Team } from '$lib/sdk/v1/play/team_pb';
-	import { GetRequestSchema as GetDefinitionRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';
-	import type { Definition } from '$lib/sdk/v1/cloud/definition_pb';
-	import PlayChallenge from './PlayChallenge.svelte';
 	import { toSvg } from 'jdenticon';
+	import PlayChallenge from './PlayChallenge.svelte';
 
 	const reloadInterval = 5000;
 
@@ -146,34 +147,32 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" size="icon" class="cursor-pointer" onclick={() => goto(`/play/${page.params.game_id}`)}>
+		<Button variant="ghost" onclick={() => goto(`/play/${page.params.game_id}`)}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">{challenge?.title || definition?.name || 'Challenge'}</h1>
 		{#if definition}
-			<Badge variant="secondary">{definition?.name}</Badge>
+			<StaticBadge variant="primary" text={definition?.name} />
 		{/if}
 		{#if !active}
-			<Badge variant="secondary">
-				<LockIcon />
+			<DynamicBadge variant="primary">
+				<LockIcon class="size-3" />
 				Locked
-			</Badge>
+			</DynamicBadge>
 		{:else}
-			<Badge variant="secondary">ends in {remaining}</Badge>
+			<StaticBadge variant="primary" text={`ends in ${remaining}`} />
 		{/if}
-		<Badge variant="outline">score: {score}</Badge>
+		<StaticBadge variant="jam" text={`score: ${score}`} />
 	</div>
 
-	<Card.Root class="gap-2 bg-accent-600/20 p-4">
-		<Card.Title class="flex flex-row items-center gap-2 text-2xl">
-			{team?.name}
-			<Badge variant="default">
-				score: {team?.score}
-			</Badge>
-		</Card.Title>
-		<Card.Description>
+	<Card class="w-full items-start gap-2 p-4">
+		<div class="flex flex-row items-center gap-2">
+			<h1 class="text-2xl font-semibold text-primary/90">{team?.name}</h1>
+			<StaticBadge variant="jam" text={`score: ${team?.score}`} />
+		</div>
+		<div class="flex flex-row flex-wrap gap-1">
 			{#each Object.values(team?.players ?? {}) as player (player.id)}
-				<Badge variant="outline">
+				<DynamicBadge variant="primary">
 					<img
 						alt="user profile"
 						src={`data:image/svg+xml;base64,${btoa(toSvg(player.pubId, 16))}`}
@@ -181,10 +180,10 @@
 						class="rounded-lg bg-primary/5"
 					/>
 					{player.username}
-				</Badge>
+				</DynamicBadge>
 			{/each}
-		</Card.Description>
-	</Card.Root>
+		</div>
+	</Card>
 	{#if challenge}
 		<PlayChallenge {challenge} {active} {nextInterval} refresh={() => reloadChallenge()} />
 	{/if}

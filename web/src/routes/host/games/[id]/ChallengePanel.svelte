@@ -1,26 +1,28 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Markdown from '$lib/components/custom/Markdown.svelte';
-	import * as Alert from '$lib/components/shad/alert';
-	import { Badge } from '$lib/components/shad/badge';
-	import { Button } from '$lib/components/shad/button';
-	import * as Card from '$lib/components/shad/card';
-	import * as Select from '$lib/components/shad/select';
-	import { Separator } from '$lib/components/shad/separator';
-	import * as Table from '$lib/components/shad/table';
+	import Alert from '$lib/components/Alert.svelte';
+	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Markdown from '$lib/components/Markdown.svelte';
+	import DataTable from '$lib/components/DataTable.svelte';
+	import Popup from '$lib/components/Popup.svelte';
+	import Select from '$lib/components/Select.svelte';
+	import Separator from '$lib/components/Separator.svelte';
 	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb';
-	import { ScoreType, ScoreTypeSchema, type Challenge } from '$lib/sdk/v1/play/challenge_pb';
+	import { ScoreType, ScoreTypeSchema, type Challenge, type ScoreEvent } from '$lib/sdk/v1/play/challenge_pb';
 	import type { Team } from '$lib/sdk/v1/play/team_pb';
-	import { jpegDataURL } from '$lib/utils';
+	import { toDataURL } from '$lib/utils.svelte';
 	import { create, enumToJson } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 
-	let { challenge, teams, refresh }: { challenge: Challenge; teams: Team[]; refresh: () => void } = $props();
+	let {
+		open = $bindable(),
+		challenge,
+		teams,
+		refresh
+	}: { open: boolean; challenge: Challenge; teams: Team[]; refresh: () => void } = $props();
 
-	// the panel is remounted (keyed) per challenge, capturing the initial value is intended.
-	// svelte-ignore state_referenced_locally
-	let teamId = $state(challenge.teamId);
+	let teamId = $derived(challenge.teamId);
 	let confirmDelete = $state(false);
 	let hasScoreReasons = $derived(challenge.scoreEvents.some((event) => event.reason));
 	const scoreTypeName = (type: ScoreType) =>
@@ -30,157 +32,146 @@
 	let removeState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 </script>
 
-<Card.Root class="w-full">
-	<Card.Header>
-		<Card.Title class="text-2xl">{challenge.title || 'Not started yet'}</Card.Title>
-		<Card.Description>
-			{#each challenge.scores as score (score.type)}
-				<Badge variant="outline">{scoreTypeName(score.type)}: {score.value} / {score.maximum}</Badge>
-			{/each}
-		</Card.Description>
-		<div class="flex flex-row flex-wrap gap-1">
-			<Badge variant="secondary">
-				score: {challenge.scoreEvents.reduce((sum, event) => sum + event.change, 0)}
-			</Badge>
-			<Badge variant="outline">scope: {challenge.scope}</Badge>
-			<Badge variant="outline" class="font-mono">{challenge.id}</Badge>
-		</div>
-	</Card.Header>
-	<Card.Content class="flex flex-col gap-6">
-		{#if challenge.error}
-			<Alert.Root variant="destructive">
-				<AlertCircleIcon />
-				<Alert.Title>Challenge reported an error</Alert.Title>
-				<Alert.Description class="font-mono text-xs break-all">{challenge.error}</Alert.Description>
-			</Alert.Root>
-		{/if}
+<Popup bind:open title={challenge.title || 'Not started yet'} badges={renderBadges} body={renderBody} />
 
-		{#if challenge.description.length}
-			<div class="flex flex-col gap-2">
-				<Card.Title>Briefing</Card.Title>
-				<Markdown source={challenge.description.join('\n\n')} />
-			</div>
-		{/if}
+{#snippet renderBadges()}
+	<StaticBadge variant="jam" text={`score: ${challenge.scoreEvents.reduce((sum, event) => sum + event.change, 0)}`} />
+	{#each challenge.scores as score (score.type)}
+		<StaticBadge variant="primary" text={`${scoreTypeName(score.type)}: ${score.value} / ${score.maximum}`} />
+	{/each}
+	<StaticBadge variant="primary" text={`scope: ${challenge.scope}`} />
+	<StaticBadge variant="primary" text={challenge.id} class="font-mono" />
+{/snippet}
 
-		{#if Object.keys(challenge.diagrams).length}
-			<Separator />
+{#snippet renderBody()}
+	{#if challenge.error}
+		<Alert title="Challenge reported an error" message={challenge.error} />
+	{/if}
 
-			<div class="flex flex-col gap-3">
-				<Card.Title>Infrastructure</Card.Title>
-				{#each Object.entries(challenge.diagrams) as [name, diagram] (name)}
-					<figure class="flex flex-col gap-2">
-						<img class="max-h-96 rounded-md object-contain" src={jpegDataURL(diagram)} alt={name} />
-						<figcaption class="text-center text-xs text-muted-foreground">{name}</figcaption>
-					</figure>
-				{/each}
-			</div>
-		{/if}
-
+	{#if challenge.description.length}
 		<div class="flex flex-col gap-2">
-			<Card.Title>Team</Card.Title>
-			{#if updateState.forbidden}
-				<p class="text-sm text-muted-foreground italic">You are not allowed to update this challenge.</p>
-			{:else}
-				<div class="flex flex-row items-center gap-2">
-					<Select.Root type="single" bind:value={teamId}>
-						<Select.Trigger class="w-72 cursor-pointer">
-							{teams.find((team) => team.id === teamId)?.name ?? 'Select a team'}
-						</Select.Trigger>
-						<Select.Content>
-							{#each teams as team (team.id)}
-								<Select.Item value={team.id} label={team.name}>{team.name}</Select.Item>
-							{/each}
-						</Select.Content>
-					</Select.Root>
-					<Button
-						variant="outline"
-						class="cursor-pointer"
-						disabled={updateState.loading || !teamId || teamId === challenge.teamId}
-						onclick={() =>
-							Submit(async () => {
-								await Glue.challenge.update(create(UpdateRequestSchema, { mod: { ...challenge, teamId: teamId } }));
-								refresh();
-							}, updateState)}
-					>
-						Reassign
-					</Button>
-				</div>
-				{#if updateState.error}
-					<p class="text-xs text-destructive">{updateState.error}</p>
-				{/if}
-			{/if}
+			<h1 class="text-xl font-semibold text-primary/80">Briefing</h1>
+			<Markdown source={challenge.description.join('\n\n')} />
 		</div>
+	{/if}
 
-		{#if challenge.scoreEvents.length}
-			<Separator />
+	{#if Object.keys(challenge.diagrams).length}
+		<Separator />
 
-			<div class="flex flex-col gap-2">
-				<Card.Title>Score Events</Card.Title>
-				<Table.Root>
-					<Table.Header>
-						<Table.Row>
-							<Table.Head>Time</Table.Head>
-							<Table.Head>Event</Table.Head>
-							<Table.Head>Type</Table.Head>
-							<Table.Head>Result</Table.Head>
-							<Table.Head>Change</Table.Head>
-							{#if hasScoreReasons}<Table.Head>Explanation</Table.Head>{/if}
-						</Table.Row>
-					</Table.Header>
-					<Table.Body>
-						{#each challenge.scoreEvents as event, index (index)}
-							<Table.Row>
-								<Table.Cell>{event.timestamp ? timestampDate(event.timestamp).toLocaleString() : ''}</Table.Cell>
-								<Table.Cell>{event.text}</Table.Cell>
-								<Table.Cell>{scoreTypeName(event.type)}</Table.Cell>
-								<Table.Cell>{event.maximum ? `${event.score} / ${event.maximum}` : ''}</Table.Cell>
-								<Table.Cell>{event.change}</Table.Cell>
-								{#if hasScoreReasons}<Table.Cell>{event.reason}</Table.Cell>{/if}
-							</Table.Row>
-						{/each}
-					</Table.Body>
-				</Table.Root>
+		<div class="flex flex-col gap-3">
+			<h1 class="text-xl font-semibold text-primary/80">Infrastructure</h1>
+			{#each Object.entries(challenge.diagrams) as [name, diagram] (name)}
+				<figure class="flex flex-col gap-2">
+					<img class="max-h-96 rounded-md object-contain" src={toDataURL(diagram)} alt={name} />
+					<figcaption class="text-center text-xs text-primary/60">{name}</figcaption>
+				</figure>
+			{/each}
+		</div>
+	{/if}
+
+	<Separator />
+
+	<div class="flex flex-col gap-2">
+		<h1 class="text-xl font-semibold text-primary/80">Team</h1>
+		{#if updateState.forbidden}
+			<p class="text-sm text-primary/60 italic">You are not allowed to update this challenge.</p>
+		{:else}
+			<div class="flex flex-row items-center gap-2">
+				<Select
+					bind:value={teamId}
+					class="w-72"
+					placeholder="Select a team"
+					items={teams.map((team) => ({ value: team.id, label: team.name }))}
+				/>
+				<Button
+					variant="primary"
+					processing={updateState.loading}
+					disabled={updateState.loading || !teamId || teamId === challenge.teamId}
+					onclick={() =>
+						Submit(async () => {
+							await Glue.challenge.update(create(UpdateRequestSchema, { mod: { ...challenge, teamId: teamId } }));
+							refresh();
+						}, updateState)}
+				>
+					Reassign
+				</Button>
 			</div>
+			{#if updateState.error}
+				<Alert class="p-2" message={updateState.error} animation={true} />
+			{/if}
 		{/if}
+	</div>
 
+	{#if challenge.scoreEvents.length}
 		<Separator />
 
 		<div class="flex flex-col gap-2">
-			<Card.Title>Danger Zone</Card.Title>
-			{#if removeState.forbidden}
-				<p class="text-sm text-muted-foreground italic">You are not allowed to delete this challenge.</p>
-			{:else}
-				<div class="flex flex-row items-center gap-2">
-					{#if confirmDelete}
-						<Button
-							variant="destructive"
-							class="cursor-pointer"
-							disabled={removeState.loading}
-							onclick={() =>
-								Submit(async () => {
-									await Glue.challenge.delete(
-										create(DeleteRequestSchema, { gameId: challenge.gameId, id: challenge.id })
-									);
-									refresh();
-								}, removeState)}
-						>
-							Yes, delete this challenge
-						</Button>
-						<Button variant="outline" class="cursor-pointer" onclick={() => (confirmDelete = false)}>Cancel</Button>
-					{:else}
-						<Button variant="destructive" class="cursor-pointer" onclick={() => (confirmDelete = true)}>
-							Delete Challenge
-						</Button>
-					{/if}
-				</div>
-				{#if removeState.error}
-					<Alert.Root variant="destructive">
-						<AlertCircleIcon />
-						<Alert.Title>Failed to delete challenge</Alert.Title>
-						<Alert.Description>{removeState.error}</Alert.Description>
-					</Alert.Root>
-				{/if}
-			{/if}
+			<h1 class="text-xl font-semibold text-primary/80">Score Events</h1>
+			<DataTable
+				class="max-h-96"
+				limit={Infinity}
+				load={async () => challenge.scoreEvents}
+				loadState={{ error: '', loading: false, forbidden: false }}
+				columns={[
+					{ title: 'Time', width: '20%', render: renderTime },
+					{ title: 'Event', width: '30%', render: renderEvent },
+					{ title: 'Type', width: '10%', render: renderType },
+					{ title: 'Result', width: '10%', render: renderResult },
+					{ title: 'Change', width: '10%', render: renderChange },
+					...(hasScoreReasons ? [{ title: 'Explanation', width: '20%', render: renderReason }] : [])
+				]}
+			/>
+			{#snippet renderTime(event: ScoreEvent)}
+				{event.timestamp ? timestampDate(event.timestamp).toLocaleString() : ''}
+			{/snippet}
+			{#snippet renderEvent(event: ScoreEvent)}
+				{event.text}
+			{/snippet}
+			{#snippet renderType(event: ScoreEvent)}
+				<span class="text-primary/60">{scoreTypeName(event.type)}</span>
+			{/snippet}
+			{#snippet renderResult(event: ScoreEvent)}
+				{event.maximum ? `${event.score} / ${event.maximum}` : ''}
+			{/snippet}
+			{#snippet renderChange(event: ScoreEvent)}
+				<StaticBadge variant="jam" text={event.change.toString()} />
+			{/snippet}
+			{#snippet renderReason(event: ScoreEvent)}
+				<span class="text-primary/60">{event.reason}</span>
+			{/snippet}
 		</div>
-	</Card.Content>
-</Card.Root>
+	{/if}
+
+	<Separator />
+
+	<div class="flex flex-col gap-2">
+		<h1 class="text-xl font-semibold text-primary/80">Danger Zone</h1>
+		{#if removeState.forbidden}
+			<p class="text-sm text-primary/60 italic">You are not allowed to delete this challenge.</p>
+		{:else}
+			<div class="flex flex-row items-center gap-2">
+				{#if confirmDelete}
+					<Button
+						variant="destructive"
+						disabled={removeState.loading}
+						onclick={() =>
+							Submit(async () => {
+								await Glue.challenge.delete(
+									create(DeleteRequestSchema, { gameId: challenge.gameId, id: challenge.id })
+								);
+								refresh();
+							}, removeState)}
+					>
+						Yes, delete this challenge
+					</Button>
+					<Button variant="primary" onclick={() => (confirmDelete = false)}>Cancel</Button>
+				{:else}
+					<Button variant="destructive" onclick={() => (confirmDelete = true)}>Delete Challenge</Button>
+				{/if}
+			</div>
+			{#if removeState.error}
+				<Alert class="p-2" message={removeState.error} animation={true} />
+			{/if}
+		{/if}
+	</div>
+{/snippet}

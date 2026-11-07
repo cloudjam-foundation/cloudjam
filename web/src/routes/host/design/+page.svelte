@@ -1,30 +1,35 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import { Button } from '$lib/components/shad/button';
+	import Alert from '$lib/components/Alert.svelte';
+	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
+	import DataTable from '$lib/components/DataTable.svelte';
+	import { toDigest } from '$lib/utils.svelte';
+	import { ListRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';
+	import type { Definition } from '$lib/sdk/v1/cloud/definition_pb';
 	import {
 		GetRequestSchema as GetProviderRequestSchema,
 		ListRequestSchema as ListProviderRequestSchema
 	} from '$lib/sdk/v1/cloud/provider/provider_pb';
-	import { create } from '@bufbuild/protobuf';
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
-	import CreateDefinition from './CreateDefinition.svelte';
 	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb';
+	import { create } from '@bufbuild/protobuf';
+	import { WandSparklesIcon } from '@lucide/svelte';
+	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import { onMount } from 'svelte';
-	import OptionalSelect from '$lib/components/custom/OptionalSelect.svelte';
-	import { toDigest } from '$lib/digest';
-	import * as Alert from '$lib/components/shad/alert';
-	import * as Table from '$lib/components/shad/table';
-	import { ListRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';
-	import type { Definition } from '$lib/sdk/v1/cloud/definition_pb';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
+	import CreateDefinition from './CreateDefinition.svelte';
 	import DefinitionPanel from './DefinitionPanel.svelte';
-	import Badge from '$lib/components/shad/badge/badge.svelte';
-	import { ChevronRightIcon, CircleQuestionMarkIcon, WandSparklesIcon } from '@lucide/svelte';
+	import Help from './Help.svelte';
 
 	let providerId: string = $state('');
 	let provider: Provider | undefined = $state();
 	let providerState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	$effect(() => {
+		if (!providerId) {
+			provider = undefined;
+			return;
+		}
 		Submit(async () => {
 			provider = (await Glue.provider.get(create(GetProviderRequestSchema, { id: providerId }))).provider;
 		}, providerState);
@@ -38,26 +43,12 @@
 		}, providerSuggestionsState);
 	});
 
-	let definitions: Definition[] = $state([]);
 	let definitionsState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let definitionsExhausted = $state(true);
+	// bumping the version remounts the table and therefore reloads the definitions.
+	let version = $state(0);
 
 	let selected: Definition | undefined = $state();
-
-	function loadDefinitions(startAfter?: string) {
-		Submit(async () => {
-			const resp = await Glue.definition.list(
-				create(ListRequestSchema, { providerId: providerId, limit: 100, startAfter: startAfter })
-			);
-			definitions = startAfter ? [...definitions, ...resp.definitions] : resp.definitions;
-			definitionsExhausted = resp.definitions.length < 100;
-		}, definitionsState);
-	}
-	$effect(() => {
-		if (providerId) {
-			loadDefinitions();
-		}
-	});
+	let openSelected = $state(false);
 </script>
 
 <svelte:head>
@@ -69,13 +60,13 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" size="icon" class="cursor-pointer" href="/host/">
+		<Button variant="ghost" onclick={() => goto('/host')}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">Design</h1>
 	</div>
 
-	<p class="text-sm text-muted-foreground">Create, update and manage challenge definitions</p>
+	<p class="text-sm text-primary/60">Create, update and manage challenge definitions</p>
 
 	<div class="flex flex-row items-center gap-4">
 		<OptionalSelect
@@ -86,98 +77,72 @@
 		/>
 
 		{#if provider}
-			<Badge href={`/provider/${provider.id}`} variant="outline">
-				{provider?.id}
-			</Badge>
+			<a href={`/provider/${provider.id}`}>
+				<StaticBadge variant="primary" text={provider.id} />
+			</a>
 		{/if}
 
-		<!-- TODO -->
-		<Button class="ml-auto" href="">
-			<CircleQuestionMarkIcon />
-			Help
-		</Button>
+		<Help class="ml-auto" />
 	</div>
 
 	{#if provider}
-		<CreateDefinition {provider} refresh={() => loadDefinitions()} />
+		<CreateDefinition {provider} refresh={() => version++} />
 
 		<div class="flex w-full flex-col gap-4">
 			<h2 class="text-xl opacity-80">Challenge Definitions on the Provider</h2>
 			{#if definitionsState.forbidden}
-				<Alert.Root>
-					<AlertCircleIcon />
-					<Alert.Title>Permission Denied</Alert.Title>
-					<Alert.Description>You are not allowed to list the definitions of this provider</Alert.Description>
-				</Alert.Root>
+				<Alert title="Permission Denied" message="You are not allowed to list the definitions of this provider" />
 			{:else}
-				<Table.Root>
-					<Table.Header>
-						<Table.Row>
-							<Table.Head>Name</Table.Head>
-							<Table.Head>Version</Table.Head>
-							<Table.Head>Description</Table.Head>
-							<Table.Head>Digest</Table.Head>
-						</Table.Row>
-					</Table.Header>
-					<Table.Body>
-						{#each definitions as definition (definition.id)}
-							<Table.Row
-								class="cursor-pointer"
-								onclick={() => (selected = selected?.id === definition.id ? undefined : definition)}
-							>
-								<Table.Cell class="flex flex-row items-center gap-2 font-medium">
-									<ChevronRightIcon
-										class="transition-all duration-150 ease-in-out {selected && selected.id === definition.id
-											? 'rotate-90'
-											: ''}"
-									/>
-									{definition.name}
-								</Table.Cell>
-								<Table.Cell>{definition.version}</Table.Cell>
-								<Table.Cell>{definition.description}</Table.Cell>
-								<Table.Cell class="font-mono text-xs break-all">{toDigest(definition.hash)}</Table.Cell>
-							</Table.Row>
-						{:else}
-							<Table.Row>
-								<Table.Cell colspan={4}>
-									<p class="text-muted-foreground p-4 text-sm italic">
-										{definitionsState.loading
-											? 'Loading definitions…'
-											: 'No definitions uploaded to this provider yet.'}
-									</p>
-								</Table.Cell>
-							</Table.Row>
-						{/each}
-					</Table.Body>
-				</Table.Root>
-				{#if !definitionsExhausted}
-					<Button
-						variant="outline"
-						class="cursor-pointer self-center"
-						disabled={definitionsState.loading}
-						onclick={() => loadDefinitions(definitions.at(-1)?.id)}
-					>
-						Load More
-					</Button>
-				{/if}
+				{#key `${providerId}-${version}`}
+					<DataTable
+						class="max-h-[80vh]"
+						limit={100}
+						load={async (startAfter: Definition | undefined) => {
+							const definitions: Definition[] = [];
+							await Submit(async () => {
+								const resp = await Glue.definition.list(
+									create(ListRequestSchema, { providerId: providerId, limit: 100, startAfter: startAfter?.id })
+								);
+								definitions.push(...resp.definitions);
+							}, definitionsState);
+							return definitions;
+						}}
+						onRowClick={(definition) => {
+							selected = definition;
+							openSelected = true;
+						}}
+						loadState={definitionsState}
+						columns={[
+							{ title: 'Name', width: '25%', render: renderName },
+							{ title: 'Version', width: '15%', render: renderVersion },
+							{ title: 'Description', width: '30%', render: renderDescription },
+							{ title: 'Digest', width: '30%', render: renderDigest }
+						]}
+					/>
+				{/key}
+				{#snippet renderName(definition: Definition)}
+					{definition.name}
+				{/snippet}
+				{#snippet renderVersion(definition: Definition)}
+					{definition.version}
+				{/snippet}
+				{#snippet renderDescription(definition: Definition)}
+					<span class="text-primary/60">{definition.description}</span>
+				{/snippet}
+				{#snippet renderDigest(definition: Definition)}
+					<span class="font-mono text-xs">{toDigest(definition.hash)}</span>
+				{/snippet}
 			{/if}
 
 			{#if selected}
-				{#key selected.id}
-					<DefinitionPanel
-						definition={selected}
-						refresh={() => loadDefinitions()}
-						close={() => (selected = undefined)}
-					/>
-				{/key}
-			{/if}
-
-			{#if definitionsState.error}
-				<Alert.Root variant="destructive">
-					<AlertCircleIcon />
-					<Alert.Title>Failed to load definitions</Alert.Title>
-					<Alert.Description>{definitionsState.error}</Alert.Description>
-				</Alert.Root>
+				<DefinitionPanel
+					bind:open={openSelected}
+					definition={selected}
+					refresh={() => {
+						openSelected = false;
+						version++;
+					}}
+				/>
 			{/if}
 		</div>
 	{:else}

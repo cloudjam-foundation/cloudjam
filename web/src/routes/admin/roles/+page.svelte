@@ -1,38 +1,21 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import * as Alert from '$lib/components/shad/alert';
-	import { Badge } from '$lib/components/shad/badge';
-	import { Button } from '$lib/components/shad/button';
-	import * as Table from '$lib/components/shad/table';
+	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import LinkButton from '$lib/components/LinkButton.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import DataTable from '$lib/components/DataTable.svelte';
 	import { ListRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
 	import type { Role } from '$lib/sdk/v1/admin/role_pb';
 	import { create } from '@bufbuild/protobuf';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import PlusIcon from '@lucide/svelte/icons/plus';
-	import { onMount } from 'svelte';
-	import RolePanel from './RolePanel.svelte';
-	import { ChevronDownIcon, ChevronRightIcon } from '@lucide/svelte';
 
-	const limit = 100;
+	let id = $state('');
 
-	let listState: SubmitState = $state({ loading: false, error: '', forbidden: false });
-
-	let roles: Role[] = $state([]);
-	let exhausted = $state(true);
-
-	let selected: Role | undefined = $state();
-
-	function load() {
-		selected = undefined;
-		Submit(async () => {
-			const resp = await Glue.role.list(create(ListRequestSchema, { limit: limit }));
-			roles = resp.roles;
-			exhausted = resp.roles.length < limit;
-		}, listState);
-	}
-
-	onMount(() => load());
+	let rolesState: SubmitState = $state({ error: '', loading: true, forbidden: false });
 </script>
 
 <svelte:head>
@@ -42,85 +25,72 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex w-full flex-col gap-4">
+<div class="flex h-11/12 w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" size="icon" class="cursor-pointer" href="/admin/">
+		<Button variant="ghost" onclick={() => goto('/admin')}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">Roles</h1>
-		<Button variant="outline" class="ml-auto cursor-pointer" href="/admin/roles/new/">
+		<LinkButton class="ml-auto" href="/admin/roles/new/">
 			<PlusIcon /> Create Role
-		</Button>
+		</LinkButton>
 	</div>
 
-	{#if listState.forbidden}
-		<Alert.Root>
-			<AlertCircleIcon />
-			<Alert.Title>Permission Denied</Alert.Title>
-			<Alert.Description>You are not allowed to list roles in your scope</Alert.Description>
-		</Alert.Root>
+	{#if rolesState.forbidden}
+		<div class="flex h-full w-full items-center justify-center">
+			<Card>
+				<div class="flex flex-col items-start gap-1">
+					<h1 class="text-2xl font-bold text-primary/80">Find Role</h1>
+					<p class="text-primary/60">You are not allowed to list roles, find the one you need by its id</p>
+				</div>
+				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(`/admin/roles/${id}`)}>
+					<Input class="w-full" bind:value={id} placeholder="Role ID" />
+					<Button type="submit" variant="primary" disabled={!id.trim()}>Open</Button>
+				</form>
+			</Card>
+		</div>
 	{:else}
-		<Table.Root>
-			<Table.Header>
-				<Table.Row>
-					<Table.Head>Name</Table.Head>
-					<Table.Head>Scope</Table.Head>
-					<Table.Head>Permissions</Table.Head>
-					<Table.Head>Id</Table.Head>
-					<Table.Head></Table.Head>
-				</Table.Row>
-			</Table.Header>
-			<Table.Body>
-				{#each roles as role (role.id)}
-					<Table.Row class="cursor-pointer" onclick={() => (selected = selected?.id === role.id ? undefined : role)}>
-						<Table.Cell class="flex flex-row items-center gap-2 font-medium">
-							<ChevronRightIcon
-								class="transition-all duration-150 ease-in-out {selected && selected.id === role.id ? 'rotate-90' : ''}"
-							/>
-							{role.name}
-						</Table.Cell>
-						<Table.Cell>{role.scope}</Table.Cell>
-						<Table.Cell>{Object.keys(role.permissions).length} scope(s)</Table.Cell>
-						<Table.Cell class="font-mono text-xs">{role.id}</Table.Cell>
-						<Table.Cell>
-							{#if role.builtin}
-								<Badge variant="secondary">builtin</Badge>
-							{/if}
-						</Table.Cell>
-					</Table.Row>
-				{/each}
-			</Table.Body>
-		</Table.Root>
-		{#if !exhausted}
-			<Button
-				variant="outline"
-				class="cursor-pointer self-center"
-				disabled={listState.loading}
-				onclick={() =>
-					Submit(async () => {
-						const resp = await Glue.role.list(
-							create(ListRequestSchema, { limit: limit, startAfter: roles.at(-1)?.id })
-						);
-						roles = [...roles, ...resp.roles];
-						exhausted = resp.roles.length < limit;
-					}, listState)}
-			>
-				Load More
-			</Button>
-		{/if}
-	{/if}
-
-	{#if selected}
-		{#key selected.id}
-			<RolePanel role={selected} refresh={() => load()} />
-		{/key}
-	{/if}
-
-	{#if listState.error}
-		<Alert.Root variant="destructive">
-			<AlertCircleIcon />
-			<Alert.Title>Failed to load roles</Alert.Title>
-			<Alert.Description>{listState.error}</Alert.Description>
-		</Alert.Root>
+		<div class="h-full rounded-sm p-2">
+			<DataTable
+				class="max-h-full"
+				limit={100}
+				load={async (startAfter: Role | undefined) => {
+					const roles: Role[] = [];
+					await Submit(async () => {
+						const resp = await Glue.role.list(create(ListRequestSchema, { limit: 100, startAfter: startAfter?.id }));
+						roles.push(...resp.roles);
+					}, rolesState);
+					return roles;
+				}}
+				onRowClick={(role) => {
+					goto(`/admin/roles/${role.id}`);
+				}}
+				loadState={rolesState}
+				columns={[
+					{ title: 'Name', width: '25%', render: renderName },
+					{ title: 'Scope', width: '20%', render: renderScope },
+					{ title: 'Permissions', width: '15%', render: renderPermissions },
+					{ title: 'Id', width: '30%', render: renderId },
+					{ title: '', width: '90px', render: renderBuiltin }
+				]}
+			/>
+			{#snippet renderName(role: Role)}
+				{role.name}
+			{/snippet}
+			{#snippet renderScope(role: Role)}
+				{role.scope}
+			{/snippet}
+			{#snippet renderPermissions(role: Role)}
+				<span class="text-primary/60">{Object.keys(role.permissions).length} scope(s)</span>
+			{/snippet}
+			{#snippet renderId(role: Role)}
+				<span class="font-mono text-xs">{role.id}</span>
+			{/snippet}
+			{#snippet renderBuiltin(role: Role)}
+				{#if role.builtin}
+					<StaticBadge variant="jam" text="builtin" />
+				{/if}
+			{/snippet}
+		</div>
 	{/if}
 </div>

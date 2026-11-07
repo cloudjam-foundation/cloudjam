@@ -1,37 +1,20 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import * as Alert from '$lib/components/shad/alert';
-	import { Badge } from '$lib/components/shad/badge';
-	import { Button } from '$lib/components/shad/button';
-	import * as Card from '$lib/components/shad/card';
-	import { Input } from '$lib/components/shad/input';
+	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import LinkButton from '$lib/components/LinkButton.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import DataTable from '$lib/components/DataTable.svelte';
 	import { ListRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb';
 	import { ProviderType, type Provider } from '$lib/sdk/v1/cloud/provider_pb';
 	import { create } from '@bufbuild/protobuf';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
-	import CloudIcon from '@lucide/svelte/icons/cloud';
 	import PlusIcon from '@lucide/svelte/icons/plus';
-	import { onMount } from 'svelte';
-
-	const limit = 100;
-
-	let providers: Provider[] = $state([]);
-	let exhausted = $state(true);
 
 	let id = $state('');
 
-	const listState: SubmitState = $state({ error: '', loading: true, forbidden: false });
-
-	function load(startAfter?: string) {
-		Submit(async () => {
-			const resp = await Glue.provider.list(create(ListRequestSchema, { limit: limit, startAfter: startAfter }));
-			providers = startAfter ? [...providers, ...resp.providers] : resp.providers;
-			exhausted = resp.providers.length < limit;
-		}, listState);
-	}
-
-	onMount(() => load());
+	let providersState: SubmitState = $state({ error: '', loading: true, forbidden: false });
 </script>
 
 <svelte:head>
@@ -41,75 +24,72 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex w-full flex-col gap-4">
+<div class="flex h-11/12 w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
 		<h1 class="text-3xl opacity-80">Providers</h1>
-		<Button variant="outline" class="ml-auto cursor-pointer" href="/provider/new/">
+		<LinkButton class="ml-auto" href="/provider/new/">
 			<PlusIcon /> Add Provider
-		</Button>
+		</LinkButton>
 	</div>
 
-	{#if listState.forbidden}
-		<Card.Root class="w-full">
-			<Card.Header>
-				<Card.Title>Open a Provider</Card.Title>
-				<Card.Description>You are not allowed to list providers, open the one you work on by its id.</Card.Description>
-			</Card.Header>
-			<Card.Content>
-				<form class="flex flex-row items-center gap-2" onsubmit={() => goto(`/provider/${id.trim()}`)}>
-					<Input class="max-w-96" bind:value={id} placeholder="Provider id" />
-					<Button type="submit" class="cursor-pointer" disabled={!id.trim()}>Open</Button>
+	{#if providersState.forbidden}
+		<div class="flex h-full w-full items-center justify-center">
+			<Card>
+				<div class="flex flex-col items-start gap-1">
+					<h1 class="text-2xl font-bold text-primary/80">Find Provider</h1>
+					<p class="text-primary/60">You are not allowed to list providers, find the one you need by its id</p>
+				</div>
+				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(`/provider/${id.trim()}`)}>
+					<Input class="w-full" bind:value={id} placeholder="Provider ID" />
+					<Button type="submit" variant="primary" disabled={!id.trim()}>Open</Button>
 				</form>
-			</Card.Content>
-		</Card.Root>
-	{:else}
-		<div class="flex flex-row flex-wrap gap-4">
-			{#each providers as provider (provider.id)}
-				<button
-					type="button"
-					class="w-full cursor-pointer text-left sm:w-80"
-					onclick={() => goto(`/provider/${provider.id}`)}
-				>
-					<Card.Root class="h-full hover:bg-slate-50/5">
-						<Card.Header>
-							<CloudIcon class="size-8" />
-							<Card.Title class="text-xl">{provider.name}</Card.Title>
-							<Card.Description>{provider.description}</Card.Description>
-							<div class="flex flex-row flex-wrap gap-1">
-								<Badge variant="secondary">{ProviderType[provider.type]}</Badge>
-								<Badge variant="outline">scope: {provider.scope}</Badge>
-								{#each provider.regions as region (region)}
-									<Badge variant="outline">{region}</Badge>
-								{/each}
-							</div>
-						</Card.Header>
-					</Card.Root>
-				</button>
-			{:else}
-				<p class="text-muted-foreground text-sm italic">
-					{listState.loading
-						? 'Loading providers…'
-						: 'No providers yet. Add one to provision sandbox accounts and store challenge plugins.'}
-				</p>
-			{/each}
+			</Card>
 		</div>
-		{#if !exhausted}
-			<Button
-				variant="outline"
-				class="cursor-pointer self-center"
-				disabled={listState.loading}
-				onclick={() => load(providers.at(-1)?.id)}
-			>
-				Load More
-			</Button>
-		{/if}
-	{/if}
-
-	{#if listState.error}
-		<Alert.Root variant="destructive">
-			<AlertCircleIcon />
-			<Alert.Title>Failed to load providers</Alert.Title>
-			<Alert.Description>{listState.error}</Alert.Description>
-		</Alert.Root>
+	{:else}
+		<div class="h-full rounded-sm p-2">
+			<DataTable
+				class="max-h-full"
+				load={async (startAfter: Provider | undefined) => {
+					const providers: Provider[] = [];
+					await Submit(async () => {
+						const resp = await Glue.provider.list(
+							create(ListRequestSchema, { limit: 100, startAfter: startAfter?.id })
+						);
+						providers.push(...resp.providers);
+					}, providersState);
+					return providers;
+				}}
+				onRowClick={(provider) => {
+					goto(`/provider/${provider.id}`);
+				}}
+				loadState={providersState}
+				columns={[
+					{ title: 'Type', width: '90px', render: renderType },
+					{ title: 'Name', width: '20%', render: renderName },
+					{ title: 'Description', width: '35%', render: renderDescription },
+					{ title: 'Scope', width: '15%', render: renderScope },
+					{ title: 'Regions', width: '30%', render: renderRegions }
+				]}
+			/>
+			{#snippet renderType(provider: Provider)}
+				<StaticBadge variant="primary" text={ProviderType[provider.type]} />
+			{/snippet}
+			{#snippet renderName(provider: Provider)}
+				{provider.name}
+			{/snippet}
+			{#snippet renderDescription(provider: Provider)}
+				<span class="text-primary/60">{provider.description}</span>
+			{/snippet}
+			{#snippet renderScope(provider: Provider)}
+				{provider.scope}
+			{/snippet}
+			{#snippet renderRegions(provider: Provider)}
+				<div class="flex flex-row items-center gap-1">
+					{#each provider.regions as region (region)}
+						<StaticBadge variant="primary" text={region} />
+					{/each}
+				</div>
+			{/snippet}
+		</div>
 	{/if}
 </div>

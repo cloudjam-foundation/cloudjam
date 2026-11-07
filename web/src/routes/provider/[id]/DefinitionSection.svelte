@@ -1,90 +1,51 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import { toDigest } from '$lib/digest';
-	import * as Alert from '$lib/components/shad/alert';
-	import { Button } from '$lib/components/shad/button';
-	import * as Table from '$lib/components/shad/table';
+	import Alert from '$lib/components/Alert.svelte';
+	import DataTable from '$lib/components/DataTable.svelte';
+	import { toDigest } from '$lib/utils.svelte';
 	import { ListRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';
 	import type { Definition } from '$lib/sdk/v1/cloud/definition_pb';
 	import { create } from '@bufbuild/protobuf';
-	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
-	import { onMount } from 'svelte';
 
 	let { providerId }: { providerId: string } = $props();
 
-	const limit = 100;
-
-	let listState: SubmitState = $state({ error: '', forbidden: false, loading: false });
-
-	let definitions: Definition[] = $state([]);
-	let exhausted = $state(true);
-
-	function load(startAfter?: string) {
-		Submit(async () => {
-			const resp = await Glue.definition.list(
-				create(ListRequestSchema, { providerId: providerId, limit: limit, startAfter: startAfter })
-			);
-			definitions = startAfter ? [...definitions, ...resp.definitions] : resp.definitions;
-			exhausted = resp.definitions.length < limit;
-		}, listState);
-	}
-
-	onMount(() => load());
+	let definitionsState: SubmitState = $state({ error: '', forbidden: false, loading: false });
 </script>
 
-{#if listState.forbidden}
-	<Alert.Root>
-		<AlertCircleIcon />
-		<Alert.Title>Permission Denied</Alert.Title>
-		<Alert.Description>You are not allowed to list the definitions of this provider</Alert.Description>
-	</Alert.Root>
+{#if definitionsState.forbidden}
+	<Alert title="Permission Denied" message="You are not allowed to list the definitions of this provider" />
 {:else}
-	<Table.Root>
-		<Table.Header>
-			<Table.Row>
-				<Table.Head>Name</Table.Head>
-				<Table.Head>Version</Table.Head>
-				<Table.Head>Description</Table.Head>
-				<Table.Head>Digest</Table.Head>
-				<Table.Head>Scope</Table.Head>
-			</Table.Row>
-		</Table.Header>
-		<Table.Body>
-			{#each definitions as definition (definition.id)}
-				<Table.Row>
-					<Table.Cell class="font-medium">{definition.name}</Table.Cell>
-					<Table.Cell>{definition.version}</Table.Cell>
-					<Table.Cell>{definition.description}</Table.Cell>
-					<Table.Cell class="font-mono text-xs break-all">{toDigest(definition.hash)}</Table.Cell>
-					<Table.Cell>{definition.scope}</Table.Cell>
-				</Table.Row>
-			{:else}
-				<Table.Row>
-					<Table.Cell colspan={5}>
-						<p class="text-muted-foreground p-4 text-sm italic">
-							{listState.loading ? 'Loading definitions…' : 'No definitions uploaded to this provider yet.'}
-						</p>
-					</Table.Cell>
-				</Table.Row>
-			{/each}
-		</Table.Body>
-	</Table.Root>
-	{#if !exhausted}
-		<Button
-			variant="outline"
-			class="cursor-pointer self-center"
-			disabled={listState.loading}
-			onclick={() => load(definitions.at(-1)?.id)}
-		>
-			Load More
-		</Button>
-	{/if}
-{/if}
-
-{#if listState.error}
-	<Alert.Root variant="destructive">
-		<AlertCircleIcon />
-		<Alert.Title>Failed to load definitions</Alert.Title>
-		<Alert.Description>{listState.error}</Alert.Description>
-	</Alert.Root>
+	<DataTable
+		class="max-h-[80vh]"
+		limit={100}
+		load={async (startAfter: Definition | undefined) => {
+			const definitions: Definition[] = [];
+			await Submit(async () => {
+				const resp = await Glue.definition.list(
+					create(ListRequestSchema, { providerId: providerId, limit: 100, startAfter: startAfter?.id })
+				);
+				definitions.push(...resp.definitions);
+			}, definitionsState);
+			return definitions;
+		}}
+		loadState={definitionsState}
+		columns={[
+			{ title: 'Name', width: '20%', render: renderName },
+			{ title: 'Version', width: '10%', render: renderVersion },
+			{ title: 'Description', width: '40%', render: renderDescription },
+			{ title: 'Digest', width: '30%', render: renderDigest }
+		]}
+	/>
+	{#snippet renderName(definition: Definition)}
+		{definition.name}
+	{/snippet}
+	{#snippet renderVersion(definition: Definition)}
+		{definition.version}
+	{/snippet}
+	{#snippet renderDescription(definition: Definition)}
+		<span class="text-primary/60">{definition.description}</span>
+	{/snippet}
+	{#snippet renderDigest(definition: Definition)}
+		<span class="font-mono text-xs">{toDigest(definition.hash)}</span>
+	{/snippet}
 {/if}

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { Button } from '$lib/components/shad/button';
-	import * as Card from '$lib/components/shad/card';
-	import { Input } from '$lib/components/shad/input';
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Card from '$lib/components/Card.svelte';
 
 	let code = $state('');
 </script>
@@ -16,23 +16,21 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex w-full justify-center">
-		<Card.Root class="mt-[10%] w-96">
-			<Card.Header>
-				<Card.Title class="text-2xl">Join a Game</Card.Title>
-				<Card.Description>Enter the game code your host handed you.</Card.Description>
-			</Card.Header>
-			<Card.Content>
-				<form
-					class="flex flex-col gap-4"
-					onsubmit={(e) => {
-						e.preventDefault();
-						goto(`/play/${code}`);
-					}}
-				>
-					<Input bind:value={code} placeholder="Game code" />
-					<Button type="submit" class="cursor-pointer" disabled={!code.trim()}>Join</Button>
-				</form>
-			</Card.Content>
-		</Card.Root>
+		<Card class="mt-[10%] w-96 items-start">
+			<div>
+				<h1 class="text-2xl font-bold text-primary/80">Join a Game</h1>
+				<p class="text-primary/60">Enter the game code your host handed you.</p>
+			</div>
+			<form
+				class="flex w-full flex-col gap-4"
+				onsubmit={(e) => {
+					e.preventDefault();
+					goto(`/play/${code}`);
+				}}
+			>
+				<Input bind:value={code} placeholder="Game code" />
+				<Button type="submit" variant="primary" disabled={!code.trim()}>Join</Button>
+			</form>
+		</Card>
 	</div>
 </div>

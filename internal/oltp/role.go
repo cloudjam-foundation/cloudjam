@@ -1,6 +1,9 @@
 package oltp
 
-import "github.com/megakuul/dynamitedb"
+import (
+	"codeberg.org/megakuul/cloudjam/pkg/api/v1/admin"
+	"github.com/megakuul/dynamitedb"
+)
 
 const (
 	ScopeAdmin string = "admin"
@@ -13,6 +16,8 @@ type Role struct {
 	Description dynamitedb.DataField[string]            `cbor:"description,omitempty"`
 	Builtin     dynamitedb.DataField[bool]              `cbor:"builtin,omitempty"`
 	Permissions dynamitedb.DataField[map[string]string] `cbor:"permissions,omitempty"`
+
+	Features dynamitedb.DataField[[]admin.Feature] `cbor:"features,omitempty"`
 
 	Scope dynamitedb.DataField[string] `cbor:"scope,omitempty"`
 }

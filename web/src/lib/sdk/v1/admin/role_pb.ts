@@ -2,8 +2,8 @@
 // @generated from file v1/admin/role.proto (package v1.admin, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
 import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
 import type { Message } from "@bufbuild/protobuf";
 
@@ -11,7 +11,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file v1/admin/role.proto.
  */
 export const file_v1_admin_role: GenFile = /*@__PURE__*/
-  fileDesc("ChN2MS9hZG1pbi9yb2xlLnByb3RvEgh2MS5hZG1pbiL9AQoEUm9sZRINCgVzY29wZRgBIAEoCRIKCgJpZBgCIAEoCRIXCgRuYW1lGAMgASgJQgm6SAZyBBAEGBQSHgoLZGVzY3JpcHRpb24YBCABKAlCCbpIBnIEEAAYMhIPCgdidWlsdGluGAUgASgIElwKC3Blcm1pc3Npb25zGAYgAygLMh8udjEuYWRtaW4uUm9sZS5QZXJtaXNzaW9uc0VudHJ5Qia6SCOaASAIARAUKhpyGBABGGQyEl5bYS16QS1aMC05LCovLl0rJBoyChBQZXJtaXNzaW9uc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAFCMVovY29kZWJlcmcub3JnL21lZ2FrdXVsL2Nsb3VkamFtL3BrZy9hcGkvdjEvYWRtaW5iBnByb3RvMw", [file_buf_validate_validate]);
+  fileDesc("ChN2MS9hZG1pbi9yb2xlLnByb3RvEgh2MS5hZG1pbiKiAgoEUm9sZRINCgVzY29wZRgBIAEoCRIKCgJpZBgCIAEoCRIXCgRuYW1lGAMgASgJQgm6SAZyBBAEGBQSHgoLZGVzY3JpcHRpb24YBCABKAlCCbpIBnIEEAAYMhIPCgdidWlsdGluGAUgASgIElwKC3Blcm1pc3Npb25zGAYgAygLMh8udjEuYWRtaW4uUm9sZS5QZXJtaXNzaW9uc0VudHJ5Qia6SCOaASAIARAUKhpyGBABGGQyEl5bYS16QS1aMC05LCovLl0rJBIjCghmZWF0dXJlcxgHIAMoDjIRLnYxLmFkbWluLkZlYXR1cmUaMgoQUGVybWlzc2lvbnNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBKmQKB0ZlYXR1cmUSDQoJVmlzdWFsSmFtEAASFQoRVmlzdWFsTGVhZGVyYm9hcmQQARIOCgpWaXN1YWxIb3N0EAISEgoOVmlzdWFsUHJvdmlkZXIQAxIPCgtWaXN1YWxBZG1pbhAEQjFaL2NvZGViZXJnLm9yZy9tZWdha3V1bC9jbG91ZGphbS9wa2cvYXBpL3YxL2FkbWluYgZwcm90bzM", [file_buf_validate_validate]);
 
 /**
  * @generated from message v1.admin.Role
@@ -46,6 +46,11 @@ export type Role = Message<"v1.admin.Role"> & {
    * @generated from field: map<string, string> permissions = 6;
    */
   permissions: { [key: string]: string };
+
+  /**
+   * @generated from field: repeated v1.admin.Feature features = 7;
+   */
+  features: Feature[];
 };
 
 /**
@@ -54,4 +59,40 @@ export type Role = Message<"v1.admin.Role"> & {
  */
 export const RoleSchema: GenMessage<Role> = /*@__PURE__*/
   messageDesc(file_v1_admin_role, 0);
+
+/**
+ * @generated from enum v1.admin.Feature
+ */
+export enum Feature {
+  /**
+   * @generated from enum value: VisualJam = 0;
+   */
+  VisualJam = 0,
+
+  /**
+   * @generated from enum value: VisualLeaderboard = 1;
+   */
+  VisualLeaderboard = 1,
+
+  /**
+   * @generated from enum value: VisualHost = 2;
+   */
+  VisualHost = 2,
+
+  /**
+   * @generated from enum value: VisualProvider = 3;
+   */
+  VisualProvider = 3,
+
+  /**
+   * @generated from enum value: VisualAdmin = 4;
+   */
+  VisualAdmin = 4,
+}
+
+/**
+ * Describes the enum v1.admin.Feature.
+ */
+export const FeatureSchema: GenEnum<Feature> = /*@__PURE__*/
+  enumDesc(file_v1_admin_role, 0);
 

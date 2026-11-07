@@ -53,6 +53,7 @@ func (s *Server) Get(ctx context.Context, req *connect.Request[role.GetRequest])
 		Description: foundRole.Description.Value(),
 		Builtin:     foundRole.Builtin.Value(),
 		Permissions: permissions,
+		Features:    foundRole.Features.Value(),
 		Scope:       foundRole.Scope.Value(),
 	}}}, nil
 }
@@ -83,6 +84,7 @@ func (s *Server) List(ctx context.Context, req *connect.Request[role.ListRequest
 			Description: role.Description.Value(),
 			Builtin:     role.Builtin.Value(),
 			Permissions: role.Permissions.Value(),
+			Features:    role.Features.Value(),
 			Scope:       role.Scope.Value(),
 		})
 	}
@@ -105,6 +107,7 @@ func (s *Server) Create(ctx context.Context, req *connect.Request[role.CreateReq
 		Name:        dynamitedb.Set(req.Msg.Init.Name),
 		Description: dynamitedb.Set(req.Msg.Init.Description),
 		Builtin:     dynamitedb.Set(req.Msg.Init.Builtin),
+		Features:    dynamitedb.Set(req.Msg.Init.Features),
 		Scope:       dynamitedb.Set(req.Msg.Init.Scope),
 	})
 	if err != nil {
@@ -140,6 +143,7 @@ func (s *Server) Update(ctx context.Context, req *connect.Request[role.UpdateReq
 		RoleID:      targetRole.RoleID,
 		Name:        dynamitedb.Set(req.Msg.Mod.Name),
 		Description: dynamitedb.Set(req.Msg.Mod.Description),
+		Features:    dynamitedb.Set(req.Msg.Mod.Features),
 	})
 	if err != nil {
 		l.Error(fmt.Sprintf("failed to update role: %v", err))
