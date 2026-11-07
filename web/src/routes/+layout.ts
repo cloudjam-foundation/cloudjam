@@ -9,8 +9,9 @@ export const ssr = false;
 
 export const load: LayoutLoad = async ({ url }) => {
 	if (!getSubject()) {
-		if (url.pathname !== '/login' && url.pathname !== '/register') {
-			redirect(307, '/login');
+		// Since trailing slash is enabled, this must be included in the path check.
+		if (url.pathname !== '/login/' && url.pathname !== '/register/') {
+			redirect(307, '/login/');
 		}
 	}
 	await loadActive();
