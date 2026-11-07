@@ -74,7 +74,7 @@
 				}}
 				loadState={gamesState}
 				columns={[
-					{ title: 'Status', width: '90px', render: renderStatus },
+					{ title: 'Status', width: '110px', render: renderStatus },
 					{ title: 'Name', width: '20%', render: renderName },
 					{ title: 'Description', width: '40%', render: renderDescription },
 					{ title: 'From', width: '20%', render: renderFrom },
