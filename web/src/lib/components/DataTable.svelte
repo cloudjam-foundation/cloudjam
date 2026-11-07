@@ -39,7 +39,7 @@
 
 	let table: HTMLTableElement | undefined = $state();
 	// here we just manually map the tables space calculations to the header grid.
-	// It seems most stable to do this in javascript with raw pixels and a observer...
+	// It seems most stable to do this in javascript with raw pixels and an observer...
 	let gridTemplateColumns = $state('');
 	$effect(() => {
 		if (!table) return;
@@ -72,7 +72,7 @@
 			class="sticky top-0 z-10 grid w-full rounded-md overlay-glass p-2 transition-all"
 			style="grid-template-columns: {gridTemplateColumns};"
 		>
-			{#each columns as column}
+			{#each columns as column (column)}
 				<div class="min-w-0 text-start font-medium text-primary/90" style="width: {column.width};">
 					{column.title}
 				</div>
@@ -82,21 +82,21 @@
 		<div class="p-2">
 			<table bind:this={table} class="w-full table-fixed">
 				<colgroup>
-					{#each columns as column}
+					{#each columns as column (column)}
 						<col style="width: {column.width};" />
 					{/each}
 				</colgroup>
 				<thead>
 					<tr>
-						{#each columns as _}
+						{#each columns as _ (_)}
 							<th class="invisible text-start"> </th>
 						{/each}
 					</tr>
 				</thead>
 				<tbody>
-					{#each data as row}
+					{#each data as row (row)}
 						<tr onclick={() => onRowClick?.(row)} class={onRowClick ? 'cursor-pointer hover:bg-foreground/3' : ''}>
-							{#each columns as column}
+							{#each columns as column (column)}
 								<td class="overflow-scroll-hidden border-t border-primary/20 p-1 text-nowrap">
 									{@render column.render(row)}
 								</td>
