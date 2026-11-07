@@ -15,7 +15,7 @@
 	}: {
 		title: string;
 		headers: Snippet[];
-		back: () => {};
+		back: () => Promise<void>;
 		dataState: SubmitState;
 		tabs: string[];
 		tabPages: Snippet[];
