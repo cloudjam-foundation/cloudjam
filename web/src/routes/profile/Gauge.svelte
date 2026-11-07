@@ -18,7 +18,7 @@
 		stopAngle={360 - 45}
 		stroke={10}
 		value={Number(outer)}
-		color={'var(--color-primary)'}
+		color="var(--color-primary)"
 		class="font-bold text-primary"
 	>
 		<Gauge
@@ -29,7 +29,7 @@
 			stroke={10}
 			displayValue={Math.round(Number(center)).toString()}
 			value={Number(inner)}
-			color={'var(--color-primary)'}
+			color="var(--color-primary)"
 			class="brightness-125"
 		></Gauge>
 		<h1 class="absolute bottom-2 left-1/2 translate-x-[-50%] text-2xl">{title}</h1>

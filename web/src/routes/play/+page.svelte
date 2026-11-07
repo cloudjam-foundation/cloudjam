@@ -3,6 +3,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import Card from '$lib/components/Card.svelte';
+	import { resolve } from '$app/paths';
 
 	let code = $state('');
 </script>
@@ -25,7 +26,7 @@
 				class="flex w-full flex-col gap-4"
 				onsubmit={(e) => {
 					e.preventDefault();
-					goto(`/play/${code}`);
+					goto(resolve(`/play/${code}`));
 				}}
 			>
 				<Input bind:value={code} placeholder="Game code" />

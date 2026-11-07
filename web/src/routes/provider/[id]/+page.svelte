@@ -8,6 +8,7 @@
 	import TabPage from '$lib/components/TabPage.svelte';
 	import StaticBadge from '$lib/components/StaticBadge.svelte';
 	import Button from '$lib/components/Button.svelte';
+	import { resolve } from '$app/paths';
 
 	let { data } = $props();
 </script>
@@ -27,7 +28,7 @@
 
 {#snippet uuid()}
 	<Button
-		variant={'primary'}
+		variant="primary"
 		class="ml-auto font-mono text-xs"
 		title="Copy game id"
 		onclick={() => navigator.clipboard.writeText(data.provider?.id ?? '')}
@@ -39,7 +40,7 @@
 
 {#snippet overview()}
 	{#if data.provider}
-		<ProviderPanel provider={data.provider} refresh={() => data.refresh()} deleted={() => goto('/provider')} />
+		<ProviderPanel provider={data.provider} refresh={() => data.refresh()} deleted={() => goto(resolve('/provider'))} />
 	{/if}
 {/snippet}
 
@@ -54,7 +55,7 @@
 <TabPage
 	title={data.provider?.name.toUpperCase() ?? 'Provider'}
 	headers={[type, uuid]}
-	back={() => goto('/provider')}
+	back={() => goto(resolve('/provider'))}
 	dataState={data.providerState}
 	tabs={['overview', 'accounts', 'definitions']}
 	tabPages={[overview, accounts, definitions]}

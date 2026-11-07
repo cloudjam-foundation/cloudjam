@@ -48,9 +48,9 @@
 />
 
 {#snippet renderPopupBadges()}
-	<StaticBadge text={`score: ${team.score}`} variant={'jam'} />
-	{#each Object.entries(team.players) as [_, player]}
-		<DynamicBadge variant={'primary'}>
+	<StaticBadge text={`score: ${team.score}`} variant="jam" />
+	{#each Object.entries(team.players) as [_, player] (_)}
+		<DynamicBadge variant="primary">
 			<img
 				alt="user profile"
 				src={`data:image/svg+xml;base64,${btoa(toSvg(player.pubId, 16))}`}

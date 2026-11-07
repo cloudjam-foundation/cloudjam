@@ -12,6 +12,7 @@
 	import { ProviderSchema, ProviderType } from '$lib/sdk/v1/cloud/provider_pb';
 	import { create } from '@bufbuild/protobuf';
 	import AwsCredentials from '../AwsCredentials.svelte';
+	import { resolve } from '$app/paths';
 
 	const types = [{ value: String(ProviderType.AWS), label: 'AWS' }];
 
@@ -48,7 +49,7 @@
 		onsubmit={() =>
 			Submit(async () => {
 				const resp = await Glue.provider.create(createRequest);
-				goto(`/provider/${resp.id}`);
+				goto(resolve(`/provider/${resp.id}`));
 			}, createState)}
 	>
 		<div class="grid gap-4 md:grid-cols-2">

@@ -10,7 +10,6 @@
 	import Popup from '$lib/components/Popup.svelte';
 	import Separator from '$lib/components/Separator.svelte';
 	import {
-		AggregateCostRequestSchema,
 		CredentialsRequestSchema,
 		DeleteRequestSchema,
 		FixRequestSchema,
@@ -19,8 +18,8 @@
 	} from '$lib/sdk/v1/cloud/account/account_pb';
 	import { AccountState, type Account } from '$lib/sdk/v1/cloud/account_pb';
 	import { create } from '@bufbuild/protobuf';
-	import { durationFromMs, timestampDate } from '@bufbuild/protobuf/wkt';
-	import { CopyIcon, HandCoinsIcon, KeyRoundIcon, SquareArrowUpRightIcon } from '@lucide/svelte';
+	import { timestampDate } from '@bufbuild/protobuf/wkt';
+	import { CopyIcon, KeyRoundIcon, SquareArrowUpRightIcon } from '@lucide/svelte';
 
 	let { account, open = $bindable(), refresh }: { account: Account; open: boolean; refresh: () => void } = $props();
 
@@ -28,6 +27,7 @@
 	let confirmDelete = $state(false);
 	let force = $state(false);
 
+	// TODO: Remove?
 	let totalCost: number = $state(0);
 
 	let credentials: string = $state('');
@@ -42,6 +42,7 @@
 		};
 	});
 
+	// TODO: Remove?
 	let costState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let updateState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let resetState: SubmitState = $state({ error: '', loading: false, forbidden: false });
@@ -128,7 +129,7 @@
 					Generate Credentials
 				</Button>
 				{#if credentialState.loading}
-					<LoadingBadge text={'Generating Credentials'} />
+					<LoadingBadge text="Generating Credentials" />
 				{/if}
 				{#if credentials}
 					<Button
@@ -163,7 +164,7 @@
 					Reset Account
 				</Button>
 				{#if resetState.loading}
-					<LoadingBadge text={'Initializing Eviction'} />
+					<LoadingBadge text="Initializing Eviction" />
 				{/if}
 			</div>
 			{#if resetState.error}
@@ -187,7 +188,7 @@
 					Force Metafix
 				</Button>
 				{#if fixState.loading}
-					<LoadingBadge text={'Force Reseting'} />
+					<LoadingBadge text="Force Reseting" />
 				{/if}
 			</div>
 			{#if fixState.error}

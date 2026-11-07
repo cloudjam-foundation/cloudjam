@@ -164,7 +164,7 @@
 		</Card>
 	{/if}
 	<h1 class="w-full glass-text py-3 text-start text-9xl font-bold">
-		{#each user?.description.split('\\n') as line}
+		{#each user?.description.split('\\n') as line (line)}
 			{line}<br />
 		{/each}
 	</h1>

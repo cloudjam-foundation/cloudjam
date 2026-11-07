@@ -5,6 +5,7 @@
 	import TabPage from '$lib/components/TabPage.svelte';
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import UserPanel from './UserPanel.svelte';
+	import { resolve } from '$app/paths';
 
 	let { data } = $props();
 </script>
@@ -36,14 +37,14 @@
 
 {#snippet overview()}
 	{#if data.user}
-		<UserPanel user={data.user} refresh={() => data.refresh()} deleted={() => goto('/admin/users')} />
+		<UserPanel user={data.user} refresh={() => data.refresh()} deleted={() => goto(resolve('/admin/users'))} />
 	{/if}
 {/snippet}
 
 <TabPage
 	title={data.user?.username ?? 'User'}
 	headers={[privileged, uuid]}
-	back={() => goto('/admin/users')}
+	back={() => goto(resolve('/admin/users'))}
 	dataState={data.userState}
 	tabs={['overview']}
 	tabPages={[overview]}
