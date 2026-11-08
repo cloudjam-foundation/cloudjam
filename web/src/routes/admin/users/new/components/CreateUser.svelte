@@ -11,6 +11,7 @@
 	import { create } from '@bufbuild/protobuf';
 	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
 	import CopyIcon from '@lucide/svelte/icons/copy';
+	import CopyableValue from '$lib/components/CopyableValue.svelte';
 
 	let { scopes = [], oncreated }: { scopes?: string[]; oncreated: () => void } = $props();
 
@@ -43,20 +44,14 @@
 		</p>
 	</div>
 	{#if code}
-		<div class="flex w-full flex-col gap-2">
+		<div class="flex w-full flex-col items-center gap-2">
 			<h2 class="text-xl font-semibold text-primary/80">Invitation created</h2>
 			<p class="text-sm text-primary/60">Share the registration link (or the raw code) with the invited user:</p>
 			<div class="flex flex-row items-center gap-2">
-				<Button variant="primary" title="Copy code" onclick={() => navigator.clipboard.writeText(code)}>
-					<CopyIcon />
-				</Button>
-				<span class="font-mono text-xs break-all">{code}</span>
+				<CopyableValue value={code} descriptor="Registration code" />
 			</div>
 			<div class="flex flex-row items-center gap-2">
-				<Button variant="primary" title="Copy link" onclick={() => navigator.clipboard.writeText(link)}>
-					<CopyIcon />
-				</Button>
-				<span class="font-mono text-xs break-all">{link}</span>
+				<CopyableValue value={link} descriptor="Registration link" />
 			</div>
 		</div>
 	{:else}

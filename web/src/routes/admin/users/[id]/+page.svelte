@@ -6,6 +6,7 @@
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import UserPanel from './components/UserPanel.svelte';
 	import { resolve } from '$app/paths';
+	import CopyableValue from '$lib/components/CopyableValue.svelte';
 
 	let { data } = $props();
 </script>
@@ -24,15 +25,7 @@
 {/snippet}
 
 {#snippet uuid()}
-	<Button
-		variant="primary"
-		class="ml-auto font-mono text-xs"
-		title="Copy user id"
-		onclick={() => navigator.clipboard.writeText(data.user?.id ?? '')}
-	>
-		<CopyIcon />
-		{data.user?.id}
-	</Button>
+	<CopyableValue value={data.user?.id} descriptor="User ID" />
 {/snippet}
 
 {#snippet overview()}

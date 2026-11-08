@@ -11,6 +11,7 @@
 	import { timestampDate, timestampFromDate } from '@bufbuild/protobuf/wkt';
 	import { XIcon, CopyIcon, RefreshCwIcon } from '@lucide/svelte';
 	import { severities } from './logSeverities';
+	import CopyableValue from '$lib/components/CopyableValue.svelte';
 
 	let {
 		from,
@@ -40,6 +41,17 @@
 
 	let selected: Log | undefined = $state();
 	let selectedOpen = $state(false);
+
+	let selectedString = $derived(
+		JSON.stringify({
+			challenge: selected?.challenge,
+			level: selected?.level,
+			message: selected?.message,
+			procedure: selected?.procedure,
+			timestamp: timestampDate(selected.timestamp),
+			trace: selected?.trace
+		})
+	);
 </script>
 
 <Card class="w-full items-start">
@@ -177,7 +189,7 @@
 				variant="primary"
 				title="Copy log line"
 				class="ml-auto"
-				onclick={() => navigator.clipboard.writeText(JSON.stringify(selected, null, 2))}
+				onclick={() => navigator.clipboard.writeText(selectedString)}
 			>
 				<CopyIcon />
 			</Button>

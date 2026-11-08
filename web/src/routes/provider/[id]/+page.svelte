@@ -9,6 +9,7 @@
 	import StaticBadge from '$lib/components/StaticBadge.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { resolve } from '$app/paths';
+	import CopyableValue from '$lib/components/CopyableValue.svelte';
 
 	let { data } = $props();
 </script>
@@ -27,15 +28,7 @@
 {/snippet}
 
 {#snippet uuid()}
-	<Button
-		variant="primary"
-		class="ml-auto font-mono text-xs"
-		title="Copy game id"
-		onclick={() => navigator.clipboard.writeText(data.provider?.id ?? '')}
-	>
-		<CopyIcon />
-		{data.provider?.id}
-	</Button>
+	<CopyableValue value={data.provider?.id} descriptor="Provider ID" />
 {/snippet}
 
 {#snippet overview()}

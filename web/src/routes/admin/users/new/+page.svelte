@@ -3,6 +3,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import CreateUser from './components/CreateUser.svelte';
+	import { resolve } from '$app/paths';
 </script>
 
 <svelte:head>

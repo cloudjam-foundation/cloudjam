@@ -132,6 +132,7 @@
 					<LoadingBadge text="Generating Credentials" />
 				{/if}
 				{#if credentials}
+					<!-- TODO: Fix -->
 					<Button
 						variant="primary"
 						onclick={() =>

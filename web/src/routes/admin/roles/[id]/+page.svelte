@@ -6,6 +6,7 @@
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import RolePanel from './components/RolePanel.svelte';
 	import { resolve } from '$app/paths';
+	import CopyableValue from '$lib/components/CopyableValue.svelte';
 
 	let { data } = $props();
 </script>
@@ -24,15 +25,7 @@
 {/snippet}
 
 {#snippet uuid()}
-	<Button
-		variant="primary"
-		class="ml-auto font-mono text-xs"
-		title="Copy role id"
-		onclick={() => navigator.clipboard.writeText(data.role?.id ?? '')}
-	>
-		<CopyIcon />
-		{data.role?.id}
-	</Button>
+	<CopyableValue value={data.role?.id} descriptor="Role ID" />
 {/snippet}
 
 {#snippet overview()}

@@ -184,6 +184,7 @@
 	{#if credentials}
 		<div class="flex w-full flex-row flex-wrap items-center gap-3 rounded-md glass p-3">
 			<span class="font-medium text-primary/90">Account credentials</span>
+			<!-- TODO: Fix -->
 			<Button
 				variant="primary"
 				onclick={() =>
