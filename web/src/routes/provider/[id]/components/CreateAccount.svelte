@@ -4,11 +4,11 @@
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import Card from '$lib/components/Card.svelte';
-	import { CreateRequestSchema } from '$lib/sdk/v1/cloud/account/account_pb.ts';
-	import { AccountSchema } from '$lib/sdk/v1/cloud/account_pb.ts';
+	import { CreateRequestSchema } from '$lib/sdk/v1/cloud/account/account_pb';
+	import { AccountSchema } from '$lib/sdk/v1/cloud/account_pb';
 	import { create } from '@bufbuild/protobuf';
 
-	let { providerId, oncreated }: { providerId: string; oncreated: () => void } = $props();
+	let { providerId, onCreated }: { providerId: string; onCreated: () => void } = $props();
 
 	let createState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 
@@ -31,7 +31,7 @@
 			Submit(async () => {
 				await Glue.account.create(request);
 				init = create(AccountSchema, { id: crypto.randomUUID() });
-				oncreated();
+				onCreated();
 			}, createState)}
 	>
 		<div class="grid gap-4 md:grid-cols-2">

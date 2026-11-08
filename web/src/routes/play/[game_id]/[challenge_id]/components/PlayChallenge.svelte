@@ -15,8 +15,8 @@
 		CredentialsRequestSchema,
 		StartRequestSchema,
 		UncoverClueRequestSchema
-	} from '$lib/sdk/v1/play/challenge/challenge_pb.ts';
-	import { ScoreType, type Challenge, type ScoreEvent } from '$lib/sdk/v1/play/challenge_pb.ts';
+	} from '$lib/sdk/v1/play/challenge/challenge_pb';
+	import { ScoreType, type Challenge, type ScoreEvent } from '$lib/sdk/v1/play/challenge_pb';
 	import { toDataURL } from '$lib/utils.svelte.js';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
@@ -25,11 +25,11 @@
 		DraftingCompassIcon,
 		KeyRoundIcon,
 		SquareArrowOutUpRightIcon,
-		ZapIcon
+		ZapIcon,
+		CopyIcon,
+		LightbulbIcon,
+		PlayIcon
 	} from '@lucide/svelte';
-	import CopyIcon from '@lucide/svelte/icons/copy';
-	import LightbulbIcon from '@lucide/svelte/icons/lightbulb';
-	import PlayIcon from '@lucide/svelte/icons/play';
 
 	const kitchenFmt = Intl.DateTimeFormat(undefined, {
 		hour: '2-digit',

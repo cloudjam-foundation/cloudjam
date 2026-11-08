@@ -15,8 +15,8 @@
 		FixRequestSchema,
 		ResetRequestSchema,
 		UpdateRequestSchema
-	} from '$lib/sdk/v1/cloud/account/account_pb.ts';
-	import { AccountState, type Account } from '$lib/sdk/v1/cloud/account_pb.ts';
+	} from '$lib/sdk/v1/cloud/account/account_pb';
+	import { AccountState, type Account } from '$lib/sdk/v1/cloud/account_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import { CopyIcon, KeyRoundIcon, SquareArrowUpRightIcon } from '@lucide/svelte';
@@ -189,7 +189,7 @@
 					Force Metafix
 				</Button>
 				{#if fixState.loading}
-					<LoadingBadge text="Force Reseting" />
+					<LoadingBadge text="Force Resetting" />
 				{/if}
 			</div>
 			{#if fixState.error}

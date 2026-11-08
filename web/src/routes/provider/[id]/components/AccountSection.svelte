@@ -4,12 +4,11 @@
 	import StateBadge from '$lib/components/StateBadge.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
-	import { ListRequestSchema } from '$lib/sdk/v1/cloud/account/account_pb.ts';
-	import { AccountState, type Account } from '$lib/sdk/v1/cloud/account_pb.ts';
+	import { ListRequestSchema } from '$lib/sdk/v1/cloud/account/account_pb';
+	import { AccountState, type Account } from '$lib/sdk/v1/cloud/account_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import PlusIcon from '@lucide/svelte/icons/plus';
-	import XIcon from '@lucide/svelte/icons/x';
+	import { XIcon, PlusIcon } from '@lucide/svelte';
 	import AccountPanel from './AccountPanel.svelte';
 	import CreateAccount from './CreateAccount.svelte';
 
@@ -37,7 +36,7 @@
 	</div>
 
 	{#if creating}
-		<CreateAccount {providerId} oncreated={() => version++} />
+		<CreateAccount {providerId} onCreated={() => version++} />
 	{/if}
 
 	{#if accountsState.forbidden}

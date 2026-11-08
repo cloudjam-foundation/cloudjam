@@ -7,8 +7,8 @@
 	import Card from '$lib/components/Card.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import { getAssignableScopes } from '$lib/auth.svelte.js';
-	import { CreateRequestSchema } from '$lib/sdk/v1/play/game/game_pb.ts';
-	import { GameSchema } from '$lib/sdk/v1/play/game_pb.ts';
+	import { CreateRequestSchema } from '$lib/sdk/v1/play/game/game_pb';
+	import { GameSchema } from '$lib/sdk/v1/play/game_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
 	import { resolve } from '$app/paths';
@@ -19,7 +19,7 @@
 	const localInput = (date: Date) =>
 		new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 
-	let from = $state(localInput(new Date(Date.now() + 1 * 60 * 1000)));
+	let from = $state(localInput(new Date((Date.now() + 1) * 60 * 1000)));
 	let to = $state(localInput(new Date(Date.now() + 3 * 60 * 60 * 1000)));
 
 	let request = $derived(
@@ -40,7 +40,7 @@
 		onsubmit={() =>
 			Submit(async () => {
 				const resp = await Glue.game.create(request);
-				goto(resolve(`/host/games/${resp.id}`));
+				await goto(resolve(`/host/games/${resp.id}`));
 			}, createState)}
 	>
 		<div class="grid gap-4 md:grid-cols-2">

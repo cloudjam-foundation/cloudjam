@@ -4,15 +4,15 @@
 
 	let selectedProvider = $state('');
 	let selectedAccount = $state('');
-	let selectedTimewindow = $state('');
+	let selectedTimeWindow = $state('');
 </script>
 
 <CostProviderPanel
-	select={(providerId, accountId, timewindow) => {
+	select={(providerId, accountId, timeWindow) => {
 		selectedProvider = providerId;
 		selectedAccount = accountId;
-		selectedTimewindow = timewindow;
+		selectedTimeWindow = timeWindow;
 	}}
 />
 
-<CostAccountPanel providerId={selectedProvider} accountId={selectedAccount} timewindow={selectedTimewindow} />
+<CostAccountPanel providerId={selectedProvider} accountId={selectedAccount} timeWindow={selectedTimeWindow} />

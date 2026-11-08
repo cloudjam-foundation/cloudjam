@@ -8,9 +8,9 @@
 	import Popup from '$lib/components/Popup.svelte';
 	import Select from '$lib/components/Select.svelte';
 	import Separator from '$lib/components/Separator.svelte';
-	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb.ts';
-	import { ScoreType, ScoreTypeSchema, type Challenge, type ScoreEvent } from '$lib/sdk/v1/play/challenge_pb.ts';
-	import type { Team } from '$lib/sdk/v1/play/team_pb.ts';
+	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb';
+	import { ScoreType, ScoreTypeSchema, type Challenge, type ScoreEvent } from '$lib/sdk/v1/play/challenge_pb';
+	import type { Team } from '$lib/sdk/v1/play/team_pb';
 	import { toDataURL } from '$lib/utils.svelte.js';
 	import { create, enumToJson } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';

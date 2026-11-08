@@ -7,10 +7,10 @@
 	import Input from '$lib/components/Input.svelte';
 	import Popup from '$lib/components/Popup.svelte';
 	import Separator from '$lib/components/Separator.svelte';
-	import { compress } from '../compress.ts';
+	import { compress } from '../compress';
 	import { toDigest } from '$lib/utils.svelte.js';
-	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb.ts';
-	import { CompressionMode, DefinitionSchema, type Definition } from '$lib/sdk/v1/cloud/definition_pb.ts';
+	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';
+	import { CompressionMode, DefinitionSchema, type Definition } from '$lib/sdk/v1/cloud/definition_pb';
 	import { create } from '@bufbuild/protobuf';
 
 	let {

@@ -8,9 +8,9 @@
 	import Card from '$lib/components/Card.svelte';
 	import Separator from '$lib/components/Separator.svelte';
 	import { getAssignableScopes } from '$lib/auth.svelte.js';
-	import { AttachScopeRequestSchema, ConfigureRoleRequestSchema, Resource } from '$lib/sdk/v1/admin/rbac/rbac_pb.ts';
-	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/admin/role/role_pb.ts';
-	import { Feature, RoleSchema, type Role } from '$lib/sdk/v1/admin/role_pb.ts';
+	import { AttachScopeRequestSchema, ConfigureRoleRequestSchema, Resource } from '$lib/sdk/v1/admin/rbac/rbac_pb';
+	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
+	import { Feature, RoleSchema, type Role } from '$lib/sdk/v1/admin/role_pb';
 	import { create } from '@bufbuild/protobuf';
 	import PermissionEditor from '../../components/PermissionEditor.svelte';
 	import FeatureEditor from './FeatureEditor.svelte';

@@ -4,13 +4,12 @@
 	import StaticBadge from '$lib/components/StaticBadge.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
-	import { ListRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb.ts';
-	import type { Challenge } from '$lib/sdk/v1/play/challenge_pb.ts';
-	import { ListRequestSchema as ListTeamRequestSchema } from '$lib/sdk/v1/play/team/team_pb.ts';
-	import type { Team } from '$lib/sdk/v1/play/team_pb.ts';
+	import { ListRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb';
+	import type { Challenge } from '$lib/sdk/v1/play/challenge_pb';
+	import { ListRequestSchema as ListTeamRequestSchema } from '$lib/sdk/v1/play/team/team_pb';
+	import type { Team } from '$lib/sdk/v1/play/team_pb';
 	import { create } from '@bufbuild/protobuf';
-	import PlusIcon from '@lucide/svelte/icons/plus';
-	import XIcon from '@lucide/svelte/icons/x';
+	import { PlusIcon, XIcon } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import ChallengePanel from './ChallengePanel.svelte';
 	import CreateChallenge from './CreateChallenge.svelte';
@@ -54,7 +53,7 @@
 	</div>
 
 	{#if creating}
-		<CreateChallenge {gameId} {teams} oncreated={() => version++} />
+		<CreateChallenge {gameId} {teams} onCreated={() => version++} />
 	{/if}
 
 	{#if challengesState.forbidden}

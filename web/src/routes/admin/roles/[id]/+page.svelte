@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
 	import TabPage from '$lib/components/TabPage.svelte';
-	import CopyIcon from '@lucide/svelte/icons/copy';
 	import RolePanel from './components/RolePanel.svelte';
 	import { resolve } from '$app/paths';
 	import CopyableValue from '$lib/components/CopyableValue.svelte';

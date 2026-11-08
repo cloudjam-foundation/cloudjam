@@ -8,12 +8,12 @@
 	import Popup from '$lib/components/Popup.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import Separator from '$lib/components/Separator.svelte';
-	import { ListRequestSchema as ListUsersRequestSchema } from '$lib/sdk/v1/admin/user/user_pb.ts';
-	import type { User } from '$lib/sdk/v1/admin/user_pb.ts';
-	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/play/team/team_pb.ts';
-	import { PlayerSchema, type Player, type Team } from '$lib/sdk/v1/play/team_pb.ts';
+	import { ListRequestSchema as ListUsersRequestSchema } from '$lib/sdk/v1/admin/user/user_pb';
+	import type { User } from '$lib/sdk/v1/admin/user_pb';
+	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/play/team/team_pb';
+	import { PlayerSchema, type Player, type Team } from '$lib/sdk/v1/play/team_pb';
 	import { create } from '@bufbuild/protobuf';
-	import XIcon from '@lucide/svelte/icons/x';
+	import { XIcon } from '@lucide/svelte';
 	import { toSvg } from 'jdenticon';
 	import { onMount } from 'svelte';
 

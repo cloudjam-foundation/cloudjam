@@ -6,14 +6,14 @@
 	import Card from '$lib/components/Card.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import Separator from '$lib/components/Separator.svelte';
-	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/play/game/game_pb.ts';
-	import type { Game } from '$lib/sdk/v1/play/game_pb.ts';
+	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/play/game/game_pb';
+	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate, timestampFromDate } from '@bufbuild/protobuf/wkt';
 
 	let { game, refresh, deleted }: { game: Game; refresh: () => void; deleted: () => void } = $props();
 
-	let mod = $state({ ...game });
+	let mod = $derived({ ...game });
 
 	// datetime-local inputs work on the local wall clock, protobuf timestamps on utc instants.
 	const localInput = (date: Date) =>

@@ -4,12 +4,12 @@
 	import Button from '$lib/components/Button.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Input from '$lib/components/Input.svelte';
-	import type { Game } from '$lib/sdk/v1/play/game_pb.ts';
-	import { CreateRequestSchema } from '$lib/sdk/v1/play/team/team_pb.ts';
-	import { TeamSchema } from '$lib/sdk/v1/play/team_pb.ts';
+	import type { Game } from '$lib/sdk/v1/play/game_pb';
+	import { CreateRequestSchema } from '$lib/sdk/v1/play/team/team_pb';
+	import { TeamSchema } from '$lib/sdk/v1/play/team_pb';
 	import { create } from '@bufbuild/protobuf';
 
-	let { game, oncreated }: { game: Game; oncreated: () => void } = $props();
+	let { game, onCreated }: { game: Game; onCreated: () => void } = $props();
 
 	let init = $state(create(TeamSchema, { id: crypto.randomUUID() }));
 
@@ -18,7 +18,7 @@
 		Submit(async () => {
 			await Glue.team.create(create(CreateRequestSchema, { init: { ...init, gameId: game.id, scope: game.scope } }));
 			init.name = '';
-			oncreated();
+			onCreated();
 		}, createState);
 	}
 </script>

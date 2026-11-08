@@ -12,8 +12,7 @@
 	} from '$lib/sdk/v1/admin/system/system_pb';
 	import { create, enumToJson } from '@bufbuild/protobuf';
 	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
-	import ResetIcon from '@lucide/svelte/icons/rotate-ccw';
-	import ZoomOutIcon from '@lucide/svelte/icons/zoom-out';
+	import { RotateCcwIcon as ResetIcon, ZoomOutIcon } from '@lucide/svelte';
 	import ZoomChart from './ZoomChart.svelte';
 	import { SvelteDate } from 'svelte/reactivity';
 	import Skeleton from '$lib/components/Skeleton.svelte';
@@ -42,7 +41,7 @@
 
 	// TODO: Type this file properly
 
-	function zoomTimeformat(from: Date, to: Date) {
+	function zoomTimeFormat(from: Date, to: Date) {
 		// if > 48h show a per day format
 		if (to.getTime() - from.getTime() <= 48 * 60 * 60 * 1000) {
 			return (v: any) => {
@@ -257,7 +256,7 @@
 			</p>
 		</div>
 		<ZoomChart
-			timeFormat={zoomTimeformat(from, to)}
+			timeFormat={zoomTimeFormat(from, to)}
 			labels={hitLabels}
 			data={hitData}
 			unit={`requests / ${enumToJson(AggregateWindowSchema, window)?.toString().toLowerCase()}`}
@@ -270,7 +269,7 @@
 			<p class="text-sm text-primary/60">Average endpoint latency in milliseconds</p>
 		</div>
 		<ZoomChart
-			timeFormat={zoomTimeformat(from, to)}
+			timeFormat={zoomTimeFormat(from, to)}
 			labels={latencyLabels}
 			data={latencyData}
 			unit="ms"

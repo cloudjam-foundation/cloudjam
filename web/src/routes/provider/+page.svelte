@@ -10,7 +10,7 @@
 	import { ListRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb';
 	import { ProviderType, type Provider } from '$lib/sdk/v1/cloud/provider_pb';
 	import { create } from '@bufbuild/protobuf';
-	import PlusIcon from '@lucide/svelte/icons/plus';
+	import { PlusIcon } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
 
 	let id = $state('');

@@ -5,8 +5,7 @@
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
-	import PlusIcon from '@lucide/svelte/icons/plus';
+	import { ChevronLeftIcon, PlusIcon } from '@lucide/svelte';
 	import StateBadge from '$lib/components/StateBadge.svelte';
 	import LinkButton from '$lib/components/LinkButton.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';

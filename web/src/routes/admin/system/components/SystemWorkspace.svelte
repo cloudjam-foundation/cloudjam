@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
+	import { ChevronLeftIcon } from '@lucide/svelte';
 	import CostSection from './CostSection.svelte';
 	import LogSection from './LogSection.svelte';
 	import MetricSection from './MetricSection.svelte';

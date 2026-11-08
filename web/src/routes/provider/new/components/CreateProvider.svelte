@@ -8,8 +8,8 @@
 	import Card from '$lib/components/Card.svelte';
 	import Select from '$lib/components/Select.svelte';
 	import { getAssignableScopes } from '$lib/auth.svelte.js';
-	import { CreateRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb.ts';
-	import { ProviderSchema, ProviderType } from '$lib/sdk/v1/cloud/provider_pb.ts';
+	import { CreateRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb';
+	import { ProviderSchema, ProviderType } from '$lib/sdk/v1/cloud/provider_pb';
 	import { create } from '@bufbuild/protobuf';
 	import AwsCredentials from '../../components/AwsCredentials.svelte';
 	import { resolve } from '$app/paths';

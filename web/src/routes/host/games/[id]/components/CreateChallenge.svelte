@@ -5,24 +5,24 @@
 	import Input from '$lib/components/Input.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Select from '$lib/components/Select.svelte';
-	import { ListRequestSchema as ListDefinitionRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb.ts';
-	import type { Definition } from '$lib/sdk/v1/cloud/definition_pb.ts';
-	import { ListRequestSchema as ListProviderRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb.ts';
-	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb.ts';
-	import { CreateRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb.ts';
-	import { ChallengeSchema, type Challenge } from '$lib/sdk/v1/play/challenge_pb.ts';
-	import type { Team } from '$lib/sdk/v1/play/team_pb.ts';
+	import { ListRequestSchema as ListDefinitionRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';
+	import type { Definition } from '$lib/sdk/v1/cloud/definition_pb';
+	import { ListRequestSchema as ListProviderRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb';
+	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb';
+	import { CreateRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb';
+	import { ChallengeSchema, type Challenge } from '$lib/sdk/v1/play/challenge_pb';
+	import type { Team } from '$lib/sdk/v1/play/team_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { onMount } from 'svelte';
 
 	let {
 		gameId,
 		teams,
-		oncreated
+		onCreated
 	}: {
 		gameId: string;
 		teams: Team[];
-		oncreated: () => void;
+		onCreated: () => void;
 	} = $props();
 
 	let assignedTeams: string[] = $state([]);
@@ -74,7 +74,7 @@
 					})
 				);
 			}
-			oncreated();
+			onCreated();
 		}, createState);
 	}
 

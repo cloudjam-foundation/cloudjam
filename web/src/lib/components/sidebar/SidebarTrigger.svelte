@@ -1,6 +1,6 @@
 <!-- Button toggling the sidebar -->
 <script lang="ts">
-	import PanelLeftIcon from '@lucide/svelte/icons/panel-left';
+	import { PanelLeftIcon } from '@lucide/svelte';
 	import Button from '../Button.svelte';
 	import { useSidebar } from './state.svelte';
 

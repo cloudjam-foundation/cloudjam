@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
-	import { Feature } from '$lib/sdk/v1/admin/role_pb.ts';
+	import { Feature } from '$lib/sdk/v1/admin/role_pb';
 
 	let { features = $bindable() }: { features: Record<Feature, boolean> } = $props();
 </script>

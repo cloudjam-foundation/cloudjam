@@ -6,16 +6,15 @@
 	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Select from '$lib/components/Select.svelte';
-	import { CreateRequestSchema } from '$lib/sdk/v1/admin/user/user_pb.ts';
-	import { UserSchema } from '$lib/sdk/v1/admin/user_pb.ts';
+	import { CreateRequestSchema } from '$lib/sdk/v1/admin/user/user_pb';
+	import { UserSchema } from '$lib/sdk/v1/admin/user_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
-	import CopyIcon from '@lucide/svelte/icons/copy';
 	import CopyableValue from '$lib/components/CopyableValue.svelte';
 
-	let { scopes = [], oncreated }: { scopes?: string[]; oncreated: () => void } = $props();
+	let { scopes = [], onCreated }: { scopes?: string[]; onCreated: () => void } = $props();
 
-	const expiries = [
+	const expirationValues = [
 		{ value: '1', label: '1 hour' },
 		{ value: '24', label: '1 day' },
 		{ value: '168', label: '7 days' }
@@ -62,7 +61,7 @@
 					const resp = await Glue.user.create(request);
 					code = resp.code;
 					link = `${location.origin}/register?email=${encodeURIComponent(init.email)}&username=${encodeURIComponent(init.username)}&code=${encodeURIComponent(resp.code)}`;
-					oncreated();
+					onCreated();
 				}, createState)}
 		>
 			<div class="grid gap-4 md:grid-cols-2">
@@ -100,7 +99,7 @@
 				</label>
 				<div class="flex flex-col gap-1">
 					<span class="text-sm">Invitation expires in</span>
-					<Select bind:value={expiry} class="w-full" items={expiries} />
+					<Select bind:value={expiry} class="w-full" items={expirationValues} />
 				</div>
 			</div>
 			<Button

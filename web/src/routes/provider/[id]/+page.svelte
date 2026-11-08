@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { ProviderType } from '$lib/sdk/v1/cloud/provider_pb';
-	import CopyIcon from '@lucide/svelte/icons/copy';
 	import AccountSection from './components/AccountSection.svelte';
 	import DefinitionSection from './components/DefinitionSection.svelte';
 	import ProviderPanel from './components/ProviderPanel.svelte';
 	import { goto } from '$app/navigation';
 	import TabPage from '$lib/components/TabPage.svelte';
 	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
 	import { resolve } from '$app/paths';
 	import CopyableValue from '$lib/components/CopyableValue.svelte';
 

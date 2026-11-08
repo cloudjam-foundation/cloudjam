@@ -6,13 +6,13 @@
 	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import { getAssignableScopes } from '$lib/auth.svelte.js';
-	import { ConfigureRoleRequestSchema } from '$lib/sdk/v1/admin/rbac/rbac_pb.ts';
-	import { CreateRequestSchema } from '$lib/sdk/v1/admin/role/role_pb.ts';
-	import { RoleSchema } from '$lib/sdk/v1/admin/role_pb.ts';
+	import { ConfigureRoleRequestSchema } from '$lib/sdk/v1/admin/rbac/rbac_pb';
+	import { CreateRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
+	import { RoleSchema } from '$lib/sdk/v1/admin/role_pb';
 	import { create } from '@bufbuild/protobuf';
 	import PermissionEditor from '../../components/PermissionEditor.svelte';
 
-	let { oncreated }: { oncreated: () => void } = $props();
+	let { onCreated }: { onCreated: () => void } = $props();
 
 	let configureState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 
@@ -52,7 +52,7 @@
 				id = crypto.randomUUID();
 				name = description = scope = '';
 				entries = [{ scope: '', patterns: '' }];
-				oncreated();
+				onCreated();
 			}, configureState)}
 	>
 		<div class="grid gap-4 md:grid-cols-2">

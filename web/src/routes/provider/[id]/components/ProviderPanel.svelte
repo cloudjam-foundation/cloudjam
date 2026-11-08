@@ -7,8 +7,8 @@
 	import Input from '$lib/components/Input.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Separator from '$lib/components/Separator.svelte';
-	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb.ts';
-	import { ProviderType, type Provider } from '$lib/sdk/v1/cloud/provider_pb.ts';
+	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb';
+	import { ProviderType, type Provider } from '$lib/sdk/v1/cloud/provider_pb';
 	import { create } from '@bufbuild/protobuf';
 	import AwsCredentials from '../../components/AwsCredentials.svelte';
 

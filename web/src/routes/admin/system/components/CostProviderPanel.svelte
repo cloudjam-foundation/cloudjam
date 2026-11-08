@@ -18,13 +18,13 @@
 	import { create } from '@bufbuild/protobuf';
 	import { durationFromMs } from '@bufbuild/protobuf/wkt';
 	import { ChartNoAxesCombinedIcon, ZoomOutIcon } from '@lucide/svelte';
-	import ResetIcon from '@lucide/svelte/icons/rotate-ccw';
+	import { RotateCcwIcon as ResetIcon } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import ZoomChart from './ZoomChart.svelte';
 	import Skeleton from '$lib/components/Skeleton.svelte';
 
 	// TODO: Is there a way to share functions and components & stuff between this and the CostAccountPanel
-	let { select }: { select?: (providerId: string, accountId: string, timewindow: string) => void } = $props();
+	let { select }: { select?: (providerId: string, accountId: string, timeWindow: string) => void } = $props();
 
 	let providerId: string = $state('');
 
@@ -43,8 +43,8 @@
 	const safe = (k: string) => k.replace(/[^a-zA-Z0-9_]/g, '_');
 	const now = new Date(Date.now());
 
-	let timewindow = $state('');
-	let timewindowSuggestions: Suggestion[] = [
+	let timeWindow = $state('');
+	let timeWindowSuggestions: Suggestion[] = [
 		{ id: String(7 * 24 * 60 * 60 * 1000), title: 'Last 7 days' },
 		{ id: String(30 * 24 * 60 * 60 * 1000), title: 'Last 30 days' },
 		{ id: String(365 * 24 * 60 * 60 * 1000), title: 'Last Year' },
@@ -158,9 +158,9 @@
 
 		<div class="flex flex-wrap items-center gap-2 sm:ml-auto">
 			<OptionalSelect
-				bind:value={timewindow}
-				placeholder="Select Timewindow"
-				suggestions={timewindowSuggestions}
+				bind:value={timeWindow}
+				placeholder="Select Time Window"
+				suggestions={timeWindowSuggestions}
 				class="w-64"
 			/>
 			<OptionalSelect
@@ -173,11 +173,11 @@
 				variant="primary"
 				processing={aggregateState.loading}
 				hint="Aggregating..."
-				disabled={!timewindow || !providerId}
+				disabled={!timeWindow || !providerId}
 				onclick={() => {
 					Submit(async () => {
-						[totalCost, accountCost, costLabels, costData] = await loadCost(providerId, Number(timewindow));
-						chartFrom = new Date(now.getTime() - Number(timewindow));
+						[totalCost, accountCost, costLabels, costData] = await loadCost(providerId, Number(timeWindow));
+						chartFrom = new Date(now.getTime() - Number(timeWindow));
 						chartTo = now;
 						version++;
 					}, aggregateState);
@@ -214,7 +214,7 @@
 				title="Zoom out"
 				onclick={() => {
 					const span = chartTo.getTime() - chartFrom.getTime();
-					chartFrom = new Date(Math.max(chartFrom.getTime() - span / 2, now.getTime() - Number(timewindow)));
+					chartFrom = new Date(Math.max(chartFrom.getTime() - span / 2, now.getTime() - Number(timeWindow)));
 					chartTo = new Date(Math.min(chartTo.getTime() + span / 2, now.getTime()));
 				}}
 			>
@@ -224,7 +224,7 @@
 				variant="primary"
 				title="Reset"
 				onclick={() => {
-					chartFrom = new Date(now.getTime() - Number(timewindow));
+					chartFrom = new Date(now.getTime() - Number(timeWindow));
 					chartTo = now;
 				}}
 			>
@@ -240,7 +240,7 @@
 				limit={Infinity}
 				load={async () => accountRows}
 				loadState={{ error: '', loading: false, forbidden: false }}
-				onRowClick={(row) => select?.(providerId, row.id, timewindow)}
+				onRowClick={(row) => select?.(providerId, row.id, timeWindow)}
 				columns={[
 					{ title: 'Account Id', width: '35%', render: renderId },
 					{ title: 'Account Name', width: '45%', render: renderName },

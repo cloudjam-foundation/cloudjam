@@ -11,7 +11,6 @@
 	import { timestampDate, timestampFromDate } from '@bufbuild/protobuf/wkt';
 	import { XIcon, CopyIcon, RefreshCwIcon } from '@lucide/svelte';
 	import { severities } from './logSeverities';
-	import CopyableValue from '$lib/components/CopyableValue.svelte';
 
 	let {
 		from,

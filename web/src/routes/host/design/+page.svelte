@@ -16,7 +16,7 @@
 	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { WandSparklesIcon } from '@lucide/svelte';
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
+	import { ChevronLeftIcon } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import CreateDefinition from './components/CreateDefinition.svelte';
 	import DefinitionPanel from './components/DefinitionPanel.svelte';

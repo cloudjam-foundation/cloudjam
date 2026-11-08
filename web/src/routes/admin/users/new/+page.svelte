@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
+	import { ChevronLeftIcon } from '@lucide/svelte';
 	import CreateUser from './components/CreateUser.svelte';
 	import { resolve } from '$app/paths';
 </script>
@@ -21,5 +21,5 @@
 		<h1 class="text-3xl opacity-80">Invite User</h1>
 	</div>
 
-	<CreateUser oncreated={() => {}} />
+	<CreateUser onCreated={() => {}} />
 </div>

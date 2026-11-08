@@ -3,8 +3,7 @@
 	import { ListRequestSchema } from '$lib/sdk/v1/admin/user/user_pb';
 	import type { User } from '$lib/sdk/v1/admin/user_pb';
 	import { create } from '@bufbuild/protobuf';
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
-	import PlusIcon from '@lucide/svelte/icons/plus';
+	import { PlusIcon, ChevronLeftIcon } from '@lucide/svelte';
 	import { toSvg } from 'jdenticon';
 	import Button from '$lib/components/Button.svelte';
 	import Card from '$lib/components/Card.svelte';

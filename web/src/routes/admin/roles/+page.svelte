@@ -10,8 +10,7 @@
 	import { ListRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
 	import type { Role } from '$lib/sdk/v1/admin/role_pb';
 	import { create } from '@bufbuild/protobuf';
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
-	import PlusIcon from '@lucide/svelte/icons/plus';
+	import { ChevronLeftIcon, PlusIcon } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
 
 	let id = $state('');

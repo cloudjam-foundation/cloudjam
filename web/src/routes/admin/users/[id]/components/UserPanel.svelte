@@ -9,18 +9,14 @@
 	import Select from '$lib/components/Select.svelte';
 	import Separator from '$lib/components/Separator.svelte';
 	import { getAssignableScopes } from '$lib/auth.svelte.js';
-	import { AttachRoleRequestSchema, AttachScopeRequestSchema, Resource } from '$lib/sdk/v1/admin/rbac/rbac_pb.ts';
-	import { ListRequestSchema as ListRolesRequestSchema } from '$lib/sdk/v1/admin/role/role_pb.ts';
-	import type { Role } from '$lib/sdk/v1/admin/role_pb.ts';
-	import {
-		DeleteRequestSchema,
-		ResetPasswordRequestSchema,
-		UpdateRequestSchema
-	} from '$lib/sdk/v1/admin/user/user_pb.ts';
-	import type { User } from '$lib/sdk/v1/admin/user_pb.ts';
+	import { AttachRoleRequestSchema, AttachScopeRequestSchema, Resource } from '$lib/sdk/v1/admin/rbac/rbac_pb';
+	import { ListRequestSchema as ListRolesRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
+	import type { Role } from '$lib/sdk/v1/admin/role_pb';
+	import { DeleteRequestSchema, ResetPasswordRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/admin/user/user_pb';
+	import type { User } from '$lib/sdk/v1/admin/user_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
-	import CopyIcon from '@lucide/svelte/icons/copy';
+	import { CopyIcon } from '@lucide/svelte';
 	import { toSvg } from 'jdenticon';
 	import { onMount } from 'svelte';
 

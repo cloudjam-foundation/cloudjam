@@ -5,10 +5,10 @@
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import Card from '$lib/components/Card.svelte';
-	import { compress } from '../compress.ts';
-	import { CreateRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb.ts';
-	import { CompressionMode, DefinitionSchema } from '$lib/sdk/v1/cloud/definition_pb.ts';
-	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb.ts';
+	import { compress } from '../compress';
+	import { CreateRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';
+	import { CompressionMode, DefinitionSchema } from '$lib/sdk/v1/cloud/definition_pb';
+	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb';
 	import { create } from '@bufbuild/protobuf';
 
 	let { provider, refresh }: { provider: Provider; refresh: () => void } = $props();
@@ -26,8 +26,8 @@
 	<div>
 		<h1 class="text-xl font-semibold text-primary/80">Upload Definition</h1>
 		<p class="text-primary/60">
-			Uploads a compiled challenge plugin to the provider you pick. The wasm binary is zstd compressed in your browser
-			before it is sent.
+			Upload a compiled challenge definition plugin to {provider.name}. The wasm binary will be compressed in your
+			browser before being sent.
 		</p>
 	</div>
 	<form

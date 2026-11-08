@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ChartConfig } from '$lib/components/chart/chart.ts';
+	import type { ChartConfig } from '$lib/components/chart/chart';
 	import ChartContainer from '$lib/components/chart/ChartContainer.svelte';
 	import ChartTooltip from '$lib/components/chart/ChartTooltip.svelte';
 	import { scaleUtc } from 'd3-scale';

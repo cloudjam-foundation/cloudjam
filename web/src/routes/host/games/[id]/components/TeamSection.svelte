@@ -1,19 +1,18 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import { ListRequestSchema } from '$lib/sdk/v1/play/team/team_pb.ts';
-	import type { Team } from '$lib/sdk/v1/play/team_pb.ts';
+	import { ListRequestSchema } from '$lib/sdk/v1/play/team/team_pb';
+	import type { Team } from '$lib/sdk/v1/play/team_pb';
 	import { create } from '@bufbuild/protobuf';
-	import PlusIcon from '@lucide/svelte/icons/plus';
+	import { XIcon, PlusIcon } from '@lucide/svelte';
 	import CreateTeam from './CreateTeam.svelte';
 	import TeamPanel from './TeamPanel.svelte';
-	import type { Game } from '$lib/sdk/v1/play/game_pb.ts';
+	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import StaticBadge from '$lib/components/StaticBadge.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import Alert from '$lib/components/Alert.svelte';
 	import DynamicBadge from '$lib/components/DynamicBadge.svelte';
 	import { toSvg } from 'jdenticon';
 	import Button from '$lib/components/Button.svelte';
-	import { XIcon } from '@lucide/svelte';
 
 	let { game }: { game: Game } = $props();
 
@@ -37,7 +36,7 @@
 	</div>
 
 	{#if creating}
-		<CreateTeam {game} oncreated={() => {}} />
+		<CreateTeam {game} onCreated={() => {}} />
 	{/if}
 
 	{#if teamsState.forbidden}

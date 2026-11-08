@@ -2,8 +2,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import { Info } from '@lucide/svelte';
-	import EyeIcon from '@lucide/svelte/icons/eye';
-	import EyeOffIcon from '@lucide/svelte/icons/eye-off';
+	import { EyeIcon, EyeOffIcon } from '@lucide/svelte';
 
 	type credentials = { endpoint: string; region: string; access_key: string; secret_key: string };
 
@@ -49,7 +48,7 @@
 	</div>
 	<div class="flex flex-col gap-1">
 		<Input bind:value={creds.endpoint} label="Endpoint" placeholder="https://localhost:4566 (optional)" />
-		<p class="text-xs text-primary/60">Only for emulators like fakecloud, leave empty for real AWS.</p>
+		<p class="text-xs text-primary/60">Only for emulators like FakeCloud, leave empty for real AWS.</p>
 	</div>
 	<Input bind:value={creds.access_key} label="Access Key ID" placeholder="AKIA..." />
 	<div class="flex flex-col gap-1">

@@ -13,7 +13,7 @@
 	} from '$lib/sdk/v1/admin/system/system_pb';
 	import { create, enumToJson } from '@bufbuild/protobuf';
 	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
-	import { RotateCcwIcon, ZoomOutIcon } from '@lucide/svelte';
+	import { RotateCcwIcon as ResetIcon, ZoomOutIcon } from '@lucide/svelte';
 	import LogPanel from './LogPanel.svelte';
 	import ZoomChart from './ZoomChart.svelte';
 	import { levelColors } from './logSeverities';
@@ -57,7 +57,7 @@
 
 	let [window, bucket] = $derived(zoomWindow(from, to));
 
-	function zoomTimeformat(from: Date, to: Date) {
+	function zoomTimeFormat(from: Date, to: Date) {
 		if (to.getTime() - from.getTime() <= 48 * 60 * 60 * 1000) {
 			return (v: any) => v.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
 		}
@@ -148,7 +148,7 @@
 					title="Reset"
 					onclick={() => ((from = new Date(Date.now() - 24 * 60 * 60 * 1000)), (to = new Date()))}
 				>
-					<RotateCcwIcon />
+					<ResetIcon />
 				</Button>
 			</div>
 		</div>
@@ -161,7 +161,7 @@
 			</p>
 		</div>
 		<ZoomChart
-			timeFormat={zoomTimeformat(from, to)}
+			timeFormat={zoomTimeFormat(from, to)}
 			{labels}
 			{data}
 			unit={`lines / ${enumToJson(AggregateWindowSchema, window)?.toString().toLowerCase()}`}

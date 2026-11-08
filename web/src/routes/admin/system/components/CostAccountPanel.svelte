@@ -18,12 +18,12 @@
 	import { create } from '@bufbuild/protobuf';
 	import { durationFromMs } from '@bufbuild/protobuf/wkt';
 	import { ChartNoAxesCombinedIcon, ZoomOutIcon } from '@lucide/svelte';
-	import ResetIcon from '@lucide/svelte/icons/rotate-ccw';
+	import { RotateCcwIcon as ResetIcon } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import ZoomChart from './ZoomChart.svelte';
 	import Skeleton from '$lib/components/Skeleton.svelte';
 
-	let { providerId, accountId, timewindow }: { providerId: string; accountId: string; timewindow: string } = $props();
+	let { providerId, accountId, timeWindow }: { providerId: string; accountId: string; timeWindow: string } = $props();
 
 	let loading = $state(true);
 
@@ -144,8 +144,8 @@
 
 		<div class="flex flex-wrap items-center gap-2 sm:ml-auto">
 			<OptionalSelect
-				bind:value={timewindow}
-				placeholder="Select Timewindow"
+				bind:value={timeWindow}
+				placeholder="Select Time Window"
 				suggestions={timewindowSuggestions}
 				class="w-64"
 			/>
@@ -165,11 +165,11 @@
 				variant="primary"
 				processing={aggregateState.loading}
 				hint="Aggregating..."
-				disabled={!timewindow || !providerId || !accountId}
+				disabled={!timeWindow || !providerId || !accountId}
 				onclick={() => {
 					Submit(async () => {
-						[totalCost, serviceCost, costLabels, costData] = await loadCost(providerId, accountId, Number(timewindow));
-						chartFrom = new Date(now.getTime() - Number(timewindow));
+						[totalCost, serviceCost, costLabels, costData] = await loadCost(providerId, accountId, Number(timeWindow));
+						chartFrom = new Date(now.getTime() - Number(timeWindow));
 						chartTo = now;
 						version++;
 					}, aggregateState);
@@ -206,7 +206,7 @@
 				title="Zoom out"
 				onclick={() => {
 					const span = chartTo.getTime() - chartFrom.getTime();
-					chartFrom = new Date(Math.max(chartFrom.getTime() - span / 2, now.getTime() - Number(timewindow)));
+					chartFrom = new Date(Math.max(chartFrom.getTime() - span / 2, now.getTime() - Number(timeWindow)));
 					chartTo = new Date(Math.min(chartTo.getTime() + span / 2, now.getTime()));
 				}}
 			>
@@ -216,7 +216,7 @@
 				variant="primary"
 				title="Reset"
 				onclick={() => {
-					chartFrom = new Date(now.getTime() - Number(timewindow));
+					chartFrom = new Date(now.getTime() - Number(timeWindow));
 					chartTo = now;
 				}}
 			>
