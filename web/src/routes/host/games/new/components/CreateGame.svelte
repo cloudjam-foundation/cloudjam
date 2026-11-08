@@ -40,7 +40,7 @@
 		onsubmit={() =>
 			Submit(async () => {
 				const resp = await Glue.game.create(request);
-				await goto(resolve(`/host/games/${resp.id}`));
+				await goto(resolve(`/host/games/[id]`, { id: resp.id }));
 			}, createState)}
 	>
 		<div class="grid gap-4 md:grid-cols-2">

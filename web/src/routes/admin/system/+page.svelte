@@ -11,4 +11,4 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<SystemWorkspace close={() => goto(resolve('/admin'), { keepFocus: true, noScroll: true })} />
+<SystemWorkspace close={() => goto(resolve('/admin'))} />

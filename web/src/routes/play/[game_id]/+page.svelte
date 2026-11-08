@@ -126,7 +126,8 @@
 				<button
 					type="button"
 					class="w-full cursor-pointer text-left sm:w-80"
-					onclick={() => goto(resolve(`/play/${game?.id}/${challenge.id}`))}
+					onclick={() =>
+						goto(resolve('/play/[game_id]/[challenge_id]', { game_id: game!.id, challenge_id: challenge.id }))}
 				>
 					<Card class="h-full items-start gap-2 duration-300 hover:opacity-70">
 						<LayersIcon class="size-8" />

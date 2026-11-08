@@ -49,7 +49,7 @@
 		onsubmit={() =>
 			Submit(async () => {
 				const resp = await Glue.provider.create(createRequest);
-				await goto(resolve(`/provider/${resp.id}`));
+				await goto(resolve(`/provider/[id]`, { id: resp.id }));
 			}, createState)}
 	>
 		<div class="grid gap-4 md:grid-cols-2">

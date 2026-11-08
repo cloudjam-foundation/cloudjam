@@ -143,7 +143,7 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto(resolve(`/play/${page.params.game_id}`))}>
+		<Button variant="ghost" onclick={() => goto(resolve(`/play/[game_id]`, { game_id: page.params.game_id! }))}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">{challenge?.title || definition?.name || 'Challenge'}</h1>

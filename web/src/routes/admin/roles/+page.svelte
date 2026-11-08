@@ -43,7 +43,10 @@
 					<h1 class="text-2xl font-bold text-primary/80">Find Role</h1>
 					<p class="text-primary/60">You are not allowed to list roles, find the one you need by its id</p>
 				</div>
-				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(resolve(`/admin/roles/${id}`))}>
+				<form
+					class="flex w-full flex-row items-center gap-2"
+					onsubmit={() => goto(resolve(`/admin/roles/[id]`, { id: id }))}
+				>
 					<Input class="w-full" bind:value={id} placeholder="Role ID" />
 					<Button type="submit" variant="primary" disabled={!id.trim()}>Open</Button>
 				</form>
@@ -63,7 +66,7 @@
 					return roles;
 				}}
 				onRowClick={(role) => {
-					goto(resolve(`/admin/roles/${role.id}`));
+					goto(resolve(`/admin/roles/[id]`, { id: role.id }));
 				}}
 				loadState={rolesState}
 				columns={[

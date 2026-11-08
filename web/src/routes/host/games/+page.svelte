@@ -50,7 +50,10 @@
 					<h1 class="text-2xl font-bold text-primary/80">Find Game</h1>
 					<p class="text-primary/60">You are not allowed to list games, find the one you need by its id</p>
 				</div>
-				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(resolve(`/host/games/${id}`))}>
+				<form
+					class="flex w-full flex-row items-center gap-2"
+					onsubmit={() => goto(resolve(`/host/games/[id]`, { id: id }))}
+				>
 					<Input class="w-full" bind:value={id} placeholder="Game id" />
 					<Button type="submit" variant="primary" disabled={!id.trim()}>Open</Button>
 				</form>
@@ -70,7 +73,7 @@
 					return games;
 				}}
 				onRowClick={(game) => {
-					goto(resolve(`/host/games/${game.id}`));
+					goto(resolve(`/host/games/[id]`, { id: game.id }));
 				}}
 				loadState={gamesState}
 				columns={[
