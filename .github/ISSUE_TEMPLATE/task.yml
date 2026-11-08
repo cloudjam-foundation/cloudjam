@@ -1,0 +1,31 @@
+name: Task
+description: A task that must be compleated by the maintainers
+title: 'Chore: '
+type: 'Task'
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Task Description
+      description: A clear and concise description of what the task is.
+      placeholder: Bump package versions
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help identify what must be done.
+      placeholder: Paste screenshots here...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context about the task here.
+      placeholder: Any other relevant information...
+    validations:
+      required: false
