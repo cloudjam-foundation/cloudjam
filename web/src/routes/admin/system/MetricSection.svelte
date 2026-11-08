@@ -68,13 +68,13 @@
 				break;
 			case AggregateWindow.Day:
 				topClamp.setUTCHours(0, 0, 0, 0);
-			// TODO: There's an ESLint thing here about no breaks
-			// TODO: I'm not sure what this is supposed to do and
-			// TODO: am too tired to try parse it. Do we add breaks here?
+				break;
 			case AggregateWindow.Hour:
 				topClamp.setUTCMinutes(0, 0, 0);
+				break;
 			case AggregateWindow.Minute:
 				topClamp.setUTCMinutes(0, 0, 0);
+				break;
 		}
 		return new Date(Math.min(to.getTime(), topClamp.getTime()));
 	}

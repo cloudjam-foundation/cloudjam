@@ -25,6 +25,7 @@
 </script>
 
 <svelte:head>
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -- This can't really be abused so who cares? -->
 	{@html themeCss}
 </svelte:head>
 
