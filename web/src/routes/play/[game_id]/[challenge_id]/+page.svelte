@@ -19,6 +19,7 @@
 	import { ChevronLeftIcon, LockIcon } from '@lucide/svelte';
 	import { toSvg } from 'jdenticon';
 	import PlayChallenge from './PlayChallenge.svelte';
+	import { resolve } from '$app/paths';
 
 	const reloadInterval = 5000;
 
@@ -147,7 +148,7 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto(`/play/${page.params.game_id}`)}>
+		<Button variant="ghost" onclick={() => goto(resolve(`/play/${page.params.game_id}`))}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">{challenge?.title || definition?.name || 'Challenge'}</h1>

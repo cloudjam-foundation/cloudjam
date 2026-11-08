@@ -15,6 +15,7 @@
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import { ChevronLeftIcon, LayersIcon } from '@lucide/svelte';
+	import { resolve } from '$app/paths';
 
 	let gameState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let game: Game | undefined = $state();
@@ -97,7 +98,7 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto(`/play`)}>
+		<Button variant="ghost" onclick={() => goto(resolve(`/play`))}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">{game?.name ?? 'Game'}</h1>
@@ -118,7 +119,7 @@
 				<button
 					type="button"
 					class="w-full cursor-pointer text-left sm:w-80"
-					onclick={() => goto(`/play/${game?.id}/${challenge.id}`)}
+					onclick={() => goto(resolve(`/play/${game?.id}/${challenge.id}`))}
 				>
 					<Card class="h-full items-start gap-2 duration-300 hover:opacity-70">
 						<LayersIcon class="size-8" />

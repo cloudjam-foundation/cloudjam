@@ -13,6 +13,7 @@
 	import Card from '$lib/components/Card.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
+	import { resolve } from '$app/paths';
 
 	let id = $state('');
 
@@ -34,7 +35,7 @@
 
 <div class="flex h-11/12 w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto('/host')}>
+		<Button variant="ghost" onclick={() => goto(resolve('/host'))}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">Games</h1>
@@ -50,7 +51,7 @@
 					<h1 class="text-2xl font-bold text-primary/80">Find Game</h1>
 					<p class="text-primary/60">You are not allowed to list games, find the one you need by its id</p>
 				</div>
-				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(`/host/games/${id}`)}>
+				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(resolve(`/host/games/${id}`))}>
 					<Input class="w-full" bind:value={id} placeholder="Game id" />
 					<Button type="submit" variant="primary" disabled={!id.trim()}>Open</Button>
 				</form>
@@ -70,11 +71,11 @@
 					return games;
 				}}
 				onRowClick={(game) => {
-					goto(`/host/games/${game.id}`);
+					goto(resolve(`/host/games/${game.id}`));
 				}}
 				loadState={gamesState}
 				columns={[
-					{ title: 'Status', width: '90px', render: renderStatus },
+					{ title: 'Status', width: '110px', render: renderStatus },
 					{ title: 'Name', width: '20%', render: renderName },
 					{ title: 'Description', width: '40%', render: renderDescription },
 					{ title: 'From', width: '20%', render: renderFrom },

@@ -44,7 +44,9 @@
 			name: name,
 			description: description,
 			features: Object.entries(features)
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				.filter(([_, active]) => active)
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				.map(([feature, _]) => Number(feature)),
 			permissions: Object.fromEntries(entries.filter((e) => e.scope).map((e) => [e.scope, e.patterns]))
 		})

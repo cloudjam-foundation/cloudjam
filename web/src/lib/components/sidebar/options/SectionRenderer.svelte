@@ -12,14 +12,14 @@
 
 <div id={section.title} class="relative flex w-full min-w-0 flex-col p-2">
 	<div
-		class="flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-primary/70 transition-[margin,opacity] duration-200 ease-linear [&>svg]:size-4 [&>svg]:shrink-0 {sidebar.expanded
+		class="flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-muted-foreground transition-[margin,opacity] duration-200 ease-linear [&>svg]:size-4 [&>svg]:shrink-0 {sidebar.expanded
 			? ''
 			: '-mt-8 opacity-0'}"
 	>
 		<Icon class="mr-2 h-4 w-4" />
 		{section.title}
 	</div>
-	<div class="w-full text-sm">
+	<div class="w-full pl-4 text-sm">
 		{#each section.items as item (item.title)}
 			{#if 'contents' in item}
 				<GroupingRenderer group={item} />

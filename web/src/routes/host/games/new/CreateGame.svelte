@@ -11,6 +11,7 @@
 	import { GameSchema } from '$lib/sdk/v1/play/game_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
+	import { resolve } from '$app/paths';
 
 	let createState: SubmitState = $state({ loading: false, error: '', forbidden: false });
 
@@ -39,20 +40,20 @@
 		onsubmit={() =>
 			Submit(async () => {
 				const resp = await Glue.game.create(request);
-				goto(`/host/games/${resp.id}`);
+				goto(resolve(`/host/games/${resp.id}`));
 			}, createState)}
 	>
 		<div class="grid gap-4 md:grid-cols-2">
 			<Input
 				bind:value={init.name}
-				label={'Name'}
-				placeholder={'Name of the game'}
+				label="Name"
+				placeholder="Name of the game"
 				validation={Glue.Validate(GameSchema, init).violation.name}
 			/>
 			<Input
 				bind:value={init.description}
-				label={'Description'}
-				placeholder={'What the game is about'}
+				label="Description"
+				placeholder="What the game is about"
 				validation={Glue.Validate(GameSchema, init).violation.description}
 			/>
 			<label class="text-sm">
@@ -73,7 +74,7 @@
 				/>
 			</label>
 		</div>
-		<Button variant={'primary'} type="submit" processing={createState.loading}>Schedule</Button>
+		<Button variant="primary" type="submit" processing={createState.loading}>Schedule</Button>
 		{#if createState.error}
 			<Alert
 				title={createState.forbidden ? 'Permission denied' : 'Failed to schedule game'}

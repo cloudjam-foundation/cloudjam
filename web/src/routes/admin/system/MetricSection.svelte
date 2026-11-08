@@ -15,6 +15,7 @@
 	import ResetIcon from '@lucide/svelte/icons/rotate-ccw';
 	import ZoomOutIcon from '@lucide/svelte/icons/zoom-out';
 	import ZoomChart from './ZoomChart.svelte';
+	import { SvelteDate } from 'svelte/reactivity';
 
 	// safe generates "layerchart" safe identifiers / keys.
 	const safe = (k: string) => k.replace(/[^a-zA-Z0-9_]/g, '_');
@@ -35,6 +36,8 @@
 	}
 
 	let [window, bucket] = $derived(zoomWindow(from, to));
+
+	// TODO: Type this file properly
 
 	function zoomTimeformat(from: Date, to: Date) {
 		// if > 48h show a per day format
@@ -57,7 +60,7 @@
 
 	// clampEnd clamps the to date smoothly to the end of the graph depending on the aggregation window.
 	function clampEnd(window: AggregateWindow, to: Date): Date {
-		let topClamp = new Date();
+		let topClamp = new SvelteDate();
 		switch (window) {
 			case AggregateWindow.Month:
 				topClamp.setUTCDate(1);
@@ -65,10 +68,13 @@
 				break;
 			case AggregateWindow.Day:
 				topClamp.setUTCHours(0, 0, 0, 0);
+				break;
 			case AggregateWindow.Hour:
 				topClamp.setUTCMinutes(0, 0, 0);
+				break;
 			case AggregateWindow.Minute:
 				topClamp.setUTCMinutes(0, 0, 0);
+				break;
 		}
 		return new Date(Math.min(to.getTime(), topClamp.getTime()));
 	}

@@ -3,6 +3,7 @@
 	import CreateGame from './CreateGame.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 </script>
 
 <svelte:head>
@@ -14,7 +15,7 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto('/host/games')}>
+		<Button variant="ghost" onclick={() => goto(resolve('/host/games'))}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">Host Game</h1>

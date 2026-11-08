@@ -5,6 +5,7 @@
 	import TabPage from '$lib/components/TabPage.svelte';
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import RolePanel from './RolePanel.svelte';
+	import { resolve } from '$app/paths';
 
 	let { data } = $props();
 </script>
@@ -37,7 +38,7 @@
 {#snippet overview()}
 	{#if data.role}
 		{#key data.role.id}
-			<RolePanel role={data.role} refresh={() => data.refresh()} deleted={() => goto('/admin/roles')} />
+			<RolePanel role={data.role} refresh={() => data.refresh()} deleted={() => goto(resolve('/admin/roles'))} />
 		{/key}
 	{/if}
 {/snippet}
@@ -45,7 +46,7 @@
 <TabPage
 	title={data.role?.name ?? 'Role'}
 	headers={[builtin, uuid]}
-	back={() => goto('/admin/roles')}
+	back={() => goto(resolve('/admin/roles'))}
 	dataState={data.roleState}
 	tabs={['overview']}
 	tabPages={[overview]}

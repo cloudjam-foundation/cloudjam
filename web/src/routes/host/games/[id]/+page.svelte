@@ -9,6 +9,7 @@
 	import ChallengeSection from './ChallengeSection.svelte';
 	import GamePanel from './GamePanel.svelte';
 	import TeamSection from './TeamSection.svelte';
+	import { resolve } from '$app/paths';
 
 	let { data } = $props();
 
@@ -55,7 +56,7 @@
 
 {#snippet overview()}
 	{#if data.game}
-		<GamePanel game={data.game} refresh={() => data.refresh()} deleted={() => goto('/host/games')} />
+		<GamePanel game={data.game} refresh={() => data.refresh()} deleted={() => goto(resolve('/host/games'))} />
 	{/if}
 {/snippet}
 
@@ -72,7 +73,7 @@
 <TabPage
 	title={data.game?.name ?? 'Game'}
 	headers={[state, uuid]}
-	back={() => goto('/host/games')}
+	back={() => goto(resolve('/host/games'))}
 	dataState={data.gameState}
 	tabs={['overview', 'teams', 'challenges']}
 	tabPages={[overview, teams, challenges]}

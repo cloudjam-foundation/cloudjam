@@ -3,6 +3,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import CreateRole from './CreateRole.svelte';
+	import { resolve } from '$app/paths';
 </script>
 
 <svelte:head>
@@ -14,11 +15,11 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto('/admin/roles')}>
+		<Button variant="ghost" onclick={() => goto(resolve('/admin/roles'))}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">Create Role</h1>
 	</div>
 
-	<CreateRole oncreated={() => goto('/admin/roles/')} />
+	<CreateRole oncreated={() => goto(resolve('/admin/roles/'))} />
 </div>

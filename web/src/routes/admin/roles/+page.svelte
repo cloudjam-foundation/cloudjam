@@ -12,6 +12,7 @@
 	import { create } from '@bufbuild/protobuf';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import PlusIcon from '@lucide/svelte/icons/plus';
+	import { resolve } from '$app/paths';
 
 	let id = $state('');
 
@@ -27,7 +28,7 @@
 
 <div class="flex h-11/12 w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto('/admin')}>
+		<Button variant="ghost" onclick={() => goto(resolve('/admin'))}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">Roles</h1>
@@ -43,7 +44,7 @@
 					<h1 class="text-2xl font-bold text-primary/80">Find Role</h1>
 					<p class="text-primary/60">You are not allowed to list roles, find the one you need by its id</p>
 				</div>
-				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(`/admin/roles/${id}`)}>
+				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(resolve(`/admin/roles/${id}`))}>
 					<Input class="w-full" bind:value={id} placeholder="Role ID" />
 					<Button type="submit" variant="primary" disabled={!id.trim()}>Open</Button>
 				</form>
@@ -63,7 +64,7 @@
 					return roles;
 				}}
 				onRowClick={(role) => {
-					goto(`/admin/roles/${role.id}`);
+					goto(resolve(`/admin/roles/${role.id}`));
 				}}
 				loadState={rolesState}
 				columns={[

@@ -11,6 +11,7 @@
 		formatter
 	}: {
 		class?: string;
+		// TODO: Maybe better way to do this? Unknown doesn't work.
 		labelFormatter?: (value: any) => string;
 		formatter?: Snippet<[{ value: unknown; name: string; item: TooltipPayload }]>;
 	} = $props();

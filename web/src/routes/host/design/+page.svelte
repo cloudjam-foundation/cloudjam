@@ -21,6 +21,7 @@
 	import CreateDefinition from './CreateDefinition.svelte';
 	import DefinitionPanel from './DefinitionPanel.svelte';
 	import Help from './Help.svelte';
+	import { resolve } from '$app/paths';
 
 	let providerId: string = $state('');
 	let provider: Provider | undefined = $state();
@@ -60,7 +61,7 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto('/host')}>
+		<Button variant="ghost" onclick={() => goto(resolve('/host'))}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">Design</h1>

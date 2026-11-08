@@ -6,7 +6,7 @@
 </script>
 
 <div class="flex flex-wrap items-center justify-start gap-2">
-	{#each Object.keys(Feature).filter((key) => isNaN(Number(key))) as featureName}
+	{#each Object.keys(Feature).filter((key) => isNaN(Number(key))) as featureName (featureName)}
 		{@const feature = Feature[featureName as keyof typeof Feature]}
 		{@const active = features[feature]}
 		<Button

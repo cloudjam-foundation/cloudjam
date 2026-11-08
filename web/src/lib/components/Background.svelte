@@ -1,6 +1,3 @@
-<script lang="ts">
-</script>
-
 <svg
 	id="background"
 	xmlns="http://www.w3.org/2000/svg"
@@ -9,7 +6,7 @@
 	viewBox="0 0 600 600"
 	aria-hidden="true"
 	preserveAspectRatio="none"
-	class="pointer-events-none absolute inset-0 h-full w-full -z-10"
+	class="pointer-events-none absolute inset-0 -z-10 h-full w-full"
 >
 	<defs>
 		<pattern id="background-pattern" width="600" height="600" patternUnits="userSpaceOnUse">
@@ -26,7 +23,7 @@
 <style>
 	#background {
 		background-color: var(--background);
-    fill: var(--deep-background);
+		fill: var(--deep-background);
 		stroke: var(--foreground);
 		stroke-opacity: 0.3;
 		stroke-width: 0.2px;

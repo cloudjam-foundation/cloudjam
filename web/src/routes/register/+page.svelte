@@ -10,6 +10,7 @@
 	import { RegisterRequestSchema } from '$lib/sdk/v1/auth/auth_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { onMount } from 'svelte';
+	import { resolve } from '$app/paths';
 
 	let registerRequest = $state(create(RegisterRequestSchema, {}));
 
@@ -37,7 +38,7 @@
 			onsubmit={() =>
 				Submit(async () => {
 					await Glue.auth.register(registerRequest);
-					goto('/login');
+					goto(resolve('/login'));
 				}, registerState)}
 		>
 			<img alt="icon" src={logo} class="h-32" />

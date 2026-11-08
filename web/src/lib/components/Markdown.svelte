@@ -6,6 +6,7 @@
 	import light from 'highlight.js/styles/vs.css?inline';
 	import dark from 'highlight.js/styles/vs-dark.css?inline';
 
+	// TODO: Find a better way to do this.
 	const themeCss = `<style> :root:not(.dark) { ${light} } :root.dark { ${dark} } </style>`;
 
 	const marked = new Marked(
@@ -24,6 +25,7 @@
 </script>
 
 <svelte:head>
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -- This can't really be abused so who cares? -->
 	{@html themeCss}
 </svelte:head>
 

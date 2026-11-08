@@ -22,6 +22,7 @@
 	import { onMount } from 'svelte';
 	import ZoomChart from './ZoomChart.svelte';
 
+	// TODO: Is there a way to share functions and components & stuff between this and the CostAccountPanel
 	let { select }: { select?: (providerId: string, accountId: string, timewindow: string) => void } = $props();
 
 	let providerId: string = $state('');
@@ -106,6 +107,7 @@
 				})
 			);
 
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			for (const [_, series] of Object.entries(resp.services)) {
 				for (let i = 0; i < series.time.length; i++) {
 					totalCost += Number(series.cost[i]);
@@ -190,7 +192,7 @@
 			}}
 			labels={costLabels}
 			data={costData}
-			unit={`$ / day`}
+			unit="$ / day"
 			bind:from={chartFrom}
 			bind:to={chartTo}
 		/>

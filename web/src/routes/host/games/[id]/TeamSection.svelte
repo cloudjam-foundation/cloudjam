@@ -13,7 +13,7 @@
 	import DynamicBadge from '$lib/components/DynamicBadge.svelte';
 	import { toSvg } from 'jdenticon';
 	import Button from '$lib/components/Button.svelte';
-	import { ClosedCaptionIcon, XIcon } from '@lucide/svelte';
+	import { XIcon } from '@lucide/svelte';
 
 	let { game }: { game: Game } = $props();
 
@@ -72,8 +72,8 @@
 		{/snippet}
 		{#snippet renderPlayers(team: Team)}
 			<div class="flex flex-row items-center gap-1">
-				{#each Object.entries(team.players) as [_, player]}
-					<DynamicBadge variant={'primary'}>
+				{#each Object.entries(team.players) as [_, player] (_)}
+					<DynamicBadge variant="primary">
 						<img
 							alt="user profile"
 							src={`data:image/svg+xml;base64,${btoa(toSvg(player.pubId, 16))}`}

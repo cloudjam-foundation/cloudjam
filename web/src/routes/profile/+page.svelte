@@ -130,7 +130,7 @@
 					/>
 					<h1 class="text-4xl opacity-80">{user.username}</h1>
 					<p class="mt-auto text-neutral/80">
-						Proud CloudJamer since {new Date(Number(user.createdAt) * 1000).toLocaleDateString()}
+						Proud CloudJammer since {new Date(Number(user.createdAt) * 1000).toLocaleDateString()}
 					</p>
 					<StaticBadge text={user.organization} variant="filled" shimmer={true} class="font-bold" />
 					<div class="mt-2 flex flex-row items-center gap-2">
@@ -164,7 +164,7 @@
 		</Card>
 	{/if}
 	<h1 class="w-full glass-text py-3 text-start text-9xl font-bold">
-		{#each user?.description.split('\\n') as line}
+		{#each user?.description.split('\\n') as line (line)}
 			{line}<br />
 		{/each}
 	</h1>

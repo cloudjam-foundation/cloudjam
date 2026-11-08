@@ -56,6 +56,7 @@
 	];
 
 	let costLabels: ChartConfig = $state({});
+	// TODO: Find out a way to type this properly
 	let costData: any[] = $state([]);
 	let totalCost: number = $state(0);
 	let serviceCost: Record<string, number> = $state({});
@@ -182,7 +183,7 @@
 			}}
 			labels={costLabels}
 			data={costData}
-			unit={`$ / day`}
+			unit="$ / day"
 			bind:from={chartFrom}
 			bind:to={chartTo}
 		/>

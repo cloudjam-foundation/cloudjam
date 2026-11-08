@@ -29,7 +29,7 @@
 	let finalState = $derived(mapper ? mapper[state] : state);
 </script>
 
-<div class="glass w-max rounded-full px-3 py-[0.2rem] text-center text-xs">
+<div class="w-max rounded-full glass px-3 py-[0.2rem] text-center text-xs">
 	{#if finalState === 'StableNeutral'}
 		<span class="text-primary/70"> {text} </span>
 	{:else if finalState === 'StablePositive'}

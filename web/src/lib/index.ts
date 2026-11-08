@@ -1,4 +1,5 @@
 import { goto } from '$app/navigation';
+import { resolve } from '$app/paths';
 import { Code, ConnectError, type Interceptor } from '@connectrpc/connect';
 import { createGlue } from '@megakuul/glue-protocol';
 import { jwtDecode } from 'jwt-decode';
@@ -16,6 +17,7 @@ import { TeamService } from './sdk/v1/play/team/team_pb';
 
 export const Glue = createGlue(
 	'/api',
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	(_): Interceptor => {
 		return (next) => async (req) => {
 			req.header.set('authorization', getToken());
@@ -44,20 +46,24 @@ export type SubmitState = { error: string; loading: boolean; forbidden: boolean 
 
 // Submit is a helper for the common "unerror->spin->call->unspin->error" flow
 // in most basic submit functions. Returns a usable user error and writes the full error
-// to a error bus (currently console.error() TBD).
+// to an error bus (currently console.error() TBD).
 export async function Submit(call: () => Promise<void>, state: SubmitState) {
+	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 	((state.loading = true), (state.error = ''), (state.forbidden = false));
 	try {
 		const res = await call();
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		((state.loading = false), (state.error = ''), (state.forbidden = false));
 		return res;
-	} catch (e: any) {
+	} catch (e: unknown) {
 		const error = ConnectError.from(e);
 		if (error.code === Code.PermissionDenied) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 			((state.loading = false), (state.error = error.rawMessage), (state.forbidden = true));
 		} else {
 			// TODO: implement more sophisticated error notification system.
 			console.error(error.message);
+			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 			((state.loading = false), (state.error = error.rawMessage), (state.forbidden = false));
 		}
 	}
@@ -71,6 +77,7 @@ export function getSubject(): string {
 	const token = localStorage.getItem('auth_token');
 	if (token) {
 		const decoded = jwtDecode(token, {});
+		// TODO: See if there's a better way to type this
 		if ((decoded.exp ?? 0) * 1000 > Date.now()) return (decoded as any).sub;
 	}
 	return '';
@@ -81,6 +88,6 @@ function getToken(): string {
 	if (token && (jwtDecode(token, {}).exp ?? 0) * 1000 > Date.now()) {
 		return token;
 	}
-	goto('/login');
+	goto(resolve('/login'));
 	return '';
 }

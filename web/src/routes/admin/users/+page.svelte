@@ -12,6 +12,7 @@
 	import { goto } from '$app/navigation';
 	import LinkButton from '$lib/components/LinkButton.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
+	import { resolve } from '$app/paths';
 
 	let id = $state('');
 
@@ -27,7 +28,7 @@
 
 <div class="flex h-11/12 w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto('/admin')}>
+		<Button variant="ghost" onclick={() => goto(resolve('/admin'))}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">Users</h1>
@@ -43,7 +44,7 @@
 					<h1 class="text-2xl font-bold text-primary/80">Find User</h1>
 					<p class="text-primary/60">You are not allowed to list users, find the one you need by its id</p>
 				</div>
-				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(`/admin/users/${id}`)}>
+				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(resolve(`/admin/users/${id}`))}>
 					<Input class="w-full" bind:value={id} placeholder="User ID" />
 					<Button type="submit" variant="primary" disabled={!id.trim()}>Open</Button>
 				</form>
@@ -63,7 +64,7 @@
 					return users;
 				}}
 				onRowClick={(user) => {
-					goto(`/admin/users/${user.id}`);
+					goto(resolve(`/admin/users/${user.id}`));
 				}}
 				loadState={usersState}
 				columns={[
