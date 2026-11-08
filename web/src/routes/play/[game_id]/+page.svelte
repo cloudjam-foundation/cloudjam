@@ -16,6 +16,7 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import { ChevronLeftIcon, LayersIcon } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
+	import CountdownBadge from './components/CountdownBadge.svelte';
 
 	let gameState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let game: Game | undefined = $state();
@@ -76,6 +77,9 @@
 	});
 
 	let active = $state(false);
+	let end = $state(0);
+	let now = $state(0);
+
 	$effect(() => {
 		if (!game) {
 			active = false;
@@ -83,6 +87,8 @@
 		}
 		const updateActive = () =>
 			(active = timestampDate(game!.from!).getTime() < Date.now() && timestampDate(game!.to!).getTime() > Date.now());
+		now = Date.now();
+		end = timestampDate(game!.to!).getTime();
 		const interval = setInterval(updateActive, 1000);
 		updateActive();
 		return () => clearInterval(interval);
@@ -104,6 +110,7 @@
 		<h1 class="text-3xl opacity-80">{game?.name ?? 'Game'}</h1>
 		{#if active}
 			<StateBadge text="running" state="RunningPositive" mapper={undefined} />
+			<CountdownBadge {end} {now} />
 		{:else}
 			<StateBadge text="ended" state="StableNeutral" mapper={undefined} />
 		{/if}
