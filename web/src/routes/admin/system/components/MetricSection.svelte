@@ -2,26 +2,29 @@
 	import { Glue, Submit, type SubmitState } from '$lib';
 	import Alert from '$lib/components/Alert.svelte';
 	import Button from '$lib/components/Button.svelte';
-	import type { ChartConfig } from '$lib/components/chart/chart.ts';
+	import type { ChartConfig } from '$lib/components/chart/chart';
 	import Card from '$lib/components/Card.svelte';
 	import {
 		AggregateHitsRequestSchema,
 		AggregateLatencyRequestSchema,
 		AggregateWindow,
 		AggregateWindowSchema
-	} from '$lib/sdk/v1/admin/system/system_pb.ts';
+	} from '$lib/sdk/v1/admin/system/system_pb';
 	import { create, enumToJson } from '@bufbuild/protobuf';
 	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
 	import ResetIcon from '@lucide/svelte/icons/rotate-ccw';
 	import ZoomOutIcon from '@lucide/svelte/icons/zoom-out';
 	import ZoomChart from './ZoomChart.svelte';
 	import { SvelteDate } from 'svelte/reactivity';
+	import Skeleton from '$lib/components/Skeleton.svelte';
 
 	// safe generates "layerchart" safe identifiers / keys.
 	const safe = (k: string) => k.replace(/[^a-zA-Z0-9_]/g, '_');
 
 	const initialFrom = new Date(Date.now() - 24 * 60 * 60 * 1000);
 	const initialTo = new Date();
+
+	let loading = $state(true);
 
 	let from = $state(initialFrom);
 	let to = $state(clampEnd(AggregateWindow.Hour, initialTo));
@@ -184,6 +187,7 @@
 		Submit(async () => {
 			[totalHits, hitLabels, hitData] = await loadHits(window, bucket, from, to);
 			[overallLatency, latencyLabels, latencyData] = await loadLatency(window, bucket, from, to);
+			loading = false;
 		}, scanState);
 	});
 </script>
@@ -196,13 +200,23 @@
 	<Card class="w-full items-start gap-8">
 		<div class="flex w-full flex-col items-start gap-4 border-b pb-5 sm:flex-row sm:items-center sm:gap-20">
 			<div>
-				<h1 class="text-4xl font-semibold text-primary/90">{totalHits}</h1>
-				<p class="text-xl text-primary/60">requests served</p>
+				{#if loading}
+					<Skeleton class="h-12 w-24" />
+					<Skeleton class="mt-2 h-6 w-36" />
+				{:else}
+					<h1 class="text-4xl font-semibold text-primary/90">{totalHits}</h1>
+					<p class="text-xl text-primary/60">requests served</p>
+				{/if}
 			</div>
 
 			<div>
-				<h1 class="text-4xl font-semibold text-primary/90">{overallLatency} ms</h1>
-				<p class="text-xl text-primary/60">avg latency delivered</p>
+				{#if loading}
+					<Skeleton class="h-12 w-24" />
+					<Skeleton class="mt-2 h-6 w-36" />
+				{:else}
+					<h1 class="text-4xl font-semibold text-primary/90">{overallLatency} ms</h1>
+					<p class="text-xl text-primary/60">avg latency delivered</p>
+				{/if}
 			</div>
 
 			<div class="flex items-center gap-2 sm:ml-auto">
@@ -226,6 +240,7 @@
 					variant="primary"
 					title="Reset"
 					onclick={() => {
+						loading = true;
 						from = initialFrom;
 						to = clampEnd(window, new Date());
 					}}

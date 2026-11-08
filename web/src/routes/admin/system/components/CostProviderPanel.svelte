@@ -3,7 +3,7 @@
 	import Alert from '$lib/components/Alert.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import ProcessingButton from '$lib/components/ProcessingButton.svelte';
-	import type { ChartConfig } from '$lib/components/chart/chart.ts';
+	import type { ChartConfig } from '$lib/components/chart/chart';
 	import OptionalSelect, { type Suggestion } from '$lib/components/OptionalSelect.svelte';
 	import Separator from '$lib/components/Separator.svelte';
 	import Card from '$lib/components/Card.svelte';
@@ -11,27 +11,31 @@
 	import {
 		AggregateCostRequestSchema,
 		ListRequestSchema as ListAccountRequestSchema
-	} from '$lib/sdk/v1/cloud/account/account_pb.ts';
-	import type { Account } from '$lib/sdk/v1/cloud/account_pb.ts';
-	import { ListRequestSchema as ListProviderRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb.ts';
-	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb.ts';
+	} from '$lib/sdk/v1/cloud/account/account_pb';
+	import type { Account } from '$lib/sdk/v1/cloud/account_pb';
+	import { ListRequestSchema as ListProviderRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb';
+	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { durationFromMs } from '@bufbuild/protobuf/wkt';
 	import { ChartNoAxesCombinedIcon, ZoomOutIcon } from '@lucide/svelte';
 	import ResetIcon from '@lucide/svelte/icons/rotate-ccw';
 	import { onMount } from 'svelte';
 	import ZoomChart from './ZoomChart.svelte';
+	import Skeleton from '$lib/components/Skeleton.svelte';
 
 	// TODO: Is there a way to share functions and components & stuff between this and the CostAccountPanel
 	let { select }: { select?: (providerId: string, accountId: string, timewindow: string) => void } = $props();
 
 	let providerId: string = $state('');
 
+	let loading = $state(true);
+
 	let providerSuggestions: Provider[] = $state([]);
 	let providerSuggestionsState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	onMount(() => {
 		Submit(async () => {
 			providerSuggestions = (await Glue.provider.list(create(ListProviderRequestSchema, { limit: 100 }))).providers;
+			loading = false;
 		}, providerSuggestionsState);
 	});
 
@@ -66,6 +70,7 @@
 		providerId: string,
 		window: number
 	): Promise<[number, Record<string, { name: string; cost: number }>, ChartConfig, any[]]> {
+		loading = true;
 		let bucket = 24 * 60 * 60 * 1000; // bucket is always daily
 		let totalCost = 0;
 		let accountCost: Record<string, { name: string; cost: number }> = {};
@@ -129,6 +134,7 @@
 			};
 		}
 
+		loading = false;
 		return [totalCost, accountCost, labels, Object.values(records).sort((a, b) => a.date - b.date)];
 	}
 
@@ -141,8 +147,13 @@
 <Card class="w-full items-start gap-8">
 	<div class="flex w-full flex-col items-start gap-4 border-b pb-5 sm:flex-row sm:items-center sm:gap-20">
 		<div>
-			<h1 class="text-4xl font-semibold text-primary/90">{Math.round(totalCost * 100) / 100} $</h1>
-			<p class="text-xl text-primary/60">total provider cost</p>
+			{#if loading}
+				<Skeleton class="h-16 w-16" />
+				<Skeleton class="mt-2 h-6 w-36" />
+			{:else}
+				<h1 class="text-4xl font-semibold text-primary/90">${Math.round(totalCost * 100) / 100}</h1>
+				<p class="text-xl text-primary/60">total provider cost</p>
+			{/if}
 		</div>
 
 		<div class="flex flex-wrap items-center gap-2 sm:ml-auto">
