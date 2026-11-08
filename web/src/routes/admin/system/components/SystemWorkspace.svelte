@@ -4,12 +4,30 @@
 	import CostSection from './CostSection.svelte';
 	import LogSection from './LogSection.svelte';
 	import MetricSection from './MetricSection.svelte';
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	let { close }: { close: () => void } = $props();
 
 	const tabs = ['logs', 'metrics', 'cost'] as const;
+	type Tab = (typeof tabs)[number];
 
-	let tab: (typeof tabs)[number] = $state('logs');
+	function isTab(value: string): value is Tab {
+		return tabs.includes(value as Tab);
+	}
+
+	let tab: Tab = $state('logs');
+
+	onMount(() => {
+		const hash = page.url.hash.slice(1);
+		if (isTab(hash)) tab = hash;
+	});
+
+	function selectTab(name: Tab) {
+		tab = name;
+		goto(`#${name}`, { state: page.state, shallow: true, replace: true });
+	}
 </script>
 
 <div class="flex w-full flex-col gap-4">
@@ -27,7 +45,7 @@
 				class="cursor-pointer border-b-2 px-4 py-2 capitalize transition-all duration-200 {tab === name
 					? 'border-primary'
 					: 'border-transparent opacity-60 hover:opacity-100'}"
-				onclick={() => (tab = name)}
+				onclick={() => selectTab(name)}
 			>
 				{name}
 			</button>

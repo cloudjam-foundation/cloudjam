@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { ChevronLeftIcon } from '@lucide/svelte';
-	import type { Snippet } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import type { SubmitState } from '$lib';
 	import Button from '$lib/components/Button.svelte';
 	import Alert from '$lib/components/Alert.svelte';
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 
 	let {
 		title,
@@ -21,6 +23,22 @@
 		tabPages: Snippet[];
 	} = $props();
 
+	type Tab = (typeof tabs)[number];
+
+	function isTab(value: string): value is Tab {
+		return tabs.includes(value as Tab);
+	}
+
+	onMount(() => {
+		const hash = page.url.hash.slice(1);
+		if (isTab(hash)) selected = tabs.indexOf(hash);
+	});
+
+	function selectTab(name: Tab) {
+		selected = tabs.indexOf(name);
+		goto(`#${name}`, { state: page.state, shallow: true, replace: true });
+	}
+
 	let selected: number = $state(0);
 </script>
 
@@ -36,13 +54,13 @@
 	</div>
 
 	<div class="flex flex-row gap-2 border-b">
-		{#each tabs as name, i (name)}
+		{#each tabs as name, i (i)}
 			<button
 				type="button"
 				class="cursor-pointer border-b-2 px-4 py-2 capitalize transition-all duration-200 {selected === i
 					? 'border-primary'
 					: 'border-transparent opacity-60 hover:opacity-100'}"
-				onclick={() => (selected = i)}
+				onclick={() => selectTab(name)}
 			>
 				{name}
 			</button>
