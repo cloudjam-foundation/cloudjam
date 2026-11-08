@@ -18,9 +18,9 @@
 	import { WandSparklesIcon } from '@lucide/svelte';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import { onMount } from 'svelte';
-	import CreateDefinition from './CreateDefinition.svelte';
-	import DefinitionPanel from './DefinitionPanel.svelte';
-	import Help from './Help.svelte';
+	import CreateDefinition from './components/CreateDefinition.svelte';
+	import DefinitionPanel from './components/DefinitionPanel.svelte';
+	import Help from './components/Help.svelte';
 	import { resolve } from '$app/paths';
 
 	let providerId: string = $state('');

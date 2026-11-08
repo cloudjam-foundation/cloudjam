@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
-	import CreateRole from './CreateRole.svelte';
+	import CreateRole from './components/CreateRole.svelte';
 	import { resolve } from '$app/paths';
 </script>
 

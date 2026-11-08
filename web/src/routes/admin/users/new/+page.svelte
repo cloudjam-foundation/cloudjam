@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
-	import CreateUser from './CreateUser.svelte';
+	import CreateUser from './components/CreateUser.svelte';
 </script>
 
 <svelte:head>

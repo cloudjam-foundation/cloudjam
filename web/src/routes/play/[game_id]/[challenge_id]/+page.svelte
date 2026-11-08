@@ -18,7 +18,7 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import { ChevronLeftIcon, LockIcon } from '@lucide/svelte';
 	import { toSvg } from 'jdenticon';
-	import PlayChallenge from './PlayChallenge.svelte';
+	import PlayChallenge from './components/PlayChallenge.svelte';
 	import { resolve } from '$app/paths';
 
 	const reloadInterval = 5000;

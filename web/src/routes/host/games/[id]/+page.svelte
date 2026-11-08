@@ -6,9 +6,9 @@
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import CopyIcon from '@lucide/svelte/icons/copy';
-	import ChallengeSection from './ChallengeSection.svelte';
-	import GamePanel from './GamePanel.svelte';
-	import TeamSection from './TeamSection.svelte';
+	import ChallengeSection from './components/ChallengeSection.svelte';
+	import GamePanel from './components/GamePanel.svelte';
+	import TeamSection from './components/TeamSection.svelte';
 	import { resolve } from '$app/paths';
 
 	let { data } = $props();

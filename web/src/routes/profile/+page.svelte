@@ -6,7 +6,7 @@
 	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
 	import { GetRequestSchema, ResetPasswordRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/admin/user/user_pb';
 	import { UserSchema, type User } from '$lib/sdk/v1/admin/user_pb';
-	import Gauge from './Gauge.svelte';
+	import Gauge from './components/Gauge.svelte';
 	import { goto } from '$app/navigation';
 	import { CircleCheck, CircleX, LogOut, Pencil, ShieldCheck } from '@lucide/svelte';
 	import Input from '$lib/components/Input.svelte';
