@@ -164,6 +164,12 @@
 	backdrop-filter: blur(2px);
 }
 
+@utility glass-no-shadow {
+	box-shadow: color-mix(in oklch, var(--foreground) 8%, transparent) 0px 0px 0px 1px;
+	background-color: color-mix(in oklch, var(--foreground) 1%, transparent);
+	backdrop-filter: blur(2px);
+}
+
 @utility glass-text {
 	background: linear-gradient(
 		180deg,
