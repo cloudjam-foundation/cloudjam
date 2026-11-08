@@ -2,7 +2,7 @@
 	import { Glue, Submit, type SubmitState } from '$lib';
 	import Alert from '$lib/components/Alert.svelte';
 	import Button from '$lib/components/Button.svelte';
-	import type { ChartConfig } from '$lib/components/chart/chart.ts';
+	import type { ChartConfig } from '$lib/components/chart/chart';
 	import Input from '$lib/components/Input.svelte';
 	import Select from '$lib/components/Select.svelte';
 	import Card from '$lib/components/Card.svelte';
@@ -10,13 +10,13 @@
 		AggregateLogsRequestSchema,
 		AggregateWindow,
 		AggregateWindowSchema
-	} from '$lib/sdk/v1/admin/system/system_pb.ts';
+	} from '$lib/sdk/v1/admin/system/system_pb';
 	import { create, enumToJson } from '@bufbuild/protobuf';
 	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
-	import ResetIcon from '@lucide/svelte/icons/rotate-ccw';
-	import ZoomOutIcon from '@lucide/svelte/icons/zoom-out';
+	import { RotateCcwIcon, ZoomOutIcon } from '@lucide/svelte';
 	import LogPanel from './LogPanel.svelte';
 	import ZoomChart from './ZoomChart.svelte';
+	import { levelColors } from './logSeverities';
 
 	const levels = [
 		{ value: '', label: 'All levels' },
@@ -32,13 +32,6 @@
 		{ value: '100', label: '100 lines' },
 		{ value: '200', label: '200 lines' }
 	];
-
-	const levelColors: Record<string, string> = {
-		DEBUG: 'var(--color-sky-500)',
-		INFO: 'var(--color-emerald-500)',
-		WARN: 'var(--color-amber-500)',
-		ERROR: 'var(--color-red-500)'
-	};
 
 	const initialFrom = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
@@ -155,7 +148,7 @@
 					title="Reset"
 					onclick={() => ((from = new Date(Date.now() - 24 * 60 * 60 * 1000)), (to = new Date()))}
 				>
-					<ResetIcon />
+					<RotateCcwIcon />
 				</Button>
 			</div>
 		</div>

@@ -16,6 +16,9 @@
 @source '../../node_modules/layerchart/dist';
 @source '.';
 
+/* I'm not happy about this at all, but only way to get these to render as Tailwind is smarter than it should be. */
+@source inline('text-{sky,emerald,amber,red}-300');
+
 :root {
 	font-size: clamp(80%, 1vw + 0.5rem, 120%);
 

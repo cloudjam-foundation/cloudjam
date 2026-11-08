@@ -6,12 +6,11 @@
 	import Dialog from '$lib/components/Dialog.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
-	import { ScanLogsRequestSchema, type Log } from '$lib/sdk/v1/admin/system/system_pb.ts';
+	import { ScanLogsRequestSchema, type Log } from '$lib/sdk/v1/admin/system/system_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate, timestampFromDate } from '@bufbuild/protobuf/wkt';
-	import CopyIcon from '@lucide/svelte/icons/copy';
-	import RefreshIcon from '@lucide/svelte/icons/refresh-cw';
-	import XIcon from '@lucide/svelte/icons/x';
+	import { XIcon, CopyIcon, RefreshCwIcon } from '@lucide/svelte';
+	import { severities } from './logSeverities';
 
 	let {
 		from,
@@ -30,13 +29,6 @@
 		procedure: string;
 		limit: number;
 	} = $props();
-
-	const severities: Record<string, { short: string; level: string }> = {
-		DEBUG: { short: 'DBG', level: 'text-sky-500' },
-		INFO: { short: 'INF', level: 'text-emerald-500' },
-		WARN: { short: 'WRN', level: 'text-amber-500' },
-		ERROR: { short: 'ERR', level: 'text-red-500' }
-	};
 
 	let scanState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 
@@ -76,7 +68,7 @@
 				</Button>
 			{/if}
 			<Button variant="primary" title="Refresh" disabled={scanState.loading} onclick={() => nonce++}>
-				<RefreshIcon />
+				<RefreshCwIcon />
 			</Button>
 		</div>
 	</div>
