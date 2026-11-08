@@ -33,7 +33,7 @@
 	{#if finalState === 'StableNeutral'}
 		<span class="text-primary/70"> {text} </span>
 	{:else if finalState === 'StablePositive'}
-		<span class="text-emerald-500"> {text} </span>
+		<span class="shimmer text-emerald-500 shimmer-color-emerald-500/70"> {text} </span>
 	{:else if finalState === 'StableWarning'}
 		<span class="text-orange-600"> {text} </span>
 	{:else if finalState === 'StableNegative'}
