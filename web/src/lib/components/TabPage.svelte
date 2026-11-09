@@ -16,9 +16,9 @@
 		tabPages
 	}: {
 		title: string;
-		headers: Snippet[];
-		back: () => Promise<void>;
-		dataState: SubmitState;
+		headers?: Snippet[];
+		back: () => void | Promise<void>;
+		dataState?: SubmitState;
 		tabs: string[];
 		tabPages: Snippet[];
 	} = $props();
@@ -67,13 +67,13 @@
 		{/each}
 	</div>
 
-	{#if dataState.forbidden}
+	{#if dataState?.forbidden}
 		<Alert title="Permission Denied" message="You are not allowed to open this section" />
 	{:else}
 		{@render tabPages[selected]()}
 	{/if}
 
-	{#if dataState.error}
-		<Alert title="Something went wrong" message={dataState.error} />
+	{#if dataState?.error}
+		<Alert title="Something went wrong" message={dataState?.error ?? ''} />
 	{/if}
 </div>
