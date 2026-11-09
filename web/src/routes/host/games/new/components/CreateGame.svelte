@@ -19,7 +19,7 @@
 	const localInput = (date: Date) =>
 		new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 
-	let from = $state(localInput(new Date((Date.now() + 1) * 60 * 1000)));
+	let from = $state(localInput(new Date(Date.now() + 60 * 1000)));
 	let to = $state(localInput(new Date(Date.now() + 3 * 60 * 60 * 1000)));
 
 	let request = $derived(
@@ -37,11 +37,13 @@
 
 	<form
 		class="flex w-full flex-col gap-4"
-		onsubmit={() =>
+		onsubmit={(e) => {
+			e.preventDefault();
 			Submit(async () => {
 				const resp = await Glue.game.create(request);
 				await goto(resolve(`/host/games/[id]`, { id: resp.id }));
-			}, createState)}
+			}, createState);
+		}}
 	>
 		<div class="grid gap-4 md:grid-cols-2">
 			<Input
