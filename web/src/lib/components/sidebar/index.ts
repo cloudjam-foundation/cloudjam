@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 
 export function isMacOS(): boolean {
 	if (!browser) return false;
