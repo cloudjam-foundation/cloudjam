@@ -59,19 +59,19 @@
 			>
 				<div class="grid gap-4 md:grid-cols-2">
 					<Input
-						bind:value={mod.name}
+						value={mod.name}
 						label="Name"
 						placeholder="Name of the challenge definition"
 						validation={Glue.Validate(DefinitionSchema, mod).violation.name}
 					/>
 					<Input
-						bind:value={mod.description}
+						value={mod.description}
 						label="Description"
 						placeholder="Description of the challenge definition"
 						validation={Glue.Validate(DefinitionSchema, mod).violation.description}
 					/>
 					<Input
-						bind:value={mod.version}
+						value={mod.version}
 						label="Version"
 						placeholder="Plugin Version (currently irrelevant)"
 						validation={Glue.Validate(DefinitionSchema, mod).violation.version}

@@ -60,25 +60,25 @@
 					<div class="flex flex-col gap-1">
 						<label class="text-sm">
 							Name
-							<Input bind:value={mod.name} placeholder="Name of the game" />
+							<Input value={mod.name} placeholder="Name of the game" />
 						</label>
 					</div>
 					<div class="flex flex-col gap-1">
 						<label class="text-sm">
 							Description
-							<Input bind:value={mod.description} placeholder="What the game is about" />
+							<Input value={mod.description} placeholder="What the game is about" />
 						</label>
 					</div>
 					<div class="flex flex-col gap-1">
 						<label class="text-sm">
 							From
-							<Input type="datetime-local" bind:value={from} />
+							<Input type="datetime-local" value={from} />
 						</label>
 					</div>
 					<div class="flex flex-col gap-1">
 						<label class="text-sm">
 							To
-							<Input type="datetime-local" bind:value={to} />
+							<Input type="datetime-local" value={to} />
 						</label>
 					</div>
 				</div>
