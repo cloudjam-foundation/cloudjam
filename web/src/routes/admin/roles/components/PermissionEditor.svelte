@@ -46,7 +46,7 @@
 	function granted(patterns: string): string[] {
 		const matched = [];
 		for (const pattern of patterns.split(',')) {
-			const patternRe = globToRegex(pattern);
+			const patternRe = globToRegex(pattern, { globstar: true });
 			matched.push(...functions.filter((fn) => patternRe.test(fn.procedure)).map((fn) => fn.label));
 		}
 		return matched;

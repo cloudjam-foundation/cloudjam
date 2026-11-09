@@ -109,7 +109,6 @@
 			<Button
 				onclick={() => {
 					goto(resolve('/profile'));
-					sidebar.setOpen(false);
 					open = false;
 				}}
 				variant="primary"
