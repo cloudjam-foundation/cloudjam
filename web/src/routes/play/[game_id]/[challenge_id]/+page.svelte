@@ -18,8 +18,9 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import { ChevronLeftIcon, LockIcon } from '@lucide/svelte';
 	import { toSvg } from 'jdenticon';
-	import PlayChallenge from './PlayChallenge.svelte';
+	import PlayChallenge from './components/PlayChallenge.svelte';
 	import { resolve } from '$app/paths';
+	import CountdownBadge from '../components/CountdownBadge.svelte';
 
 	const reloadInterval = 5000;
 
@@ -114,24 +115,18 @@
 	let score = $derived(challenge?.scoreEvents.reduce((sum, event) => sum + event.change, 0) ?? 0);
 
 	let active = $state(false);
-	let remaining = $state('');
-	function formatRemaining(milliseconds: number): string {
-		const seconds = Math.max(0, Math.ceil(milliseconds / 1000));
-		const hours = Math.floor(seconds / 3600);
-		const minutes = Math.floor((seconds % 3600) / 60);
-		return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`;
-	}
+	let end = $state(0);
+	let now = $state(0);
+
 	$effect(() => {
 		if (!game) {
 			active = false;
-			remaining = '';
 			return;
 		}
 		const updateActive = () => {
-			const now = Date.now();
-			const end = timestampDate(game!.to!).getTime();
+			now = Date.now();
+			end = timestampDate(game!.to!).getTime();
 			active = timestampDate(game!.from!).getTime() < now && end > now;
-			remaining = formatRemaining(end - now);
 		};
 		updateActive();
 		const interval = setInterval(updateActive, 1000);
@@ -148,7 +143,7 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto(resolve(`/play/${page.params.game_id}`))}>
+		<Button variant="ghost" onclick={() => goto(resolve(`/play/[game_id]`, { game_id: page.params.game_id! }))}>
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">{challenge?.title || definition?.name || 'Challenge'}</h1>
@@ -161,7 +156,7 @@
 				Locked
 			</DynamicBadge>
 		{:else}
-			<StaticBadge variant="primary" text={`ends in ${remaining}`} />
+			<CountdownBadge {end} {now} />
 		{/if}
 		<StaticBadge variant="jam" text={`score: ${score}`} />
 	</div>

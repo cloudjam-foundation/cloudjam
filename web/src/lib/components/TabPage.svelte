@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
+	import { ChevronLeftIcon } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
 	import type { SubmitState } from '$lib';
 	import Button from '$lib/components/Button.svelte';
@@ -30,7 +30,7 @@
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">{title}</h1>
-		{#each headers as header}
+		{#each headers as header (header)}
 			{@render header()}
 		{/each}
 	</div>

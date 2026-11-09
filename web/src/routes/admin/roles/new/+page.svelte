@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
-	import CreateRole from './CreateRole.svelte';
+	import { ChevronLeftIcon } from '@lucide/svelte';
+	import CreateRole from './components/CreateRole.svelte';
 	import { resolve } from '$app/paths';
 </script>
 
@@ -21,5 +21,5 @@
 		<h1 class="text-3xl opacity-80">Create Role</h1>
 	</div>
 
-	<CreateRole oncreated={() => goto(resolve('/admin/roles/'))} />
+	<CreateRole onCreated={() => goto(resolve('/admin/roles'))} />
 </div>

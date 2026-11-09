@@ -1,6 +1,6 @@
 <script lang="ts">
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
-	import CreateGame from './CreateGame.svelte';
+	import { ChevronLeftIcon } from '@lucide/svelte';
+	import CreateGame from './components/CreateGame.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';

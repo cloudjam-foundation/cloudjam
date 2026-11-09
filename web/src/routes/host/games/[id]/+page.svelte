@@ -1,15 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import StateBadge from '$lib/components/StateBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
 	import TabPage from '$lib/components/TabPage.svelte';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import CopyIcon from '@lucide/svelte/icons/copy';
-	import ChallengeSection from './ChallengeSection.svelte';
-	import GamePanel from './GamePanel.svelte';
-	import TeamSection from './TeamSection.svelte';
+	import ChallengeSection from './components/ChallengeSection.svelte';
+	import GamePanel from './components/GamePanel.svelte';
+	import TeamSection from './components/TeamSection.svelte';
 	import { resolve } from '$app/paths';
+	import CopyableValue from '$lib/components/CopyableValue.svelte';
 
 	let { data } = $props();
 
@@ -43,15 +42,7 @@
 {/snippet}
 
 {#snippet uuid()}
-	<Button
-		variant="primary"
-		class="ml-auto font-mono text-xs"
-		title="Copy game id"
-		onclick={() => navigator.clipboard.writeText(data.game?.id ?? '')}
-	>
-		<CopyIcon />
-		{data.game?.id}
-	</Button>
+	<CopyableValue descriptor="Game ID" value={data.game?.id} />
 {/snippet}
 
 {#snippet overview()}

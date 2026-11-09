@@ -15,7 +15,7 @@
 		text,
 		variant,
 		class: classNames,
-		shimmer
+		shimmer = false
 	}: { text: string; variant: Variant; class?: string; shimmer?: boolean } = $props();
 </script>
 

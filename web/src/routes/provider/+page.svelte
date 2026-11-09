@@ -10,7 +10,7 @@
 	import { ListRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb';
 	import { ProviderType, type Provider } from '$lib/sdk/v1/cloud/provider_pb';
 	import { create } from '@bufbuild/protobuf';
-	import PlusIcon from '@lucide/svelte/icons/plus';
+	import { PlusIcon } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
 
 	let id = $state('');
@@ -40,7 +40,10 @@
 					<h1 class="text-2xl font-bold text-primary/80">Find Provider</h1>
 					<p class="text-primary/60">You are not allowed to list providers, find the one you need by its id</p>
 				</div>
-				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(resolve(`/provider/${id.trim()}`))}>
+				<form
+					class="flex w-full flex-row items-center gap-2"
+					onsubmit={() => goto(resolve(`/provider/[id]`, { id: id.trim() }))}
+				>
 					<Input class="w-full" bind:value={id} placeholder="Provider ID" />
 					<Button type="submit" variant="primary" disabled={!id.trim()}>Open</Button>
 				</form>
@@ -61,7 +64,7 @@
 					return providers;
 				}}
 				onRowClick={(provider) => {
-					goto(resolve(`/provider/${provider.id}`));
+					goto(resolve(`/provider/[id]`, { id: provider.id }));
 				}}
 				loadState={providersState}
 				columns={[

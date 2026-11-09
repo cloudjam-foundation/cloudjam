@@ -26,7 +26,7 @@
 				class="flex w-full flex-col gap-4"
 				onsubmit={(e) => {
 					e.preventDefault();
-					goto(resolve(`/play/${code}`));
+					goto(resolve(`/play/[game_id]`, { game_id: code }));
 				}}
 			>
 				<Input bind:value={code} placeholder="Game code" />

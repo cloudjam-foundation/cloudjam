@@ -5,8 +5,7 @@
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
-	import PlusIcon from '@lucide/svelte/icons/plus';
+	import { ChevronLeftIcon, PlusIcon } from '@lucide/svelte';
 	import StateBadge from '$lib/components/StateBadge.svelte';
 	import LinkButton from '$lib/components/LinkButton.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
@@ -51,7 +50,10 @@
 					<h1 class="text-2xl font-bold text-primary/80">Find Game</h1>
 					<p class="text-primary/60">You are not allowed to list games, find the one you need by its id</p>
 				</div>
-				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(resolve(`/host/games/${id}`))}>
+				<form
+					class="flex w-full flex-row items-center gap-2"
+					onsubmit={() => goto(resolve(`/host/games/[id]`, { id: id }))}
+				>
 					<Input class="w-full" bind:value={id} placeholder="Game id" />
 					<Button type="submit" variant="primary" disabled={!id.trim()}>Open</Button>
 				</form>
@@ -71,7 +73,7 @@
 					return games;
 				}}
 				onRowClick={(game) => {
-					goto(resolve(`/host/games/${game.id}`));
+					goto(resolve(`/host/games/[id]`, { id: game.id }));
 				}}
 				loadState={gamesState}
 				columns={[

@@ -6,7 +6,7 @@
 	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
 	import { GetRequestSchema, ResetPasswordRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/admin/user/user_pb';
 	import { UserSchema, type User } from '$lib/sdk/v1/admin/user_pb';
-	import Gauge from './Gauge.svelte';
+	import Gauge from './components/Gauge.svelte';
 	import { goto } from '$app/navigation';
 	import { CircleCheck, CircleX, LogOut, Pencil, ShieldCheck } from '@lucide/svelte';
 	import Input from '$lib/components/Input.svelte';
@@ -27,7 +27,7 @@
 	let resetOpen = $state(false);
 
 	onMount(async () => {
-		Submit(async () => {
+		await Submit(async () => {
 			user = (await Glue.user.get(create(GetRequestSchema, {}))).user;
 		}, userState);
 	});
@@ -132,7 +132,7 @@
 					<p class="mt-auto text-neutral/80">
 						Proud CloudJammer since {new Date(Number(user.createdAt) * 1000).toLocaleDateString()}
 					</p>
-					<StaticBadge text={user.organization} variant="filled" shimmer={true} class="font-bold" />
+					<StaticBadge text={user.organization} variant="filled" class="font-bold" />
 					<div class="mt-2 flex flex-row items-center gap-2">
 						<Button variant="primary" onclick={() => (edit = true)}>
 							<Pencil />

@@ -16,6 +16,9 @@
 @source '../../node_modules/layerchart/dist';
 @source '.';
 
+/* I'm not happy about this at all, but only way to get these to render as Tailwind is smarter than it should be. */
+@source inline('text-{sky,emerald,amber,red}-300');
+
 :root {
 	font-size: clamp(80%, 1vw + 0.5rem, 120%);
 
@@ -157,6 +160,12 @@
 	box-shadow:
 		color-mix(in oklch, var(--foreground) 5%, transparent) 0px 6px 24px 0px,
 		color-mix(in oklch, var(--foreground) 8%, transparent) 0px 0px 0px 1px;
+	background-color: color-mix(in oklch, var(--foreground) 1%, transparent);
+	backdrop-filter: blur(2px);
+}
+
+@utility glass-no-shadow {
+	box-shadow: color-mix(in oklch, var(--foreground) 8%, transparent) 0px 0px 0px 1px;
 	background-color: color-mix(in oklch, var(--foreground) 1%, transparent);
 	backdrop-filter: blur(2px);
 }

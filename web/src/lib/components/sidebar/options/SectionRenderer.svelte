@@ -19,7 +19,7 @@
 		<Icon class="mr-2 h-4 w-4" />
 		{section.title}
 	</div>
-	<div class="w-full pl-4 text-sm">
+	<div class="w-full {sidebar.open ? 'pl-4' : ''} text-sm transition-all duration-250 ease-in-out">
 		{#each section.items as item (item.title)}
 			{#if 'contents' in item}
 				<GroupingRenderer group={item} />

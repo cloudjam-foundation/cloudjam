@@ -3,8 +3,7 @@
 	import { ListRequestSchema } from '$lib/sdk/v1/admin/user/user_pb';
 	import type { User } from '$lib/sdk/v1/admin/user_pb';
 	import { create } from '@bufbuild/protobuf';
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
-	import PlusIcon from '@lucide/svelte/icons/plus';
+	import { PlusIcon, ChevronLeftIcon } from '@lucide/svelte';
 	import { toSvg } from 'jdenticon';
 	import Button from '$lib/components/Button.svelte';
 	import Card from '$lib/components/Card.svelte';
@@ -44,7 +43,10 @@
 					<h1 class="text-2xl font-bold text-primary/80">Find User</h1>
 					<p class="text-primary/60">You are not allowed to list users, find the one you need by its id</p>
 				</div>
-				<form class="flex w-full flex-row items-center gap-2" onsubmit={() => goto(resolve(`/admin/users/${id}`))}>
+				<form
+					class="flex w-full flex-row items-center gap-2"
+					onsubmit={() => goto(resolve(`/admin/users/[id]`, { id: id }))}
+				>
 					<Input class="w-full" bind:value={id} placeholder="User ID" />
 					<Button type="submit" variant="primary" disabled={!id.trim()}>Open</Button>
 				</form>
@@ -64,7 +66,7 @@
 					return users;
 				}}
 				onRowClick={(user) => {
-					goto(resolve(`/admin/users/${user.id}`));
+					goto(resolve(`/admin/users/[id]`, { id: user.id }));
 				}}
 				loadState={usersState}
 				columns={[
