@@ -4,7 +4,7 @@ const colors: Record<Level, string> = {
 	DEBUG: 'sky-300',
 	INFO: 'emerald-300',
 	WARN: 'amber-300',
-	ERROR: 'red-300'
+	ERROR: 'red-500'
 };
 
 export const levelColors: Record<Level, string> = {
