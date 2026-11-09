@@ -39,6 +39,15 @@
 		class="flex w-full flex-col gap-4"
 		onsubmit={(e) => {
 			e.preventDefault();
+
+			// Stops the frustration of trying to create a game
+			// that starts now, but it's been too long since they
+			// set the time.
+			// Adding 30 seconds to avoid race conditions.
+			if (new Date(from).getTime() < Date.now()) {
+				from = localInput(new Date(Date.now() + 30 * 1000));
+			}
+
 			Submit(async () => {
 				const resp = await Glue.game.create(request);
 				await goto(resolve(`/host/games/[id]`, { id: resp.id }));

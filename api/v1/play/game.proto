@@ -18,7 +18,11 @@ message Game {
     (buf.validate.field).string.min_len = 0,
     (buf.validate.field).string.max_len = 200
   ];
-  google.protobuf.Timestamp from = 5 [(buf.validate.field).timestamp.gt_now = true];
+  google.protobuf.Timestamp from = 5 [(buf.validate.field).cel = {
+    id: "game.from.not_past"
+    message: "must not be more than 1 minute in the past"
+    expression: "this > now - duration('60s')"
+  }];
   google.protobuf.Timestamp to = 6 [(buf.validate.field).timestamp.gt_now = true];
 
   option (buf.validate.message).cel = {
