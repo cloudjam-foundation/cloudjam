@@ -39,7 +39,7 @@
 	{#each challenge.scores as score (score.type)}
 		<StaticBadge variant="primary" text={`${scoreTypeName(score.type)}: ${score.value} / ${score.maximum}`} />
 	{/each}
-	<StaticBadge variant="primary" text={`scope: ${challenge.scope}`} />
+	<StaticBadge variant="primary" text={`tenant: ${challenge.scope}`} />
 	<StaticBadge variant="primary" text={challenge.id} class="font-mono" />
 {/snippet}
 

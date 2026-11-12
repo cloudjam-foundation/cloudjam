@@ -30,7 +30,7 @@ enum Resource {
 
 message AttachScopeRequest {
   Resource resource = 1;
-  string id = 2 [(buf.validate.field).string = {uuid: true}];
+  string id = 2;
   string scope = 3;
 }
 

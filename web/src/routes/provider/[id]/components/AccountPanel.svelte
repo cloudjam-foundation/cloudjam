@@ -67,7 +67,7 @@
 			[AccountState.Running.toString()]: 'RunningWarning'
 		}}
 	/>
-	<StaticBadge variant="primary" text={`scope: ${account.scope}`} />
+	<StaticBadge variant="primary" text={`tenant: ${account.scope}`} />
 	{#if account.targetId}
 		<StaticBadge variant="primary" text={`target: ${account.targetId}`} />
 	{/if}

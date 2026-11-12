@@ -18,23 +18,40 @@ import (
 
 type Server struct {
 	logger *slog.Logger
-	bucket *dynamitedb.Bucket
+	oltp   *dynamitedb.Bucket
 }
 
 func New(logger *slog.Logger, bucket *dynamitedb.Bucket) *Server {
 	return &Server{
 		logger: logger,
-		bucket: bucket,
+		oltp:   bucket,
 	}
 }
 
 func (s *Server) Get(ctx context.Context, req *connect.Request[role.GetRequest]) (*connect.Response[role.GetResponse], error) {
 	l := s.logger.With("proc", req.Spec().Procedure)
 
-	foundRole, err := dynamitedb.Get(ctx, s.bucket, &oltp.Role{
-		RoleID: dynamitedb.Key(req.Msg.Id),
-		Scope:  dynamitedb.In(auth.Scopes(ctx)...),
+	foundUser, err := dynamitedb.Get(ctx, s.oltp, &oltp.User{
+		UserID: dynamitedb.Key(auth.Claims(ctx).Subject),
 	})
+	if err != nil {
+		l.Error(fmt.Sprintf("failed to fetch user for role lookup: %v", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch user"))
+	}
+
+	roleFilter := &oltp.Role{}
+	if req.Msg.Id == "" || req.Msg.Id == foundUser.Role.Value() {
+		if !slices.Contains(auth.Scopes(ctx), oltp.ScopeSelf) {
+			return nil, connect.NewError(connect.CodePermissionDenied, fmt.Errorf("no self management access"))
+		}
+		roleFilter.RoleID = dynamitedb.Key(foundUser.Role.Value())
+	} else {
+		// if the requested role is specific (not a self-lookup) the scope check is performed.
+		roleFilter.RoleID = dynamitedb.Key(req.Msg.Id)
+		roleFilter.Scope = dynamitedb.In(auth.Scopes(ctx)...)
+	}
+
+	foundRole, err := dynamitedb.Get(ctx, s.oltp, roleFilter)
 	if err != nil {
 		if errors.Is(err, dynamitedb.ErrNotFound) {
 			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("role does not exist"))
@@ -67,7 +84,7 @@ func (s *Server) List(ctx context.Context, req *connect.Request[role.ListRequest
 			RoleID: dynamitedb.Key(req.Msg.StartAfter),
 		}))
 	}
-	roles, err := dynamitedb.Query(ctx, s.bucket, &oltp.Role{
+	roles, err := dynamitedb.Query(ctx, s.oltp, &oltp.Role{
 		RoleID: dynamitedb.KeyPrefix(""),
 		Scope:  dynamitedb.In(auth.Scopes(ctx)...),
 	}, opts...)
@@ -102,7 +119,7 @@ func (s *Server) Create(ctx context.Context, req *connect.Request[role.CreateReq
 	}
 
 	roleID := sortid.New().String()
-	err := dynamitedb.Create(ctx, s.bucket, &oltp.Role{
+	err := dynamitedb.Create(ctx, s.oltp, &oltp.Role{
 		RoleID:      dynamitedb.Key(roleID),
 		Name:        dynamitedb.Set(req.Msg.Init.Name),
 		Description: dynamitedb.Set(req.Msg.Init.Description),
@@ -125,7 +142,7 @@ func (s *Server) Create(ctx context.Context, req *connect.Request[role.CreateReq
 func (s *Server) Update(ctx context.Context, req *connect.Request[role.UpdateRequest]) (*connect.Response[role.UpdateResponse], error) {
 	l := s.logger.With("proc", req.Spec().Procedure)
 
-	targetRole, err := dynamitedb.Get(ctx, s.bucket, &oltp.Role{
+	targetRole, err := dynamitedb.Get(ctx, s.oltp, &oltp.Role{
 		RoleID: dynamitedb.Key(req.Msg.Mod.Id),
 		Scope:  dynamitedb.In(auth.Scopes(ctx)...),
 	})
@@ -139,7 +156,7 @@ func (s *Server) Update(ctx context.Context, req *connect.Request[role.UpdateReq
 	if targetRole.Builtin.Value() {
 		return nil, connect.NewError(connect.CodePermissionDenied, fmt.Errorf("builtin roles cannot be modified"))
 	}
-	err = dynamitedb.Update(ctx, s.bucket, &oltp.Role{
+	err = dynamitedb.Update(ctx, s.oltp, &oltp.Role{
 		RoleID:      targetRole.RoleID,
 		Name:        dynamitedb.Set(req.Msg.Mod.Name),
 		Description: dynamitedb.Set(req.Msg.Mod.Description),
@@ -155,7 +172,7 @@ func (s *Server) Update(ctx context.Context, req *connect.Request[role.UpdateReq
 func (s *Server) Delete(ctx context.Context, req *connect.Request[role.DeleteRequest]) (*connect.Response[role.DeleteResponse], error) {
 	l := s.logger.With("proc", req.Spec().Procedure)
 
-	err := dynamitedb.Delete(ctx, s.bucket, &oltp.Role{
+	err := dynamitedb.Delete(ctx, s.oltp, &oltp.Role{
 		RoleID:  dynamitedb.Key(req.Msg.Id),
 		Scope:   dynamitedb.In(auth.Scopes(ctx)...),
 		Builtin: dynamitedb.Eq(false),

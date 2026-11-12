@@ -4,7 +4,7 @@
 	import Input from '$lib/components/Input.svelte';
 	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
 	import Select from '$lib/components/Select.svelte';
-	import { getActiveScopes } from '$lib/auth.svelte.js';
+	import { ADMIN_SCOPE, getActiveScopes, SELF_SCOPE } from '$lib/auth.svelte.js';
 	import { RBACService } from '$lib/sdk/v1/admin/rbac/rbac_pb';
 	import { RoleService } from '$lib/sdk/v1/admin/role/role_pb';
 	import { SystemService } from '$lib/sdk/v1/admin/system/system_pb';
@@ -16,8 +16,9 @@
 	import { ChallengeService } from '$lib/sdk/v1/play/challenge/challenge_pb';
 	import { GameService } from '$lib/sdk/v1/play/game/game_pb';
 	import { TeamService } from '$lib/sdk/v1/play/team/team_pb';
-	import { PlusIcon, Trash2Icon } from '@lucide/svelte';
+	import { CrownIcon, PlusIcon, Trash2Icon, UserIcon } from '@lucide/svelte';
 	import globToRegex from 'glob-to-regexp';
+	import WrappedTooltip from '$lib/components/WrappedTooltip.svelte';
 
 	let { entries = $bindable() }: { entries: { scope: string; patterns: string }[] } = $props();
 
@@ -46,7 +47,7 @@
 	function granted(patterns: string): string[] {
 		const matched = [];
 		for (const pattern of patterns.split(',')) {
-			const patternRe = globToRegex(pattern);
+			const patternRe = globToRegex(pattern, { globstar: true });
 			matched.push(...functions.filter((fn) => patternRe.test(fn.procedure)).map((fn) => fn.label));
 		}
 		return matched;
@@ -71,7 +72,7 @@
 			<div class="flex flex-row items-center gap-2">
 				<OptionalSelect
 					bind:value={entry.scope}
-					placeholder="Scope"
+					placeholder="Tenant"
 					suggestions={getActiveScopes().map((scope) => ({ id: scope, title: scope }))}
 				/>
 				<Select
@@ -93,6 +94,17 @@
 				<Button variant="ghost" title="Remove permission" onclick={() => (entries = entries.filter((_, x) => x !== i))}>
 					<Trash2Icon />
 				</Button>
+				{#if entry.scope === ADMIN_SCOPE}
+					<WrappedTooltip caption="special admin tenant with root access">
+						<CrownIcon class="text-amber-300" />
+					</WrappedTooltip>
+				{:else if entry.scope === SELF_SCOPE}
+					<WrappedTooltip
+						caption="special self tenant that implicitly grants access to all data owned by the user (e.g. user profile, team)"
+					>
+						<UserIcon class="text-blue-300" />
+					</WrappedTooltip>
+				{/if}
 			</div>
 			<div class="flex flex-row flex-wrap items-center gap-1">
 				<span class="text-xs text-primary/60">grants:</span>
