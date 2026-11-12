@@ -256,7 +256,7 @@
 				<div class="flex flex-col justify-center gap-2 text-sm">
 					<span class="font-medium">{name}</span>
 					{#if text !== '<hidden>'}
-						<span class="text-primary/60">{text}</span>
+						<Markdown source={text} />
 					{:else}
 						<Button
 							variant="primary"
