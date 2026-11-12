@@ -20,6 +20,9 @@
 	let openSelected = $state(false);
 	let creating = $state(false);
 
+	// Used to force the table to rebuild
+	let version = $state(0);
+
 	let teamsState: SubmitState = $state({ error: '', forbidden: false, loading: false });
 </script>
 
@@ -36,36 +39,38 @@
 	</div>
 
 	{#if creating}
-		<CreateTeam {game} onCreated={() => {}} />
+		<CreateTeam {game} onCreated={() => version++} />
 	{/if}
 
 	{#if teamsState.forbidden}
 		<Alert title="Permission Denied" message="You are not allowed to list the teams of this game" />
 	{:else}
-		<DataTable
-			class="max-h-[80vh]"
-			limit={100}
-			load={async (startAfter: Team | undefined) => {
-				const teams: Team[] = [];
-				await Submit(async () => {
-					const resp = await Glue.team.list(
-						create(ListRequestSchema, { gameId: game.id, limit: 100, startAfter: startAfter?.id })
-					);
-					teams.push(...resp.teams);
-				}, teamsState);
-				return teams;
-			}}
-			onRowClick={(team) => {
-				selected = team;
-				openSelected = true;
-			}}
-			loadState={teamsState}
-			columns={[
-				{ title: 'Name', width: '30%', render: renderName },
-				{ title: 'Players', width: '60%', render: renderPlayers },
-				{ title: 'Score', width: '30px', render: renderScore }
-			]}
-		/>
+		{#key version}
+			<DataTable
+				class="max-h-[80vh]"
+				limit={100}
+				load={async (startAfter: Team | undefined) => {
+					const teams: Team[] = [];
+					await Submit(async () => {
+						const resp = await Glue.team.list(
+							create(ListRequestSchema, { gameId: game.id, limit: 100, startAfter: startAfter?.id })
+						);
+						teams.push(...resp.teams);
+					}, teamsState);
+					return teams;
+				}}
+				onRowClick={(team) => {
+					selected = team;
+					openSelected = true;
+				}}
+				loadState={teamsState}
+				columns={[
+					{ title: 'Name', width: '30%', render: renderName },
+					{ title: 'Players', width: '60%', render: renderPlayers },
+					{ title: 'Score', width: '30px', render: renderScore }
+				]}
+			/>
+		{/key}
 		{#snippet renderName(team: Team)}
 			{team.name}
 		{/snippet}
@@ -90,6 +95,13 @@
 	{/if}
 
 	{#if selected}
-		<TeamPanel bind:open={openSelected} team={selected} refresh={() => {}} />
+		<TeamPanel
+			bind:open={openSelected}
+			team={selected}
+			refresh={() => {
+				openSelected = false;
+				version++;
+			}}
+		/>
 	{/if}
 </div>
