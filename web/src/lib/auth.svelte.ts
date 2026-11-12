@@ -48,8 +48,8 @@ export function getActiveScopes() {
 	return activeScopes;
 }
 
-// assignableScopes contains all activeScopes excluding self/admin.
-const assignableScopes: string[] = $derived(activeScopes.filter((scope) => scope !== 'self' && scope !== 'admin'));
-export function getAssignableScopes() {
-	return assignableScopes;
+// assignableTenants contains all activeScopes excluding self (aka tenants).
+const assignableTenants: string[] = $derived(activeScopes.filter((scope) => scope !== SELF_SCOPE));
+export function getAssignableTenants() {
+	return assignableTenants;
 }

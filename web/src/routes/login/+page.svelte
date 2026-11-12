@@ -37,7 +37,7 @@
 			<Input bind:value={loginRequest.password} placeholder="Please enter your Password" type="password" />
 			<Button class="w-full" type="submit" variant="primary" processing={loginState.loading}>Login</Button>
 			{#if loginState.error}
-				<Alert title="Authentication failed" message={loginState.error} animation={true} />
+				<Alert class="w-full" title="Authentication failed" message={loginState.error} animation={true} />
 			{/if}
 		</form>
 	</Card>

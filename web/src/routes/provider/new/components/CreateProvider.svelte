@@ -7,7 +7,7 @@
 	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Select from '$lib/components/Select.svelte';
-	import { getAssignableScopes } from '$lib/auth.svelte.js';
+	import { getAssignableTenants } from '$lib/auth.svelte.js';
 	import { CreateRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb';
 	import { ProviderSchema, ProviderType } from '$lib/sdk/v1/cloud/provider_pb';
 	import { create } from '@bufbuild/protobuf';
@@ -84,14 +84,13 @@
 			/>
 			<div class="flex flex-col gap-1">
 				<label class="text-sm">
-					Scope
+					Tenant
 					<OptionalSelect
 						bind:value={init.scope}
-						placeholder="Scope the provider is placed in"
-						suggestions={getAssignableScopes().map((scope) => ({ id: scope, title: scope }))}
+						placeholder="Tenant the provider is placed in"
+						suggestions={getAssignableTenants().map((tenant) => ({ id: tenant, title: tenant }))}
 					/>
 				</label>
-				<p class="text-xs text-primary/60">You can only attach a scope you possess yourself.</p>
 			</div>
 		</div>
 

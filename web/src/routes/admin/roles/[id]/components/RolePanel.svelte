@@ -7,13 +7,16 @@
 	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Separator from '$lib/components/Separator.svelte';
-	import { getAssignableScopes } from '$lib/auth.svelte.js';
+	import { getActiveRole, getAssignableTenants } from '$lib/auth.svelte.js';
 	import { AttachScopeRequestSchema, ConfigureRoleRequestSchema, Resource } from '$lib/sdk/v1/admin/rbac/rbac_pb';
 	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
 	import { Feature, RoleSchema, type Role } from '$lib/sdk/v1/admin/role_pb';
 	import { create } from '@bufbuild/protobuf';
 	import PermissionEditor from '../../components/PermissionEditor.svelte';
-	import FeatureEditor from './FeatureEditor.svelte';
+	import FeatureEditor from '../../components/FeatureEditor.svelte';
+	import Dialog from '$lib/components/Dialog.svelte';
+	import { ADMIN_SCOPE, getActiveScopes } from '$lib/auth.svelte.js';
+	import { LayersPlusIcon } from '@lucide/svelte';
 
 	let { role, refresh, deleted }: { role: Role; refresh: () => void; deleted: () => void } = $props();
 
@@ -26,7 +29,7 @@
 	let features: Record<Feature, boolean> = $state(
 		Object.fromEntries(role.features.map((feature) => [feature, true])) as Record<Feature, boolean>
 	);
-	let attachScope = $state('');
+	let attachTenant = $state('');
 	let confirmDelete = $state(false);
 	// svelte-ignore state_referenced_locally
 	let entries: { scope: string; patterns: string }[] = $state(
@@ -46,11 +49,13 @@
 			features: Object.entries(features)
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				.filter(([_, active]) => active)
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				.map(([feature, _]) => Number(feature)),
+				.map(([feature]) => Number(feature)),
 			permissions: Object.fromEntries(entries.filter((e) => e.scope).map((e) => [e.scope, e.patterns]))
 		})
 	);
+
+	let openTenantDialog = $state(false);
+	let newTenant = $state('');
 </script>
 
 <Card class="mb-4 w-full items-start">
@@ -73,7 +78,7 @@
 	{:else}
 		<div class="flex flex-col gap-2">
 			{#if updateState.forbidden}
-				<p class="text-sm text-primary/60 italic">You are not allowed to update this role.</p>
+				<Alert class="p-2" message="You are not allowed to update this role" animation={true} />
 			{:else}
 				<form
 					class="flex max-w-160 flex-col gap-3"
@@ -91,6 +96,7 @@
 					<p class="text-xs text-destructive">{Glue.Validate(RoleSchema, mod).violation.name ?? ''}</p>
 
 					<h2 class="text-xl font-semibold text-primary/80">Features</h2>
+					<p class="text-sm text-primary/60">Select the features for this role. Features are not security relevant!</p>
 					<FeatureEditor bind:features />
 
 					<Button
@@ -113,17 +119,15 @@
 
 		<div class="flex flex-col gap-2">
 			<h2 class="text-xl font-semibold text-primary/80">Permissions</h2>
-			{#if configureState.forbidden}
-				<p class="text-sm text-primary/60 italic">You are not allowed to configure this role.</p>
-			{:else}
-				<p class="text-sm text-primary/60">
-					Comma separated glob patterns matched against the rpc procedure names, granted to subjects of the entries
-					scope. You can only grant scopes you possess yourself.
-				</p>
-				<PermissionEditor bind:entries />
+			<p class="text-sm text-primary/60">
+				Assign the actions this role can perform as comma-separated list of glob patterns on every tenant.
+			</p>
+			<PermissionEditor bind:entries />
+
+			<div class="mt-3 flex flex-row items-center justify-start gap-2">
 				<Button
 					variant="primary"
-					class="mt-3 w-60"
+					class="w-60"
 					processing={configureState.loading}
 					disabled={configureState.loading || Boolean(Glue.Validate(RoleSchema, mod).violation.permissions)}
 					onclick={() =>
@@ -134,9 +138,33 @@
 				>
 					Save Permissions
 				</Button>
-				{#if configureState.error}
-					<Alert class="p-2" message={configureState.error} animation={true} />
+				{#if role.id === getActiveRole()?.id && getActiveScopes().includes(ADMIN_SCOPE)}
+					<Dialog
+						bind:open={openTenantDialog}
+						title="Create new Tenant"
+						description="Add new Tenants in order to assign resources to it"
+					>
+						<Input bind:value={newTenant} placeholder="Tenant name" />
+						<Button
+							variant="primary"
+							onclick={() => {
+								entries.push({ scope: newTenant, patterns: '**' });
+								newTenant = '';
+								openTenantDialog = false;
+							}}
+						>
+							<LayersPlusIcon /> Add Tenant
+						</Button>
+					</Dialog>
+					<Button variant="primary" onclick={() => (openTenantDialog = true)}>
+						<LayersPlusIcon /> Add Tenant
+					</Button>
 				{/if}
+			</div>
+			{#if configureState.forbidden}
+				<Alert class="p-2" message="You are not allowed to configure this role" animation={true} />
+			{:else if configureState.error}
+				<Alert class="p-2" message={configureState.error} animation={true} />
 			{/if}
 		</div>
 
@@ -144,38 +172,39 @@
 	{/if}
 
 	<div class="flex flex-col gap-2">
-		<h2 class="text-xl font-semibold text-primary/80">Scope</h2>
-		{#if attachState.forbidden}
-			<p class="text-sm text-primary/60 italic">You are not allowed to attach scopes.</p>
-		{:else}
-			<p class="text-sm text-primary/60">Moves this role into another scope you possess.</p>
+		<h2 class="text-xl font-semibold text-primary/80">Tenant</h2>
+		<p class="text-sm text-primary/60">Moves this role into another tenant</p>
+
+		<div class="flex flex-row items-center justify-center gap-2">
 			<OptionalSelect
-				bind:value={attachScope}
-				placeholder="New scope"
-				suggestions={getAssignableScopes().map((scope) => ({ id: scope, title: scope }))}
+				class="w-full"
+				bind:value={attachTenant}
+				placeholder="Tenant the role is placed in"
+				suggestions={getAssignableTenants().map((tenant) => ({ id: tenant, title: tenant }))}
 			/>
 			<Button
 				variant="primary"
-				class="mt-3 w-60"
 				processing={attachState.loading}
-				disabled={attachState.loading || !attachScope}
+				disabled={attachState.loading || !attachTenant}
 				onclick={() =>
 					Submit(async () => {
 						await Glue.rbac.attachScope(
 							create(AttachScopeRequestSchema, {
 								resource: Resource.RoleData,
 								id: role.id,
-								scope: attachScope
+								scope: attachTenant
 							})
 						);
 						refresh();
 					}, attachState)}
 			>
-				Modify Scope
+				Update
 			</Button>
-			{#if attachState.error}
-				<Alert class="p-2" message={attachState.error} animation={true} />
-			{/if}
+		</div>
+		{#if attachState.forbidden}
+			<Alert class="p-2" message="You are not allowed to move the role to the selected tenant" animation={true} />
+		{:else if attachState.error}
+			<Alert class="p-2" message={attachState.error} animation={true} />
 		{/if}
 	</div>
 
@@ -185,7 +214,7 @@
 		<div class="flex flex-col gap-2">
 			<h2 class="text-xl font-semibold text-primary/80">Danger Zone</h2>
 			{#if removeState.forbidden}
-				<p class="text-sm text-primary/60 italic">You are not allowed to delete this role.</p>
+				<Alert class="p-2" message="You are not allowed to delete this role" animation={true} />
 			{:else}
 				<div class="mt-3 flex w-60 flex-row items-center gap-2">
 					{#if confirmDelete}

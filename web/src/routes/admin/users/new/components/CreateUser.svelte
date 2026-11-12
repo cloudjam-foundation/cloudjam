@@ -11,8 +11,7 @@
 	import { create } from '@bufbuild/protobuf';
 	import { timestampFromDate } from '@bufbuild/protobuf/wkt';
 	import CopyableValue from '$lib/components/CopyableValue.svelte';
-
-	let { scopes = [], onCreated }: { scopes?: string[]; onCreated: () => void } = $props();
+	import { getAssignableTenants } from '$lib/auth.svelte';
 
 	const expirationValues = [
 		{ value: '1', label: '1 hour' },
@@ -61,7 +60,6 @@
 					const resp = await Glue.user.create(request);
 					code = resp.code;
 					link = `${location.origin}/register?email=${encodeURIComponent(init.email)}&username=${encodeURIComponent(init.username)}&code=${encodeURIComponent(resp.code)}`;
-					onCreated();
 				}, createState)}
 		>
 			<div class="grid gap-4 md:grid-cols-2">
@@ -90,11 +88,11 @@
 					validation={Glue.Validate(UserSchema, init).violation.description}
 				/>
 				<label class="flex flex-col gap-1 text-sm">
-					Scope
+					Tenant
 					<OptionalSelect
 						bind:value={init.scope}
-						placeholder="Scope the user is placed in"
-						suggestions={scopes.map((scope) => ({ id: scope, title: scope }))}
+						placeholder="Tenant the user is placed in"
+						suggestions={getAssignableTenants().map((tenant) => ({ id: tenant, title: tenant }))}
 					/>
 				</label>
 				<div class="flex flex-col gap-1">
