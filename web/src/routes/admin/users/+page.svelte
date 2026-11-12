@@ -74,7 +74,7 @@
 					{ title: 'Username', width: '25%', render: renderUsername },
 					{ title: 'Email', width: '25%', render: renderEmail },
 					{ title: 'Organization', width: '25%', render: renderOrganization },
-					{ title: 'Role', width: '25%', render: renderRole }
+					{ title: 'Tenant', width: '25%', render: renderTenant }
 				]}
 			/>
 			{#snippet renderIcon(user: User)}
@@ -94,8 +94,8 @@
 			{#snippet renderOrganization(user: User)}
 				{user.organization}
 			{/snippet}
-			{#snippet renderRole(user: User)}
-				{user.role}
+			{#snippet renderTenant(user: User)}
+				{user.scope}
 			{/snippet}
 		</div>
 	{/if}

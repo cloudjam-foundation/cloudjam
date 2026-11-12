@@ -70,24 +70,20 @@
 				}}
 				loadState={rolesState}
 				columns={[
-					{ title: 'Name', width: '25%', render: renderName },
-					{ title: 'Scope', width: '20%', render: renderScope },
-					{ title: 'Permissions', width: '15%', render: renderPermissions },
-					{ title: 'Id', width: '30%', render: renderId },
+					{ title: 'Name', width: '35%', render: renderName },
+					{ title: 'Permissions', width: '35%', render: renderPermissions },
+					{ title: 'Tenant', width: '30%', render: renderTenant },
 					{ title: '', width: '90px', render: renderBuiltin }
 				]}
 			/>
 			{#snippet renderName(role: Role)}
 				{role.name}
 			{/snippet}
-			{#snippet renderScope(role: Role)}
+			{#snippet renderTenant(role: Role)}
 				{role.scope}
 			{/snippet}
 			{#snippet renderPermissions(role: Role)}
-				<span class="text-primary/60">{Object.keys(role.permissions).length} scope(s)</span>
-			{/snippet}
-			{#snippet renderId(role: Role)}
-				<span class="font-mono text-xs">{role.id}</span>
+				<span class="text-primary/60">{Object.keys(role.permissions).length} tenant(s)</span>
 			{/snippet}
 			{#snippet renderBuiltin(role: Role)}
 				{#if role.builtin}

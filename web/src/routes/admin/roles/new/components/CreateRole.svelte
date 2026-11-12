@@ -5,7 +5,7 @@
 	import Input from '$lib/components/Input.svelte';
 	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
 	import Card from '$lib/components/Card.svelte';
-	import { getAssignableScopes } from '$lib/auth.svelte.js';
+	import { getAssignableTenants } from '$lib/auth.svelte.js';
 	import { ConfigureRoleRequestSchema } from '$lib/sdk/v1/admin/rbac/rbac_pb';
 	import { CreateRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
 	import { RoleSchema } from '$lib/sdk/v1/admin/role_pb';
@@ -19,7 +19,7 @@
 	let id = $state(crypto.randomUUID());
 	let name = $state('');
 	let description = $state('');
-	let scope = $state('');
+	let tenant = $state('');
 	let entries: { scope: string; patterns: string }[] = $state([{ scope: '', patterns: '' }]);
 
 	let init = $derived(
@@ -27,7 +27,7 @@
 			id: id,
 			name: name,
 			description: description,
-			scope: scope,
+			scope: tenant,
 			permissions: Object.fromEntries(entries.filter((e) => e.scope).map((e) => [e.scope, e.patterns]))
 		})
 	);
@@ -50,7 +50,7 @@
 				// is configured over the dedicated rbac endpoint.
 				await Glue.rbac.configureRole(create(ConfigureRoleRequestSchema, { mod: init }));
 				id = crypto.randomUUID();
-				name = description = scope = '';
+				name = description = tenant = '';
 				entries = [{ scope: '', patterns: '' }];
 				onCreated();
 			}, configureState)}
@@ -70,11 +70,11 @@
 			/>
 			<div class="flex flex-col gap-1">
 				<label class="text-sm">
-					Scope
+					Tenant
 					<OptionalSelect
-						bind:value={scope}
-						placeholder="Scope the role is placed in"
-						suggestions={getAssignableScopes().map((scope) => ({ id: scope, title: scope }))}
+						bind:value={tenant}
+						placeholder="Tenant the role is placed in"
+						suggestions={getAssignableTenants().map((tenant) => ({ id: tenant, title: tenant }))}
 					/>
 				</label>
 			</div>

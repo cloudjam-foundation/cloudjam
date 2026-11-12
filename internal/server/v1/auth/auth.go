@@ -102,6 +102,9 @@ func (s *Server) Login(ctx context.Context, req *connect.Request[auth.LoginReque
 		if errors.Is(err, dynamitedb.ErrNotFound) {
 			l.Info("invalid login attempt detected (invalid user)", "ip", req.Peer().Addr, "email", req.Msg.Email)
 			return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("incorrect email or password"))
+		} else if errors.Is(err, dynamitedb.ErrFilterMismatch) {
+			l.Info("invalid login attempt detected (inactive user)", "ip", req.Peer().Addr, "email", req.Msg.Email)
+			return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("incorrect email or password"))
 		}
 		l.Error(fmt.Sprintf("failed to fetch user credentials: %v", err))
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to fetch user credentials"))
