@@ -91,10 +91,19 @@
 				>
 					<h2 class="text-xl font-semibold text-primary/80">Metadata</h2>
 					<div class="flex flex-row items-center gap-2">
-						<Input class="max-w-48" bind:value={name} placeholder="Name of the role" />
-						<Input class="max-w-96" bind:value={description} placeholder="Description of the role" />
+						<Input
+							class="max-w-48"
+							bind:value={name}
+							placeholder="Name of the role"
+							validation={Glue.Validate(RoleSchema, mod).violation.name}
+						/>
+						<Input
+							class="max-w-96"
+							bind:value={description}
+							placeholder="Description of the role"
+							validation={Glue.Validate(RoleSchema, mod).violation.description}
+						/>
 					</div>
-					<p class="text-xs text-destructive">{Glue.Validate(RoleSchema, mod).violation.name ?? ''}</p>
 
 					<h2 class="text-xl font-semibold text-primary/80">Features</h2>
 					<p class="text-sm text-primary/60">Select the features for this role. Features are not security relevant!</p>

@@ -21,5 +21,5 @@
 		<h1 class="text-3xl opacity-80">Create Role</h1>
 	</div>
 
-	<CreateRole onCreated={() => goto(resolve('/admin/roles'))} />
+	<CreateRole />
 </div>

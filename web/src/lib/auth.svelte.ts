@@ -26,8 +26,16 @@ export function getActiveRole() {
 // loadActive loads the activeUser/activeRole data from backend.
 export async function loadActive() {
 	if (!getSubject()) return;
-	activeUser = (await Glue.user.get(create(GetUserRequestSchema, {}))).user;
-	activeRole = (await Glue.role.get(create(GetRoleRequestSchema, { id: activeUser?.role }))).role;
+	try {
+		activeUser = (await Glue.user.get(create(GetUserRequestSchema, {}))).user;
+	} catch {
+		activeUser = undefined;
+	}
+	try {
+		activeRole = (await Glue.role.get(create(GetRoleRequestSchema, { id: activeUser?.role }))).role;
+	} catch {
+		activeRole = undefined;
+	}
 }
 
 // activeUserIcon contains a computed dataurl-svg derived from the logged in user public identifier.
