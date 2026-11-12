@@ -7,7 +7,7 @@
 	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import Separator from '$lib/components/Separator.svelte';
-	import { getActiveRole, getAssignableTenants } from '$lib/auth.svelte.js';
+	import { getActiveRole, getAssignableTenants, loadActive } from '$lib/auth.svelte.js';
 	import { AttachScopeRequestSchema, ConfigureRoleRequestSchema, Resource } from '$lib/sdk/v1/admin/rbac/rbac_pb';
 	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
 	import { Feature, RoleSchema, type Role } from '$lib/sdk/v1/admin/role_pb';
@@ -85,6 +85,7 @@
 					onsubmit={() =>
 						Submit(async () => {
 							await Glue.role.update(create(UpdateRequestSchema, { mod: mod }));
+							await loadActive();
 							refresh();
 						}, updateState)}
 				>
