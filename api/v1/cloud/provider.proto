@@ -16,7 +16,7 @@ message Provider {
   ProviderType type = 3;
   string name = 4 [
     (buf.validate.field).string.min_len = 3,
-    (buf.validate.field).string.max_len = 20
+    (buf.validate.field).string.max_len = 30
   ];
   string description = 5 [
     (buf.validate.field).string.min_len = 0,

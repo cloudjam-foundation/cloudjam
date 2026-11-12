@@ -2,10 +2,14 @@ package system
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
+	"slices"
 	"time"
 
+	"codeberg.org/megakuul/cloudjam/internal/auth"
 	"codeberg.org/megakuul/cloudjam/internal/olap"
+	"codeberg.org/megakuul/cloudjam/internal/oltp"
 	"codeberg.org/megakuul/cloudjam/pkg/api/v1/admin/system"
 	"connectrpc.com/connect"
 	"github.com/megakuul/dynamitedb"
@@ -28,6 +32,9 @@ func New(logger *slog.Logger, oltp *dynamitedb.Bucket, olap *lake.Bucket) *Serve
 }
 
 func (s *Server) ScanLogs(ctx context.Context, req *connect.Request[system.ScanLogsRequest]) (*connect.Response[system.ScanLogsResponse], error) {
+	if !slices.Contains(auth.Scopes(ctx), oltp.ScopeAdmin) {
+		return nil, connect.NewError(connect.CodePermissionDenied, fmt.Errorf("action requires admin tenant access"))
+	}
 	logs, err := lake.Query[olap.Log]().
 		Limit(int(req.Msg.Limit)).
 		Where(olap.Log{
@@ -59,6 +66,9 @@ func (s *Server) ScanLogs(ctx context.Context, req *connect.Request[system.ScanL
 }
 
 func (s *Server) ScanRequests(ctx context.Context, req *connect.Request[system.ScanRequestsRequest]) (*connect.Response[system.ScanRequestsResponse], error) {
+	if !slices.Contains(auth.Scopes(ctx), oltp.ScopeAdmin) {
+		return nil, connect.NewError(connect.CodePermissionDenied, fmt.Errorf("action requires admin tenant access"))
+	}
 	requests, err := lake.Query[olap.Request]().
 		Limit(int(req.Msg.Limit)).
 		Where(olap.Request{
@@ -84,6 +94,9 @@ func (s *Server) ScanRequests(ctx context.Context, req *connect.Request[system.S
 }
 
 func (s *Server) AggregateLogs(ctx context.Context, req *connect.Request[system.AggregateLogsRequest]) (*connect.Response[system.AggregateLogsResponse], error) {
+	if !slices.Contains(auth.Scopes(ctx), oltp.ScopeAdmin) {
+		return nil, connect.NewError(connect.CodePermissionDenied, fmt.Errorf("action requires admin tenant access"))
+	}
 	windows, err := lake.Query[olap.Log]().
 		Where(olap.Log{
 			Timestamp:  lake.FilterInt(lake.After(req.Msg.From.AsTime()), lake.Before(req.Msg.To.AsTime())),
@@ -123,6 +136,9 @@ func (s *Server) AggregateLogs(ctx context.Context, req *connect.Request[system.
 }
 
 func (s *Server) AggregateLatency(ctx context.Context, req *connect.Request[system.AggregateLatencyRequest]) (*connect.Response[system.AggregateLatencyResponse], error) {
+	if !slices.Contains(auth.Scopes(ctx), oltp.ScopeAdmin) {
+		return nil, connect.NewError(connect.CodePermissionDenied, fmt.Errorf("action requires admin tenant access"))
+	}
 	windows, err := lake.Query[olap.Request]().
 		Where(olap.Request{
 			Timestamp: lake.FilterInt(lake.After(req.Msg.From.AsTime()), lake.Before(req.Msg.To.AsTime())),
@@ -159,6 +175,9 @@ func (s *Server) AggregateLatency(ctx context.Context, req *connect.Request[syst
 }
 
 func (s *Server) AggregateHits(ctx context.Context, req *connect.Request[system.AggregateHitsRequest]) (*connect.Response[system.AggregateHitsResponse], error) {
+	if !slices.Contains(auth.Scopes(ctx), oltp.ScopeAdmin) {
+		return nil, connect.NewError(connect.CodePermissionDenied, fmt.Errorf("action requires admin tenant access"))
+	}
 	windows, err := lake.Query[olap.Request]().
 		Where(olap.Request{
 			Timestamp: lake.FilterInt(lake.After(req.Msg.From.AsTime()), lake.Before(req.Msg.To.AsTime())),

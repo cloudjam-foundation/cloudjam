@@ -17,7 +17,6 @@
 	import LinkButton from '$lib/components/LinkButton.svelte';
 	import StaticBadge from '$lib/components/StaticBadge.svelte';
 	import Alert from '$lib/components/Alert.svelte';
-	import { loadActive } from '$lib/auth.svelte';
 
 	let user: User | undefined = $state();
 

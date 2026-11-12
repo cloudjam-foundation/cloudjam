@@ -349,10 +349,10 @@ const file_v1_admin_rbac_rbac_proto_rawDesc = "" +
 	"\x11AttachRoleRequest\x12\x18\n" +
 	"\x02id\x18\x01 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\x02id\x12\x1c\n" +
 	"\x04role\x18\x02 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\x04role\"\x14\n" +
-	"\x12AttachRoleResponse\"y\n" +
+	"\x12AttachRoleResponse\"o\n" +
 	"\x12AttachScopeRequest\x123\n" +
-	"\bresource\x18\x01 \x01(\x0e2\x17.v1.admin.rbac.ResourceR\bresource\x12\x18\n" +
-	"\x02id\x18\x02 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\x02id\x12\x14\n" +
+	"\bresource\x18\x01 \x01(\x0e2\x17.v1.admin.rbac.ResourceR\bresource\x12\x0e\n" +
+	"\x02id\x18\x02 \x01(\tR\x02id\x12\x14\n" +
 	"\x05scope\x18\x03 \x01(\tR\x05scope\"\x15\n" +
 	"\x13AttachScopeResponse*5\n" +
 	"\bResource\x12\f\n" +

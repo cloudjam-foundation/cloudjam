@@ -42,7 +42,7 @@
 		</p>
 	</div>
 	{#if code}
-		<div class="flex w-full flex-col items-center gap-2">
+		<div class="flex w-full flex-col items-start gap-2">
 			<h2 class="text-xl font-semibold text-primary/80">Invitation created</h2>
 			<p class="text-sm text-primary/60">Share the registration link (or the raw code) with the invited user:</p>
 			<div class="flex flex-row items-center gap-2">
@@ -90,6 +90,7 @@
 				<label class="flex flex-col gap-1 text-sm">
 					Tenant
 					<OptionalSelect
+						class="w-full"
 						bind:value={init.scope}
 						placeholder="Tenant the user is placed in"
 						suggestions={getAssignableTenants().map((tenant) => ({ id: tenant, title: tenant }))}

@@ -176,7 +176,7 @@
 		<Separator />
 	{/if}
 
-	<div class="flex flex-col gap-2">
+	<div class="flex flex-col items-start gap-2">
 		<h2 class="text-xl font-semibold text-primary/80">Reset Password</h2>
 		{#if resetState.forbidden}
 			<Alert class="p-2" message="You are not allowed to reset this users password" animation={true} />
