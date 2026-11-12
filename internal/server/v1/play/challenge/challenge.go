@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"math"
 	"slices"
 	"time"
 
@@ -616,7 +617,7 @@ func (s *Server) UncoverClue(ctx context.Context, req *connect.Request[challenge
 	err = dynamitedb.Update(ctx, s.oltp, &oltp.Team{
 		GameID: dynamitedb.Key(challengeMeta.GameID.Value()),
 		TeamID: dynamitedb.Key(teamMeta.TeamID.Value()),
-		Score:  dynamitedb.Increment(price),
+		Score:  dynamitedb.Increment(math.Abs(price) * -1),
 	})
 	if err != nil {
 		l.Error(fmt.Sprintf("failed to update score (clue <-> score corruption: team '%s' owes '%2f' points): %v", teamMeta.Name.Value(), price, err))
