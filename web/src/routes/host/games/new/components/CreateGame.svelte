@@ -76,10 +76,10 @@
 				<Input type="datetime-local" bind:value={to} />
 			</label>
 			<label class="text-sm">
-				Scope
+				Tenant
 				<OptionalSelect
 					bind:value={init.scope}
-					placeholder="Scope the game is placed in"
+					placeholder="Tenant the game is placed in"
 					suggestions={getAssignableTenants().map((scope) => ({ id: scope, title: scope })) satisfies Suggestion[]}
 					class="w-full"
 				/>

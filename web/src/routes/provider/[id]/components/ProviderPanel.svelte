@@ -37,7 +37,7 @@
 	</div>
 	<div class="flex flex-row flex-wrap gap-1">
 		<StaticBadge variant="primary" text={ProviderType[provider.type]} />
-		<StaticBadge variant="primary" text={`scope: ${provider.scope}`} />
+		<StaticBadge variant="primary" text={`tenant: ${provider.scope}`} />
 		<StaticBadge variant="primary" text={provider.id} />
 	</div>
 
