@@ -133,18 +133,20 @@
 			</div>
 		</div>
 		<div class="ml-auto flex flex-row flex-wrap gap-2">
-			<Button
-				variant="primary"
-				processing={startState.loading}
-				disabled={!active || startState.loading || Boolean(challenge.title)}
-				onclick={() =>
-					Submit(async () => {
-						await Glue.challenge.start(create(StartRequestSchema, { gameId: challenge.gameId, id: challenge.id }));
-						challenge.title = '...';
-					}, startState)}
-			>
-				<PlayIcon /> Start
-			</Button>
+			{#if !active}
+				<Button
+					variant="primary"
+					processing={startState.loading}
+					disabled={!active || startState.loading || Boolean(challenge.title)}
+					onclick={() =>
+						Submit(async () => {
+							await Glue.challenge.start(create(StartRequestSchema, { gameId: challenge.gameId, id: challenge.id }));
+							challenge.title = '...';
+						}, startState)}
+				>
+					<PlayIcon /> Start
+				</Button>
+			{/if}
 
 			<Button
 				variant="primary"
