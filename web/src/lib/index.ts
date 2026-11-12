@@ -77,8 +77,7 @@ export function getSubject(): string {
 	const token = localStorage.getItem('auth_token');
 	if (token) {
 		const decoded = jwtDecode(token, {});
-		// TODO: See if there's a better way to type this
-		if ((decoded.exp ?? 0) * 1000 > Date.now()) return (decoded as any).sub;
+		if ((decoded.exp ?? 0) * 1000 > Date.now()) return decoded.sub ?? '';
 	}
 	return '';
 }

@@ -9,6 +9,7 @@
 	import { LoginRequestSchema } from '$lib/sdk/v1/auth/auth_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { resolve } from '$app/paths';
+	import { loadActive } from '$lib/auth.svelte';
 
 	let loginState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let loginRequest = $state(create(LoginRequestSchema, {}));
@@ -28,6 +29,7 @@
 			onsubmit={() =>
 				Submit(async () => {
 					setToken((await Glue.auth.login(loginRequest)).token);
+					await loadActive(); // clear any old state
 					await goto(resolve('/profile'));
 				}, loginState)}
 		>
