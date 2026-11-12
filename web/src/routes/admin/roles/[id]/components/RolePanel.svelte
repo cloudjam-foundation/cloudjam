@@ -68,7 +68,7 @@
 			<StaticBadge variant="jam" text="builtin" />
 		{/if}
 		{#if role.scope}
-			<StaticBadge variant="primary" text={`scope: ${role.scope}`} />
+			<StaticBadge variant="primary" text={`tenant: ${role.scope}`} />
 		{/if}
 		<StaticBadge variant="primary" text={role.id} />
 	</div>

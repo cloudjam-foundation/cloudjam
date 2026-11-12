@@ -34,7 +34,7 @@
 		<p class="text-primary/60">{game.description}</p>
 	</div>
 	<div class="flex flex-row flex-wrap gap-1">
-		<StaticBadge variant="primary" text={`scope: ${game.scope}`} />
+		<StaticBadge variant="primary" text={`tenant: ${game.scope}`} />
 		<StaticBadge variant="primary" text={game.id} />
 	</div>
 

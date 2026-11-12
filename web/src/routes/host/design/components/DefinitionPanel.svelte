@@ -31,7 +31,7 @@
 
 {#snippet renderBadges()}
 	<StaticBadge variant="jam" text={`version: ${definition.version || 'unversioned'}`} />
-	<StaticBadge variant="primary" text={`scope: ${definition.scope}`} />
+	<StaticBadge variant="primary" text={`tenant: ${definition.scope}`} />
 	<StaticBadge variant="primary" text={definition.id} class="font-mono" />
 	{#if definition.hash}
 		<StaticBadge variant="primary" text={toDigest(definition.hash)} class="font-mono" />
