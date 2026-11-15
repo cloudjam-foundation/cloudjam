@@ -16,8 +16,10 @@ import (
 // This makes it easy to reuse the challenge code
 // and to just change the prefixes and the region
 
-var REGION = "us-east-1"
-var RESOURCE_PREFIX = "cloudjam"
+var (
+	REGION          = "us-east-1"
+	RESOURCE_PREFIX = "cloudjam"
+)
 
 //go:embed brief.md
 var brief []byte
@@ -36,7 +38,6 @@ func bootstrap(s *challenge.Scenario) error {
 	// This is a design check as it does not send requests to the bucket.
 	s.AddCheck("Does the S3 exist", challenge.NewDesignCheck(100, "The S3 Bucket Exists", func() (bool, error) {
 		bucketList, err := aws.List[*s3.Bucket]()
-
 		if err != nil {
 			return false, err
 		}
