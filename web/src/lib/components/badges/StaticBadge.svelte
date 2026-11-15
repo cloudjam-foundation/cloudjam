@@ -1,6 +1,6 @@
 <!-- Normal badge with additional support for shimmering text -->
 <script lang="ts">
-	import { cn } from '$lib/utils.svelte';
+	import { cn } from '$lib/utils.svelte.js';
 
 	type Variant = 'primary' | 'filled' | 'jam' | 'destructive';
 

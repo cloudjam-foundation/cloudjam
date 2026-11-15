@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
-	import Card from '$lib/components/Card.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 	import { CreateRequestSchema } from '$lib/sdk/v1/cloud/account/account_pb';
 	import { AccountSchema } from '$lib/sdk/v1/cloud/account_pb';
 	import { create } from '@bufbuild/protobuf';

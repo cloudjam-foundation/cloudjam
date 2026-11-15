@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
 	import { Info } from '@lucide/svelte';
 	import { EyeIcon, EyeOffIcon } from '@lucide/svelte';
 

@@ -1,10 +1,10 @@
 <script lang="ts" generics="T">
 	import type { SubmitState } from '$lib';
-	import ProcessingButton from '$lib/components/ProcessingButton.svelte';
-	import DelaySpinner from '$lib/components/DelaySpinner.svelte';
+	import ProcessingButton from '$lib/components/buttons/ProcessingButton.svelte';
+	import DelaySpinner from '$lib/components/ui/DelaySpinner.svelte';
 	import { cn } from '$lib/utils.svelte';
 	import { onMount, type Snippet } from 'svelte';
-	import Alert from '$lib/components/Alert.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
 
 	let {
 		load,

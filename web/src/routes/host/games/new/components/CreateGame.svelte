@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import OptionalSelect, { type Suggestion } from '$lib/components/OptionalSelect.svelte';
-	import Card from '$lib/components/Card.svelte';
-	import Input from '$lib/components/Input.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import OptionalSelect, { type Suggestion } from '$lib/components/inputs/OptionalSelect.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
 	import { getAssignableTenants } from '$lib/auth.svelte.js';
 	import { CreateRequestSchema } from '$lib/sdk/v1/play/game/game_pb';
 	import { GameSchema } from '$lib/sdk/v1/play/game_pb';

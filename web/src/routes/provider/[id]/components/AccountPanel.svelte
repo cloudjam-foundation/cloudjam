@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import LoadingBadge from '$lib/components/LoadingBadge.svelte';
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import StateBadge from '$lib/components/StateBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import LinkButton from '$lib/components/LinkButton.svelte';
-	import Input from '$lib/components/Input.svelte';
-	import Popup from '$lib/components/Popup.svelte';
-	import Separator from '$lib/components/Separator.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import LoadingBadge from '$lib/components/badges/LoadingBadge.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
+	import StateBadge from '$lib/components/badges/StateBadge.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import LinkButton from '$lib/components/buttons/LinkButton.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
+	import Popup from '$lib/components/popovers/Popup.svelte';
+	import Separator from '$lib/components/ui/Separator.svelte';
 	import {
 		CredentialsRequestSchema,
 		DeleteRequestSchema,

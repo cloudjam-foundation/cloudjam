@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.svelte';
+	import { cn } from '$lib/utils.svelte.js';
 	import { OctagonAlert } from '@lucide/svelte';
 
 	let {

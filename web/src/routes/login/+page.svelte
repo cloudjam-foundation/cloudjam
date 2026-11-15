@@ -2,10 +2,10 @@
 	import { goto } from '$app/navigation';
 	import { Glue, setToken, Submit, type SubmitState } from '$lib';
 	import logo from '$lib/assets/favicon.svg';
-	import Alert from '$lib/components/Alert.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
-	import Card from '$lib/components/Card.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 	import { LoginRequestSchema } from '$lib/sdk/v1/auth/auth_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { resolve } from '$app/paths';

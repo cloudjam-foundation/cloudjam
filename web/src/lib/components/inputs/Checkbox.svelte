@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CheckIcon, MinusIcon } from '@lucide/svelte';
-	import { cn } from '$lib/utils.svelte';
+	import { cn } from '$lib/utils.svelte.js';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
 	interface CheckboxProps extends Omit<HTMLInputAttributes, 'type'> {

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
-	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
-	import Card from '$lib/components/Card.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
+	import OptionalSelect from '$lib/components/inputs/OptionalSelect.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 	import { getAssignableTenants } from '$lib/auth.svelte.js';
 	import { CreateRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
 	import { RoleSchema } from '$lib/sdk/v1/admin/role_pb';

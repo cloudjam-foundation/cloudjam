@@ -5,7 +5,7 @@
 	import AppSidebar from '$lib/components/sidebar/AppSidebar.svelte';
 	import { getActiveFeatures, getActiveUser, getActiveUserIcon } from '$lib/auth.svelte';
 	import { page } from '$app/state';
-	import Background from '$lib/components/Background.svelte';
+	import Background from '$lib/components/ui/Background.svelte';
 
 	let { children } = $props();
 </script>

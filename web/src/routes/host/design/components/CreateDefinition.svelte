@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import LoadingBadge from '$lib/components/LoadingBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
-	import Card from '$lib/components/Card.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import LoadingBadge from '$lib/components/badges/LoadingBadge.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 	import { compress } from '../compress';
 	import { CreateRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';
 	import { CompressionMode, DefinitionSchema } from '$lib/sdk/v1/cloud/definition_pb';

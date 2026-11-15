@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.svelte';
+	import { cn } from '$lib/utils.svelte.js';
 
 	let { orientation = 'horizontal', class: className }: { orientation?: 'horizontal' | 'vertical'; class?: string } =
 		$props();

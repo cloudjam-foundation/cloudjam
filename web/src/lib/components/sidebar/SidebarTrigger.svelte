@@ -1,7 +1,7 @@
 <!-- Button toggling the sidebar -->
 <script lang="ts">
 	import { PanelLeftIcon } from '@lucide/svelte';
-	import Button from '../Button.svelte';
+	import Button from '../buttons/Button.svelte';
 	import { useSidebar } from './state.svelte';
 
 	let { class: className }: { class?: string } = $props();

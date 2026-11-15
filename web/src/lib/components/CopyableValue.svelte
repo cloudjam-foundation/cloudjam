@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CopyIcon, CheckIcon } from '@lucide/svelte';
-	import Button from '$lib/components/Button.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
 
 	let {
 		value = $bindable(),

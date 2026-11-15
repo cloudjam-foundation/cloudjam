@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import ProcessingButton from '$lib/components/ProcessingButton.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import ProcessingButton from '$lib/components/buttons/ProcessingButton.svelte';
 	import type { ChartConfig } from '$lib/components/chart/chart';
-	import OptionalSelect, { type Suggestion } from '$lib/components/OptionalSelect.svelte';
-	import Separator from '$lib/components/Separator.svelte';
-	import Card from '$lib/components/Card.svelte';
+	import OptionalSelect, { type Suggestion } from '$lib/components/inputs/OptionalSelect.svelte';
+	import Separator from '$lib/components/ui/Separator.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import {
 		AggregateCostRequestSchema,
@@ -21,7 +21,7 @@
 	import { RotateCcwIcon as ResetIcon } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import ZoomChart from './ZoomChart.svelte';
-	import Skeleton from '$lib/components/Skeleton.svelte';
+	import Skeleton from '$lib/components/ui/Skeleton.svelte';
 
 	// TODO: Is there a way to share functions and components & stuff between this and the CostAccountPanel
 	let { select }: { select?: (providerId: string, accountId: string, timeWindow: string) => void } = $props();

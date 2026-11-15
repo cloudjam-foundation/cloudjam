@@ -2,10 +2,10 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import DynamicBadge from '$lib/components/DynamicBadge.svelte';
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import Card from '$lib/components/Card.svelte';
+	import DynamicBadge from '$lib/components/badges/DynamicBadge.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 	import { GetRequestSchema as GetDefinitionRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';
 	import type { Definition } from '$lib/sdk/v1/cloud/definition_pb';
 	import { GetRequestSchema as GetChallengeRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb';
