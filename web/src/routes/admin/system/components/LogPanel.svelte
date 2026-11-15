@@ -42,20 +42,22 @@
 	let selectedOpen = $state(false);
 
 	let selectedString = $derived(
-		selected && selected.timestamp ? JSON.stringify({
-			challenge: selected?.challenge,
-			level: selected?.level,
-			message: selected?.message,
-			procedure: selected?.procedure,
-			timestamp: timestampDate(selected.timestamp),
-			trace: selected?.trace
-		}) : JSON.stringify({
-			challenge: selected?.challenge,
-			level: selected?.level,
-			message: selected?.message,
-			procedure: selected?.procedure,
-			trace: selected?.trace
-		})
+		selected && selected.timestamp
+			? JSON.stringify({
+					challenge: selected?.challenge,
+					level: selected?.level,
+					message: selected?.message,
+					procedure: selected?.procedure,
+					timestamp: timestampDate(selected.timestamp),
+					trace: selected?.trace
+				})
+			: JSON.stringify({
+					challenge: selected?.challenge,
+					level: selected?.level,
+					message: selected?.message,
+					procedure: selected?.procedure,
+					trace: selected?.trace
+				})
 	);
 </script>
 
