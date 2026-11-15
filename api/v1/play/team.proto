@@ -11,8 +11,8 @@ message Player {
   string id = 1 [(buf.validate.field).string = {uuid: true}];
   string pub_id = 2;
   string username = 3 [
-    (buf.validate.field).string.min_len = 4,
-    (buf.validate.field).string.max_len = 20
+    (buf.validate.field).string.min_len = 3,
+    (buf.validate.field).string.max_len = 30
   ];
 }
 
