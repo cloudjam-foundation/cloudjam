@@ -28,7 +28,8 @@
 		--color-surface-300: var(--color-black);
 	}
 
-	--jam: #831df0;
+	--jam: #8b2bf1;
+	--jam-foreground: #590bab;
 	--background: oklch(1 0 0);
 	--deep-background: oklch(0.9733 0 77.29);
 	--foreground: oklch(0.145 0 0);
@@ -58,6 +59,7 @@
 
 .dark {
 	--jam: #831df0;
+	--jam-foreground: #ead8fc;
 	--background: oklch(0.145 0 0);
 	--deep-background: oklch(0 0 0);
 	--foreground: oklch(0.985 0 0);
@@ -87,6 +89,7 @@
 @theme inline {
 	--font-sans: 'Inter Variable', sans-serif;
 	--color-jam: var(--jam);
+	--color-jam-foreground: var(--jam-foreground);
 	--color-chart-5: var(--chart-5);
 	--color-chart-4: var(--chart-4);
 	--color-chart-3: var(--chart-3);
