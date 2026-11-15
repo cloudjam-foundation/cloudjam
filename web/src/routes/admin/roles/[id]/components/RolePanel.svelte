@@ -116,7 +116,7 @@
 						processing={updateState.loading}
 						disabled={updateState.loading || Boolean(Glue.Validate(RoleSchema, mod).violation.name)}
 					>
-						Save Configuration
+						Save Features
 					</Button>
 					{#if updateState.error}
 						<Alert class="p-2" message={updateState.error} animation={true} />

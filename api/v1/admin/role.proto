@@ -7,10 +7,19 @@ import "buf/validate/validate.proto";
 option go_package = "codeberg.org/megakuul/cloudjam/pkg/api/v1/admin";
 
 enum Feature {
+  // Lets users see the jam section on the front-end
   VisualJam = 0;
+
+  // Let users see the leaderboard section on the front-end
   VisualLeaderboard = 1;
+
+  // Let users see the host section on the front-end
   VisualHost = 2;
+
+  // Let users see the provider section on the front-end
   VisualProvider = 3;
+
+  // Let users see the admin section on the front-end
   VisualAdmin = 4;
 }
 
