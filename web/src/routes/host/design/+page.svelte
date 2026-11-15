@@ -22,6 +22,7 @@
 	import DefinitionPanel from './components/DefinitionPanel.svelte';
 	import Help from './components/Help.svelte';
 	import { resolve } from '$app/paths';
+	import StandardPage from '$lib/components/ui/StandardPage.svelte';
 
 	let providerId: string = $state('');
 	let provider: Provider | undefined = $state();
@@ -59,14 +60,7 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex w-full flex-col gap-4">
-	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto(resolve('/host'))}>
-			<ChevronLeftIcon />
-		</Button>
-		<h1 class="text-3xl opacity-80">Design</h1>
-	</div>
-
+<StandardPage title="Design" headers={[]} back={() => goto(resolve('/host'))}>
 	<p class="text-sm text-primary/60">Create, update and manage challenge definitions</p>
 
 	<div class="flex flex-row items-center gap-4">
@@ -152,4 +146,4 @@
 			<h1 class="text-4xl font-bold text-muted">The Canvas is yours</h1>
 		</div>
 	{/if}
-</div>
+</StandardPage>
