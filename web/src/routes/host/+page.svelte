@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Card from '$lib/components/ui/Card.svelte';
 	import { GamepadIcon, WandSparklesIcon } from '@lucide/svelte';
+	import StandardPage from '$lib/components/ui/StandardPage.svelte';
 </script>
 
 <svelte:head>
@@ -10,8 +11,7 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex w-full flex-col items-center gap-4">
-	<h1 class="my-8 text-4xl opacity-80">Host</h1>
+<StandardPage title="Host">
 	<div class="grid w-full gap-4 md:grid-cols-2">
 		<a href="/host/games/">
 			<Card class="cursor-pointer items-start gap-2 duration-300 hover:opacity-70">
@@ -28,4 +28,4 @@
 			</Card>
 		</a>
 	</div>
-</div>
+</StandardPage>
