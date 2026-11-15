@@ -4,7 +4,6 @@
 	import { Glue, Submit, type SubmitState } from '$lib';
 	import DynamicBadge from '$lib/components/badges/DynamicBadge.svelte';
 	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
-	import Button from '$lib/components/buttons/Button.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
 	import { GetRequestSchema as GetDefinitionRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';
 	import type { Definition } from '$lib/sdk/v1/cloud/definition_pb';
@@ -16,11 +15,12 @@
 	import type { Team } from '$lib/sdk/v1/play/team_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import { ChevronLeftIcon, LockIcon } from '@lucide/svelte';
+	import { LockIcon } from '@lucide/svelte';
 	import { toSvg } from 'jdenticon';
 	import PlayChallenge from './components/PlayChallenge.svelte';
 	import { resolve } from '$app/paths';
 	import CountdownBadge from '../components/CountdownBadge.svelte';
+	import StandardPage from '$lib/components/ui/StandardPage.svelte';
 
 	const reloadInterval = 5000;
 
@@ -141,23 +141,23 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex w-full flex-col gap-4">
-	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto(resolve(`/play/[game_id]`, { game_id: page.params.game_id! }))}>
-			<ChevronLeftIcon />
-		</Button>
-		<h1 class="text-3xl opacity-80">{challenge?.title || definition?.name || 'Challenge'}</h1>
-		{#if !active}
-			<DynamicBadge variant="primary">
-				<LockIcon class="size-3" />
-				Locked
-			</DynamicBadge>
-		{:else}
-			<CountdownBadge {end} {now} />
-		{/if}
-		<StaticBadge variant="jam" text={`score: ${score}`} />
-	</div>
+{#snippet badges()}
+	{#if !active}
+		<DynamicBadge variant="primary">
+			<LockIcon class="size-3" />
+			Locked
+		</DynamicBadge>
+	{:else}
+		<CountdownBadge {end} {now} />
+	{/if}
+	<StaticBadge variant="jam" text={`Score: ${score}`} />
+{/snippet}
 
+<StandardPage
+	title={challenge?.title || definition?.name || 'Challenge'}
+	headers={[badges]}
+	back={() => goto(resolve(`/play/[game_id]`, { game_id: page.params.game_id! }))}
+>
 	<Card class="w-full items-start gap-2 p-4">
 		<div class="flex flex-row items-center gap-2">
 			<h1 class="text-2xl font-semibold text-primary/90">{team?.name}</h1>
@@ -180,4 +180,4 @@
 	{#if challenge}
 		<PlayChallenge {challenge} {active} {nextInterval} refresh={() => reloadChallenge()} />
 	{/if}
-</div>
+</StandardPage>

@@ -3,8 +3,6 @@
 	import LogSection from './LogSection.svelte';
 	import MetricSection from './MetricSection.svelte';
 	import TabPage from '$lib/components/ui/TabPage.svelte';
-
-	let { close }: { close: () => void } = $props();
 </script>
 
 {#snippet logs()}
@@ -19,4 +17,4 @@
 	<CostSection />
 {/snippet}
 
-<TabPage title="System" back={close} tabs={['logs', 'metrics', 'cost']} tabPages={[logs, metrics, cost]} />
+<TabPage title="System" tabs={['logs', 'metrics', 'cost']} tabPages={[logs, metrics, cost]} />

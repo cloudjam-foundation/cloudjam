@@ -38,7 +38,7 @@
 			onsubmit={() =>
 				Submit(async () => {
 					await Glue.auth.register(registerRequest);
-					goto(resolve('/login'));
+					await goto(resolve('/login'));
 				}, registerState)}
 		>
 			<img alt="icon" src={logo} class="h-32" />

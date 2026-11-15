@@ -10,8 +10,9 @@
 	import { ListRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
 	import type { Role } from '$lib/sdk/v1/admin/role_pb';
 	import { create } from '@bufbuild/protobuf';
-	import { ChevronLeftIcon, PlusIcon } from '@lucide/svelte';
+	import { PlusIcon } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
+	import StandardPage from '$lib/components/ui/StandardPage.svelte';
 
 	let id = $state('');
 
@@ -25,17 +26,13 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex h-11/12 w-full flex-col gap-4">
-	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto(resolve('/admin'))}>
-			<ChevronLeftIcon />
-		</Button>
-		<h1 class="text-3xl opacity-80">Roles</h1>
-		<LinkButton class="ml-auto" href="/admin/roles/new/">
-			<PlusIcon /> Create Role
-		</LinkButton>
-	</div>
+{#snippet createRoleButton()}
+	<LinkButton class="ml-auto" href="/admin/roles/new/">
+		<PlusIcon /> Create Role
+	</LinkButton>
+{/snippet}
 
+<StandardPage title="Roles" headers={[createRoleButton]}>
 	{#if rolesState.forbidden}
 		<div class="flex h-full w-full items-center justify-center">
 			<Card>
@@ -92,4 +89,4 @@
 			{/snippet}
 		</div>
 	{/if}
-</div>
+</StandardPage>

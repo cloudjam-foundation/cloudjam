@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { ChevronLeftIcon } from '@lucide/svelte';
 	import CreateGame from './components/CreateGame.svelte';
-	import Button from '$lib/components/buttons/Button.svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import StandardPage from '$lib/components/ui/StandardPage.svelte';
 </script>
 
 <svelte:head>
@@ -13,13 +12,6 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex w-full flex-col gap-4">
-	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto(resolve('/host/games'))}>
-			<ChevronLeftIcon />
-		</Button>
-		<h1 class="text-3xl opacity-80">Host Game</h1>
-	</div>
-
+<StandardPage title="Host Game" back={() => goto(resolve('/host/games'))}>
 	<CreateGame />
-</div>
+</StandardPage>

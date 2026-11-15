@@ -15,9 +15,9 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex w-full flex-col gap-4">
+<div class="flex h-full w-full flex-col items-center justify-center gap-4">
 	<div class="flex w-full justify-center">
-		<Card class="mt-[10%] w-96 items-start">
+		<Card class="w-96 items-start">
 			<div>
 				<h1 class="text-2xl font-bold text-primary/80">Join a Game</h1>
 				<p class="text-primary/60">Enter the game code your host handed you.</p>

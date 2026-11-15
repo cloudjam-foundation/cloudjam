@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import Button from '$lib/components/buttons/Button.svelte';
-	import { ChevronLeftIcon } from '@lucide/svelte';
 	import CreateUser from './components/CreateUser.svelte';
 	import { resolve } from '$app/paths';
+	import StandardPage from '$lib/components/ui/StandardPage.svelte';
 </script>
 
 <svelte:head>
@@ -13,13 +12,6 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex w-full flex-col gap-4">
-	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto(resolve('/admin/users'))}>
-			<ChevronLeftIcon />
-		</Button>
-		<h1 class="text-3xl opacity-80">Invite User</h1>
-	</div>
-
-	<CreateUser onCreated={() => {}} />
-</div>
+<StandardPage title="Invite User" back={() => goto(resolve('/admin/users'))}>
+	<CreateUser />
+</StandardPage>
