@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import SystemWorkspace from './components/SystemWorkspace.svelte';
-	import { resolve } from '$app/paths';
 </script>
 
 <svelte:head>
@@ -11,4 +9,4 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<SystemWorkspace close={() => goto(resolve('/admin'))} />
+<SystemWorkspace />

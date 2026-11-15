@@ -32,7 +32,7 @@
 	</LinkButton>
 {/snippet}
 
-<StandardPage title="Roles" headers={[createRoleButton]} back={() => goto(resolve('/admin'))}>
+<StandardPage title="Roles" headers={[createRoleButton]}>
 	{#if rolesState.forbidden}
 		<div class="flex h-full w-full items-center justify-center">
 			<Card>

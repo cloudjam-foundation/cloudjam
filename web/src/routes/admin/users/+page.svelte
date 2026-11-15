@@ -32,7 +32,7 @@
 	</LinkButton>
 {/snippet}
 
-<StandardPage title="Users" headers={[inviteUser]} back={() => goto(resolve('/admin'))}>
+<StandardPage title="Users" headers={[inviteUser]}>
 	{#if usersState.forbidden}
 		<div class="flex h-full w-full items-center justify-center">
 			<Card>

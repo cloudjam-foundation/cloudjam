@@ -39,7 +39,7 @@
 	</LinkButton>
 {/snippet}
 
-<StandardPage title="Games" headers={[newGame]} back={() => goto(resolve('/host'))}>
+<StandardPage title="Games" headers={[newGame]}>
 	<div class="flex h-11/12 w-full flex-col gap-4">
 		{#if gamesState.forbidden}
 			<div class="flex h-full w-full items-center justify-center">

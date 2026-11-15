@@ -58,7 +58,7 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<StandardPage title="Design" headers={[]} back={() => goto(resolve('/host'))}>
+<StandardPage title="Design">
 	<p class="text-sm text-primary/60">Create, update and manage challenge definitions</p>
 
 	<div class="flex flex-row items-center gap-4">
