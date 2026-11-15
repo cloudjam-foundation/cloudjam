@@ -5,6 +5,7 @@
 Initialize a go project:
 
 ```bash
+# Replace megakuul and cloudsky with whatever you want
 go mod init github.com/megakuul/cloudsky
 go get github.com/cloudjam-foundation/cloudjam
 ```
