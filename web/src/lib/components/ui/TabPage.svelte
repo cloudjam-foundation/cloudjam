@@ -6,6 +6,7 @@
 	import Alert from '$lib/components/ui/Alert.svelte';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
+	import type {PageProps} from "$lib/components/ui/pageProps";
 
 	let {
 		title,
@@ -14,10 +15,7 @@
 		dataState,
 		tabs,
 		tabPages
-	}: {
-		title: string;
-		headers?: Snippet[];
-		back: () => void | Promise<void>;
+	}: PageProps & {
 		dataState?: SubmitState;
 		tabs: string[];
 		tabPages: Snippet[];
