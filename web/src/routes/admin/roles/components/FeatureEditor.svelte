@@ -11,6 +11,7 @@
 		<button
 			class="flex flex-row items-center justify-center hover:cursor-pointer"
 			id={feature.title}
+			type="button"
 			onclick={() => (features[feature.id] = !features[feature.id])}
 		>
 			<Checkbox bind:checked={features[feature.id]} />
