@@ -12,6 +12,7 @@
 	import { create } from '@bufbuild/protobuf';
 	import { PlusIcon } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
+	import StandardPage from '$lib/components/ui/StandardPage.svelte';
 
 	let id = $state('');
 
@@ -25,14 +26,13 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex h-11/12 w-full flex-col gap-4">
-	<div class="flex flex-row items-center gap-2">
-		<h1 class="text-3xl opacity-80">Providers</h1>
-		<LinkButton class="ml-auto" href="/provider/new/">
-			<PlusIcon /> Add Provider
-		</LinkButton>
-	</div>
+{#snippet newProvider()}
+	<LinkButton class="ml-auto" href="/provider/new/">
+		<PlusIcon /> Add Provider
+	</LinkButton>
+{/snippet}
 
+<StandardPage title="Providers" headers={[newProvider]}>
 	{#if providersState.forbidden}
 		<div class="flex h-full w-full items-center justify-center">
 			<Card>
@@ -96,4 +96,4 @@
 			{/snippet}
 		</div>
 	{/if}
-</div>
+</StandardPage>
