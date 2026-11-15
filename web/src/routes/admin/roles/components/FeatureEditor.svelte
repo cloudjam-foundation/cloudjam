@@ -1,21 +1,23 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
+	import { featureMap } from './featureMap';
 	import { Feature } from '$lib/sdk/v1/admin/role_pb';
+	import Checkbox from '$lib/components/inputs/Checkbox.svelte';
 
 	let { features = $bindable() }: { features: Record<Feature, boolean> } = $props();
 </script>
 
-<div class="flex flex-wrap items-center justify-start gap-2">
-	{#each Object.keys(Feature).filter((key) => isNaN(Number(key))) as featureName (featureName)}
-		{@const feature = Feature[featureName as keyof typeof Feature]}
-		{@const active = features[feature]}
-		<Button
-			type="button"
-			variant={active ? 'primary' : 'ghost'}
-			class="text-sm"
-			onclick={() => (features[feature] = !active)}
+<div class="flex flex-col flex-wrap items-start justify-start gap-2">
+	{#each featureMap as feature (feature.id)}
+		<button
+			class="flex flex-row items-center justify-center hover:cursor-pointer"
+			id={feature.title}
+			onclick={() => (features[feature.id] = !features[feature.id])}
 		>
-			{featureName}
-		</Button>
+			<Checkbox bind:checked={features[feature.id]} />
+			<span class="flex flex-col items-start justify-start pl-2 text-left">
+				<span class="font-medium">{feature.title}</span>
+				<span class="text-muted-foreground">{feature.description}</span>
+			</span>
+		</button>
 	{/each}
 </div>

@@ -1,7 +1,7 @@
 <!-- Spinner that activates only after the specified delay to avoid bubble spinners if it loads fast -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Spinner from '$lib/components/Spinner.svelte';
+	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { fade } from 'svelte/transition';
 
 	let { delay, class: className }: { delay: number; class?: string } = $props();

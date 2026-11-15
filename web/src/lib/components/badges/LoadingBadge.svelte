@@ -1,6 +1,6 @@
 <!-- Badge with loading animation and spinner -->
 <script lang="ts">
-	import Spinner from '$lib/components/Spinner.svelte';
+	import Spinner from '$lib/components/ui/Spinner.svelte';
 
 	let { text }: { text: string } = $props();
 </script>

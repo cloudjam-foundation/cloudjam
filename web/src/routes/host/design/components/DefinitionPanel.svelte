@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import LoadingBadge from '$lib/components/LoadingBadge.svelte';
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
-	import Popup from '$lib/components/Popup.svelte';
-	import Separator from '$lib/components/Separator.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import LoadingBadge from '$lib/components/badges/LoadingBadge.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
+	import Popup from '$lib/components/popovers/Popup.svelte';
+	import Separator from '$lib/components/ui/Separator.svelte';
 	import { compress } from '../compress';
 	import { toDigest } from '$lib/utils.svelte.js';
 	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';

@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import Button from '$lib/components/Button.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
 	import type { ChartConfig } from '$lib/components/chart/chart';
-	import Input from '$lib/components/Input.svelte';
-	import Select from '$lib/components/Select.svelte';
-	import Card from '$lib/components/Card.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
+	import Select from '$lib/components/inputs/Select.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 	import {
 		AggregateLogsRequestSchema,
 		AggregateWindow,

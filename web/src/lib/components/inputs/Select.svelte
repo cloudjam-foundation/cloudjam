@@ -4,7 +4,7 @@
 </script>
 
 <script lang="ts" generics="M extends boolean = false">
-	import { cn } from '$lib/utils.svelte';
+	import { cn } from '$lib/utils.svelte.js';
 	import { CheckIcon, ChevronDownIcon } from '@lucide/svelte';
 
 	type Value = M extends true ? string[] : string;

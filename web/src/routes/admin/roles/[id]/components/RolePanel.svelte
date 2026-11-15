@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
-	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
-	import Card from '$lib/components/Card.svelte';
-	import Separator from '$lib/components/Separator.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
+	import OptionalSelect from '$lib/components/inputs/OptionalSelect.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
+	import Separator from '$lib/components/ui/Separator.svelte';
 	import { getActiveRole, getAssignableTenants, loadActive } from '$lib/auth.svelte.js';
 	import { AttachScopeRequestSchema, ConfigureRoleRequestSchema, Resource } from '$lib/sdk/v1/admin/rbac/rbac_pb';
 	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';
@@ -14,7 +14,7 @@
 	import { create } from '@bufbuild/protobuf';
 	import PermissionEditor from '../../components/PermissionEditor.svelte';
 	import FeatureEditor from '../../components/FeatureEditor.svelte';
-	import Dialog from '$lib/components/Dialog.svelte';
+	import Dialog from '$lib/components/popovers/Dialog.svelte';
 	import { ADMIN_SCOPE, getActiveScopes } from '$lib/auth.svelte.js';
 	import { LayersPlusIcon } from '@lucide/svelte';
 
@@ -117,7 +117,7 @@
 						processing={updateState.loading}
 						disabled={updateState.loading || Boolean(Glue.Validate(RoleSchema, mod).violation.name)}
 					>
-						Save Configuration
+						Save Features
 					</Button>
 					{#if updateState.error}
 						<Alert class="p-2" message={updateState.error} animation={true} />

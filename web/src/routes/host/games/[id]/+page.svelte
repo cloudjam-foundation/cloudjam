@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import StateBadge from '$lib/components/StateBadge.svelte';
-	import TabPage from '$lib/components/TabPage.svelte';
+	import StateBadge from '$lib/components/badges/StateBadge.svelte';
+	import TabPage from '$lib/components/ui/TabPage.svelte';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import ChallengeSection from './components/ChallengeSection.svelte';

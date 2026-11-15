@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import Markdown from '$lib/components/Markdown.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Markdown from '$lib/components/ui/Markdown.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
-	import Popup from '$lib/components/Popup.svelte';
-	import Select from '$lib/components/Select.svelte';
-	import Separator from '$lib/components/Separator.svelte';
+	import Popup from '$lib/components/popovers/Popup.svelte';
+	import Select from '$lib/components/inputs/Select.svelte';
+	import Separator from '$lib/components/ui/Separator.svelte';
 	import { DeleteRequestSchema, UpdateRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb';
 	import { ScoreType, ScoreTypeSchema, type Challenge, type ScoreEvent } from '$lib/sdk/v1/play/challenge_pb';
 	import type { Team } from '$lib/sdk/v1/play/team_pb';

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { UsersIcon, ShieldCheckIcon, ActivityIcon } from '@lucide/svelte';
-	import Card from '$lib/components/Card.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 </script>
 
 <svelte:head>

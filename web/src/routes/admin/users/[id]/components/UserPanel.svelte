@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
-	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
-	import Card from '$lib/components/Card.svelte';
-	import Select from '$lib/components/Select.svelte';
-	import Separator from '$lib/components/Separator.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
+	import OptionalSelect from '$lib/components/inputs/OptionalSelect.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
+	import Select from '$lib/components/inputs/Select.svelte';
+	import Separator from '$lib/components/ui/Separator.svelte';
 	import { getAssignableTenants } from '$lib/auth.svelte.js';
 	import { AttachRoleRequestSchema, AttachScopeRequestSchema, Resource } from '$lib/sdk/v1/admin/rbac/rbac_pb';
 	import { ListRequestSchema as ListRolesRequestSchema } from '$lib/sdk/v1/admin/role/role_pb';

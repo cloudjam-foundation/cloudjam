@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import LinkButton from '$lib/components/LinkButton.svelte';
-	import Input from '$lib/components/Input.svelte';
-	import Card from '$lib/components/Card.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import LinkButton from '$lib/components/buttons/LinkButton.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import { ListRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb';
 	import { ProviderType, type Provider } from '$lib/sdk/v1/cloud/provider_pb';

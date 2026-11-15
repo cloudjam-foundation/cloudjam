@@ -7,12 +7,12 @@
 	import CreateTeam from './CreateTeam.svelte';
 	import TeamPanel from './TeamPanel.svelte';
 	import type { Game } from '$lib/sdk/v1/play/game_pb';
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
-	import Alert from '$lib/components/Alert.svelte';
-	import DynamicBadge from '$lib/components/DynamicBadge.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import DynamicBadge from '$lib/components/badges/DynamicBadge.svelte';
 	import { toSvg } from 'jdenticon';
-	import Button from '$lib/components/Button.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
 
 	let { game }: { game: Game } = $props();
 

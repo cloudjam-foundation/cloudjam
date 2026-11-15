@@ -1,6 +1,6 @@
 <!-- button used to automatically support some async action feedback -->
 <script lang="ts">
-	import Spinner from '$lib/components/Spinner.svelte';
+	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import type { Snippet } from 'svelte';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
 	import { cn } from 'tailwind-variants';

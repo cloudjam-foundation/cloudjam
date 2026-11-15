@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.svelte';
+	import { cn } from '$lib/utils.svelte.js';
 	import { XIcon } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
-	import Button from './Button.svelte';
+	import Button from '../buttons/Button.svelte';
 
 	let {
 		open = $bindable(false),

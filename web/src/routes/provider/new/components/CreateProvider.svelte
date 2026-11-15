@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
-	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
-	import Card from '$lib/components/Card.svelte';
-	import Select from '$lib/components/Select.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
+	import OptionalSelect from '$lib/components/inputs/OptionalSelect.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
+	import Select from '$lib/components/inputs/Select.svelte';
 	import { getAssignableTenants } from '$lib/auth.svelte.js';
 	import { CreateRequestSchema } from '$lib/sdk/v1/cloud/provider/provider_pb';
 	import { ProviderSchema, ProviderType } from '$lib/sdk/v1/cloud/provider_pb';
