@@ -26,12 +26,12 @@
 		bind:this={ref}
 		bind:checked
 		bind:indeterminate
-		class="col-start-1 row-start-1 size-4 cursor-pointer appearance-none rounded-xs glass outline-none checked:jam-glass indeterminate:jam-glass hover:bg-foreground/5 focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
+		class="col-start-1 row-start-1 size-4 cursor-pointer appearance-none rounded-xs glass outline-none checked:glass indeterminate:glass hover:bg-foreground/5 focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
 		{...restProps}
 	/>
 	<span
 		data-slot="checkbox-indicator"
-		class="pointer-events-none col-start-1 row-start-1 text-jam disabled:opacity-50 [&>svg]:size-3 [&>svg]:zoom-in-50"
+		class="pointer-events-none col-start-1 row-start-1 text-primary disabled:opacity-50 [&>svg]:size-3 [&>svg]:zoom-in-50"
 	>
 		{#if indeterminate}
 			<MinusIcon strokeWidth={3} />
