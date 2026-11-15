@@ -34,11 +34,11 @@
 		if (e.target === dialog) open = false;
 	}}
 	class={cn(
-		'overflow-scroll-hidden m-auto w-full max-w-[calc(100%-2rem)] animate-in rounded-xl bg-background p-0 text-sm text-foreground duration-100 fade-in-0 zoom-in-95 backdrop:bg-black/10 backdrop:backdrop-blur-xs sm:max-w-md',
+		'overflow-scroll-hidden m-auto w-full max-w-[calc(100%-2rem)] animate-in rounded-xl bg-transparent p-0 text-sm text-foreground duration-100 fade-in-0 zoom-in-95 backdrop:bg-black/10 backdrop:backdrop-blur-xs sm:max-w-md',
 		className
 	)}
 >
-	<div class="relative flex flex-col gap-6 rounded-xl glass p-6">
+	<div class="glass-container flex flex-col gap-6 rounded-xl border border-primary/20 p-6 [--glass-blur:24px]">
 		<div class="flex flex-col gap-2 pr-8">
 			<h1 class="text-2xl text-primary/90">{title}</h1>
 			{#if description}
