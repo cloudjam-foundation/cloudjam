@@ -17,6 +17,8 @@
 	import { SvelteDate } from 'svelte/reactivity';
 	import Skeleton from '$lib/components/ui/Skeleton.svelte';
 
+	// TODO: Type this file properly
+
 	// safe generates "layerchart" safe identifiers / keys.
 	const safe = (k: string) => k.replace(/[^a-zA-Z0-9_]/g, '_');
 
@@ -44,6 +46,7 @@
 	function zoomTimeFormat(from: Date, to: Date) {
 		// if > 48h show a per day format
 		if (to.getTime() - from.getTime() <= 48 * 60 * 60 * 1000) {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			return (v: any) => {
 				return v.toLocaleTimeString('en-US', {
 					hour: '2-digit',
@@ -52,6 +55,8 @@
 				});
 			};
 		}
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		return (v: any) => {
 			return v.toLocaleDateString('en-US', {
 				month: '2-digit',
@@ -82,9 +87,13 @@
 	}
 
 	let hitLabels: ChartConfig = $state({});
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let hitData: any[] = $state([]);
 	let totalHits: number = $state(0);
 	let latencyLabels: ChartConfig = $state({});
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let latencyData: any[] = $state([]);
 	let overallLatency: number = $state(0);
 
@@ -93,6 +102,8 @@
 		bucket: number,
 		from: Date,
 		to: Date
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	): Promise<[number, ChartConfig, any[]]> {
 		let overallHits = 0;
 		const resp = await Glue.system.aggregateHits(
@@ -103,6 +114,8 @@
 			})
 		);
 		const endpoints = Object.keys(resp.endpoints);
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const records: Record<number, any> = {};
 		const start = Math.floor(from.getTime() / bucket) * bucket;
 		for (let t = start; t <= to.getTime(); t += bucket) {
@@ -136,6 +149,8 @@
 		bucket: number,
 		from: Date,
 		to: Date
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	): Promise<[number, ChartConfig, any[]]> {
 		let overallLatency = 0;
 		let overallLatencyCount = 0;
@@ -147,6 +162,8 @@
 			})
 		);
 		const endpoints = Object.keys(resp.endpoints);
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const records: Record<number, any> = {};
 		const start = Math.floor(from.getTime() / bucket) * bucket;
 		for (let t = start; t <= to.getTime(); t += bucket) {

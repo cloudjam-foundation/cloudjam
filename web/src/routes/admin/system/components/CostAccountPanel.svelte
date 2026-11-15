@@ -52,7 +52,7 @@
 	const safe = (k: string) => k.replace(/[^a-zA-Z0-9_]/g, '_');
 	const now = new Date(Date.now());
 
-	let timewindowSuggestions: Suggestion[] = [
+	let timeWindowSuggestions: Suggestion[] = [
 		{ id: String(7 * 24 * 60 * 60 * 1000), title: 'Last 7 days' },
 		{ id: String(30 * 24 * 60 * 60 * 1000), title: 'Last 30 days' },
 		{ id: String(365 * 24 * 60 * 60 * 1000), title: 'Last Year' },
@@ -61,7 +61,7 @@
 	];
 
 	let costLabels: ChartConfig = $state({});
-	// TODO: Find out a way to type this properly
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let costData: any[] = $state([]);
 	let totalCost: number = $state(0);
 	let serviceCost: Record<string, number> = $state({});
@@ -80,6 +80,7 @@
 		providerId: string,
 		accountId: string,
 		window: number
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	): Promise<[number, Record<string, number>, ChartConfig, any[]]> {
 		loading = true;
 		let bucket = 24 * 60 * 60 * 1000; // bucket is always daily
@@ -93,6 +94,8 @@
 			})
 		);
 		const services = Object.keys(resp.services);
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const records: Record<number, any> = {};
 		const start = Math.floor(new Date(now.getTime() - window).getTime() / bucket) * bucket;
 		for (let t = start; t <= now.getTime(); t += bucket) {
@@ -146,7 +149,7 @@
 			<OptionalSelect
 				bind:value={timeWindow}
 				placeholder="Select Time Window"
-				suggestions={timewindowSuggestions}
+				suggestions={timeWindowSuggestions}
 				class="w-64"
 			/>
 			<OptionalSelect
@@ -188,6 +191,7 @@
 	{:else if costData.length > 0}
 		<ZoomChart
 			timeFormat={(v: any) => {
+				// Cannot remove this
 				return v.toLocaleDateString('en-US', {
 					month: '2-digit',
 					day: '2-digit'

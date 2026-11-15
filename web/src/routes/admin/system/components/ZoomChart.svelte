@@ -16,8 +16,11 @@
 		from = $bindable(),
 		to = $bindable()
 	}: {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		timeFormat: any;
 		labels: ChartConfig;
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		data: any[];
 		brushDisabled?: boolean;
 		unit?: string;
@@ -87,7 +90,8 @@
 			{#if Number(context) !== 0}
 				<ChartTooltip
 					class="overflow-scroll-hidden pointer-events-auto! z-50 max-h-72 w-max"
-					labelFormatter={(v: Date) => {
+					labelFormatter={(v: any) => {
+						// Can't remove this type error
 						return v.toLocaleDateString('en-US', {
 							month: '2-digit',
 							day: '2-digit',

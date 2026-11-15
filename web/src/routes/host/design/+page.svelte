@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { Glue, Submit, type SubmitState } from '$lib';
 	import Alert from '$lib/components/ui/Alert.svelte';
 	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
@@ -19,7 +18,6 @@
 	import CreateDefinition from './components/CreateDefinition.svelte';
 	import DefinitionPanel from './components/DefinitionPanel.svelte';
 	import Help from './components/Help.svelte';
-	import { resolve } from '$app/paths';
 	import StandardPage from '$lib/components/ui/StandardPage.svelte';
 
 	let providerId: string = $state('');
