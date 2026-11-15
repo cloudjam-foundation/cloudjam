@@ -10,7 +10,7 @@
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate, timestampFromDate } from '@bufbuild/protobuf/wkt';
 	import { XIcon, CopyIcon, RefreshCwIcon } from '@lucide/svelte';
-	import { severities } from './logSeverities';
+	import { type Level, severities } from './logSeverities';
 
 	let {
 		from,
@@ -133,8 +133,8 @@
 			</span>
 		{/snippet}
 		{#snippet renderLevel(log: Log)}
-			<span class="font-mono text-xs font-bold {severities[log.level]?.level ?? ''}">
-				{severities[log.level]?.short ?? log.level}
+			<span class="font-mono text-xs font-bold {severities[log.level as Level]?.level ?? ''}">
+				{severities[log.level as Level]?.short ?? log.level}
 			</span>
 		{/snippet}
 		{#snippet renderSystem(log: Log)}
@@ -175,8 +175,8 @@
 		class="sm:max-w-[90vw]"
 	>
 		<div class="flex flex-row flex-wrap items-center gap-2">
-			<span class="font-mono text-xs font-bold {severities[selected.level]?.level ?? ''}">
-				{severities[selected.level]?.short ?? selected.level}
+			<span class="font-mono text-xs font-bold {severities[selected.level as Level]?.level ?? ''}">
+				{severities[selected.level as Level]?.short ?? selected.level}
 			</span>
 			{#if selected.system}
 				<StaticBadge variant="primary" text={`system: ${selected.system}`} />
