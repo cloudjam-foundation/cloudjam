@@ -158,14 +158,47 @@
 
 @utility glass {
 	box-shadow:
-		color-mix(in oklch, var(--foreground) 5%, transparent) 0px 6px 24px 0px,
-		color-mix(in oklch, var(--foreground) 8%, transparent) 0px 0px 0px 1px;
+		color-mix(in oklch, var(--foreground) 5%, transparent) 0 6px 24px 0,
+		color-mix(in oklch, var(--foreground) 8%, transparent) 0 0 0 1px;
 	background-color: color-mix(in oklch, var(--foreground) 1%, transparent);
 	backdrop-filter: blur(2px);
 }
 
+@property --glass-blur {
+	syntax: '<length>';
+	inherits: false;
+	initial-value: 2px;
+}
+
+@property --glass-tint {
+	syntax: '<color>';
+	inherits: false;
+	initial-value: transparent;
+}
+
+@utility glass-container {
+	position: relative;
+	isolation: isolate;
+	box-shadow:
+		color-mix(in oklch, var(--foreground) 5%, transparent) 0 6px 24px 0,
+		color-mix(in oklch, var(--foreground) 8%, transparent) 0 0 0 1px;
+	background-color: color-mix(in oklch, var(--foreground) 1%, transparent);
+	background-image: linear-gradient(var(--glass-tint), var(--glass-tint));
+
+	&::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		border-radius: inherit;
+		pointer-events: none;
+		--glass-blur: inherit;
+		backdrop-filter: blur(var(--glass-blur));
+	}
+}
+
 @utility glass-no-shadow {
-	box-shadow: color-mix(in oklch, var(--foreground) 8%, transparent) 0px 0px 0px 1px;
+	box-shadow: color-mix(in oklch, var(--foreground) 8%, transparent) 0 0 0 1px;
 	background-color: color-mix(in oklch, var(--foreground) 1%, transparent);
 	backdrop-filter: blur(2px);
 }
@@ -184,40 +217,40 @@
 
 @utility jam-glass {
 	box-shadow:
-		color-mix(in oklch, var(--jam) 15%, transparent) 0px 6px 24px 0px,
-		color-mix(in oklch, var(--jam) 30%, transparent) 0px 0px 0px 1px;
+		color-mix(in oklch, var(--jam) 15%, transparent) 0 6px 24px 0,
+		color-mix(in oklch, var(--jam) 30%, transparent) 0 0 0 1px;
 	background-color: color-mix(in oklch, var(--jam) 15%, transparent);
 	backdrop-filter: blur(2px);
 }
 
 @utility destructive-glass {
 	box-shadow:
-		color-mix(in oklch, var(--destructive) 15%, transparent) 0px 6px 24px 0px,
-		color-mix(in oklch, var(--destructive) 30%, transparent) 0px 0px 0px 1px;
+		color-mix(in oklch, var(--destructive) 15%, transparent) 0 6px 24px 0,
+		color-mix(in oklch, var(--destructive) 30%, transparent) 0 0 0 1px;
 	background-color: color-mix(in oklch, var(--destructive) 15%, transparent);
 	backdrop-filter: blur(2px);
 }
 
 @utility tiny-glass {
 	box-shadow:
-		color-mix(in oklch, var(--foreground) 5%, transparent) 0px 4px 8px 0px,
-		color-mix(in oklch, var(--foreground) 8%, transparent) 0px 0px 0px 1px;
+		color-mix(in oklch, var(--foreground) 5%, transparent) 0 4px 8px 0,
+		color-mix(in oklch, var(--foreground) 8%, transparent) 0 0 0 1px;
 	background-color: color-mix(in oklch, var(--foreground) 1%, transparent);
 	backdrop-filter: blur(2px);
 }
 
 @utility dense-glass {
 	box-shadow:
-		color-mix(in oklch, var(--foreground) 5%, transparent) 0px 6px 24px 0px,
-		color-mix(in oklch, var(--foreground) 8%, transparent) 0px 0px 0px 1px;
+		color-mix(in oklch, var(--foreground) 5%, transparent) 0 6px 24px 0,
+		color-mix(in oklch, var(--foreground) 8%, transparent) 0 0 0 1px;
 	background-color: color-mix(in oklch, var(--foreground) 3%, transparent);
 	backdrop-filter: blur(8px);
 }
 
 @utility overlay-glass {
 	box-shadow:
-		color-mix(in oklch, var(--foreground) 8%, transparent) 0px 4px 6px 0px,
-		color-mix(in oklch, var(--foreground) 20%, transparent) 0px 0px 0px 1px;
+		color-mix(in oklch, var(--foreground) 8%, transparent) 0 4px 6px 0,
+		color-mix(in oklch, var(--foreground) 20%, transparent) 0 0 0 1px;
 	background-color: color-mix(in oklch, var(--foreground) 4%, transparent);
 	backdrop-filter: blur(16px);
 }
