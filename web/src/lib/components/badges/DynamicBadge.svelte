@@ -8,7 +8,7 @@
 	const variants: Record<Variant, string> = {
 		primary: 'glass text-primary/80',
 		filled: 'glass text-foreground bg-background',
-		jam: 'jam-glass text-jam/60',
+		jam: 'jam-glass text-jam-foreground',
 		destructive: 'destructive-glass text-destructive/60'
 	};
 

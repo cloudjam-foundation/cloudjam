@@ -7,7 +7,7 @@
 	const variants: Record<Variant, string> = {
 		primary: 'glass text-primary/80',
 		filled: 'glass text-foreground bg-background',
-		jam: 'jam-glass text-jam/60',
+		jam: 'jam-glass text-jam-foreground',
 		destructive: 'destructive-glass text-destructive/60'
 	};
 
@@ -19,7 +19,12 @@
 	}: { text: string; variant: Variant; class?: string; shimmer?: boolean } = $props();
 </script>
 
-<div class={cn('w-max rounded-full px-3 py-[0.2rem] text-center text-xs', variants[variant])}>
+<div
+	class={cn(
+		'flex w-max flex-row items-center justify-center rounded-full px-3 py-[0.2rem] text-center text-xs ',
+		variants[variant]
+	)}
+>
 	<span
 		style="--shimmer-duration: 8s"
 		class={cn(shimmer ? 'shimmer shimmer-color-primary-foreground/40' : '', classNames)}

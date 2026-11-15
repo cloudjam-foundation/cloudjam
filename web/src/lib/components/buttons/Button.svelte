@@ -18,7 +18,7 @@
 	const variants: Record<Variant, string> = {
 		primary: 'glass text-primary/80 hover:text-primary',
 		ghost: 'hover:bg-primary/5 text-primary/80 hover:text-primary',
-		jam: 'jam-glass text-jam/60 hover:text-jam/80',
+		jam: 'jam-glass text-jam-foreground/80 hover:text-jam-foreground',
 		destructive: 'destructive-glass text-destructive/60 hover:text-destructive/80'
 	};
 
