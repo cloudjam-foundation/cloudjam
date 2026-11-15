@@ -198,7 +198,7 @@
 			>
 				<CopyIcon /> Copy as environment
 			</Button>
-			<LinkButton href={parsedCredentials.url}>
+			<LinkButton newTab href={parsedCredentials.url}>
 				<SquareArrowOutUpRightIcon /> Open AWS Console
 			</LinkButton>
 		</div>

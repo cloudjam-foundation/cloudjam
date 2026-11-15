@@ -9,9 +9,10 @@
 		class?: string;
 		ghost?: boolean;
 		children: Snippet;
+		newTab?: boolean;
 	}
 
-	let { href, class: className, ghost, children, ...restProps }: Props = $props();
+	let { href, class: className, ghost, children, newTab = false, ...restProps }: Props = $props();
 </script>
 
 <a
@@ -21,6 +22,7 @@
 		ghost ? 'hover:glass' : 'glass',
 		className
 	)}
+	target={newTab ? '_blank' : '_self'}
 	{...restProps}
 >
 	{@render children()}
