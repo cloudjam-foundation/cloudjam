@@ -5,11 +5,11 @@
 	import { create } from '@bufbuild/protobuf';
 	import { PlusIcon, ChevronLeftIcon } from '@lucide/svelte';
 	import { toSvg } from 'jdenticon';
-	import Button from '$lib/components/Button.svelte';
-	import Card from '$lib/components/Card.svelte';
-	import Input from '$lib/components/Input.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
 	import { goto } from '$app/navigation';
-	import LinkButton from '$lib/components/LinkButton.svelte';
+	import LinkButton from '$lib/components/buttons/LinkButton.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import { resolve } from '$app/paths';
 

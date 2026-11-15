@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { featureMap } from './featureMap';
 	import { Feature } from '$lib/sdk/v1/admin/role_pb';
-	import Checkbox from '$lib/components/Checkbox.svelte';
+	import Checkbox from '$lib/components/inputs/Checkbox.svelte';
 
 	let { features = $bindable() }: { features: Record<Feature, boolean> } = $props();
 </script>

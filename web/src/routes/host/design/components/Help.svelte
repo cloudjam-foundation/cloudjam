@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
 	import { CircleQuestionMarkIcon } from '@lucide/svelte';
-	import Popup from '$lib/components/Popup.svelte';
-	import Markdown from '$lib/components/Markdown.svelte';
+	import Popup from '$lib/components/popovers/Popup.svelte';
+	import Markdown from '$lib/components/ui/Markdown.svelte';
 	import HelpMarkdown from '../Help.md?raw';
 
 	let { class: className }: { class: string } = $props();

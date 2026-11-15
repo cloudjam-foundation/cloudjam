@@ -6,12 +6,12 @@
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import { ChevronLeftIcon, PlusIcon } from '@lucide/svelte';
-	import StateBadge from '$lib/components/StateBadge.svelte';
-	import LinkButton from '$lib/components/LinkButton.svelte';
+	import StateBadge from '$lib/components/badges/StateBadge.svelte';
+	import LinkButton from '$lib/components/buttons/LinkButton.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
-	import Card from '$lib/components/Card.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
 	import { resolve } from '$app/paths';
 
 	let id = $state('');

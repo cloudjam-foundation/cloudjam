@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import DynamicBadge from '$lib/components/DynamicBadge.svelte';
-	import LoadingBadge from '$lib/components/LoadingBadge.svelte';
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import LinkButton from '$lib/components/LinkButton.svelte';
-	import Markdown from '$lib/components/Markdown.svelte';
-	import Dialog from '$lib/components/Dialog.svelte';
-	import Card from '$lib/components/Card.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import DynamicBadge from '$lib/components/badges/DynamicBadge.svelte';
+	import LoadingBadge from '$lib/components/badges/LoadingBadge.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import LinkButton from '$lib/components/buttons/LinkButton.svelte';
+	import Markdown from '$lib/components/ui/Markdown.svelte';
+	import Dialog from '$lib/components/popovers/Dialog.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
-	import Separator from '$lib/components/Separator.svelte';
+	import Separator from '$lib/components/ui/Separator.svelte';
 	import {
 		CredentialsRequestSchema,
 		StartRequestSchema,

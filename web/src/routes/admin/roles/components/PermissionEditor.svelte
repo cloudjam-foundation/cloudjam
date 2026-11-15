@@ -1,9 +1,9 @@
 <script lang="ts">
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
-	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
-	import Select from '$lib/components/Select.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
+	import OptionalSelect from '$lib/components/inputs/OptionalSelect.svelte';
+	import Select from '$lib/components/inputs/Select.svelte';
 	import { ADMIN_SCOPE, getActiveScopes, SELF_SCOPE } from '$lib/auth.svelte.js';
 	import { RBACService } from '$lib/sdk/v1/admin/rbac/rbac_pb';
 	import { RoleService } from '$lib/sdk/v1/admin/role/role_pb';
@@ -18,7 +18,7 @@
 	import { TeamService } from '$lib/sdk/v1/play/team/team_pb';
 	import { CrownIcon, PlusIcon, Trash2Icon, UserIcon } from '@lucide/svelte';
 	import globToRegex from 'glob-to-regexp';
-	import WrappedTooltip from '$lib/components/WrappedTooltip.svelte';
+	import WrappedTooltip from '$lib/components/ui/WrappedTooltip.svelte';
 
 	let { entries = $bindable() }: { entries: { scope: string; patterns: string }[] } = $props();
 

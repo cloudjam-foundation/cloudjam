@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import { ListRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb';
 	import type { Challenge } from '$lib/sdk/v1/play/challenge_pb';

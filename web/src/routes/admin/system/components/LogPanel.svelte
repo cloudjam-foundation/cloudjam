@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import Dialog from '$lib/components/Dialog.svelte';
-	import Card from '$lib/components/Card.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Dialog from '$lib/components/popovers/Dialog.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import { ScanLogsRequestSchema, type Log } from '$lib/sdk/v1/admin/system/system_pb';
 	import { create } from '@bufbuild/protobuf';

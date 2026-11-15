@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import { toDigest } from '$lib/utils.svelte.js';
 	import { ListRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';

@@ -1,7 +1,7 @@
 <!-- Opinionated selector that can dynamically load data and also works if no suggestion got loaded -->
 <script lang="ts">
-	import Input from '$lib/components/Input.svelte';
-	import Select from '$lib/components/Select.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
+	import Select from '$lib/components/inputs/Select.svelte';
 
 	export type Suggestion = { id: string; title: string };
 

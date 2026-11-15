@@ -9,14 +9,14 @@
 	import Gauge from './components/Gauge.svelte';
 	import { goto } from '$app/navigation';
 	import { CircleCheck, CircleX, LogOut, Pencil, ShieldCheck } from '@lucide/svelte';
-	import Input from '$lib/components/Input.svelte';
-	import Dialog from '$lib/components/Dialog.svelte';
-	import Card from '$lib/components/Card.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
+	import Dialog from '$lib/components/popovers/Dialog.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 	import { resolve } from '$app/paths';
-	import Button from '$lib/components/Button.svelte';
-	import LinkButton from '$lib/components/LinkButton.svelte';
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import Alert from '$lib/components/Alert.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import LinkButton from '$lib/components/buttons/LinkButton.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
 
 	let user: User | undefined = $state();
 

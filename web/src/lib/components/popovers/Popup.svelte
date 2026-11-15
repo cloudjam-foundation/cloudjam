@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Dialog from '$lib/components/Dialog.svelte';
+	import Dialog from '$lib/components/popovers/Dialog.svelte';
 	import type { Snippet } from 'svelte';
 
 	let {

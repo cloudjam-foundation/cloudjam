@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import TabPage from '$lib/components/TabPage.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
+	import TabPage from '$lib/components/ui/TabPage.svelte';
 	import UserPanel from './components/UserPanel.svelte';
 	import { resolve } from '$app/paths';
 	import CopyableValue from '$lib/components/CopyableValue.svelte';

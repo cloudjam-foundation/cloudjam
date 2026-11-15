@@ -2,8 +2,8 @@
 	import { ChevronLeftIcon } from '@lucide/svelte';
 	import { onMount, type Snippet } from 'svelte';
 	import type { SubmitState } from '$lib';
-	import Button from '$lib/components/Button.svelte';
-	import Alert from '$lib/components/Alert.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 

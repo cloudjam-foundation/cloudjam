@@ -2,7 +2,7 @@
 	import CostSection from './CostSection.svelte';
 	import LogSection from './LogSection.svelte';
 	import MetricSection from './MetricSection.svelte';
-	import TabPage from '$lib/components/TabPage.svelte';
+	import TabPage from '$lib/components/ui/TabPage.svelte';
 
 	let { close }: { close: () => void } = $props();
 </script>

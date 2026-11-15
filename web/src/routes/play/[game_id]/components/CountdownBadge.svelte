@@ -1,5 +1,5 @@
 <script lang="ts">
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
 
 	let {
 		end = $bindable(),

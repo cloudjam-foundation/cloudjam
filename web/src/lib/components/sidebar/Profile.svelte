@@ -3,7 +3,7 @@
 	import { setToken } from '$lib';
 	import { ChevronsUpDownIcon, CogIcon, LoaderCircleIcon, LogOutIcon, MoonIcon, SunIcon } from '@lucide/svelte';
 	import { mode, resetMode, setMode } from 'mode-watcher';
-	import Button from '../Button.svelte';
+	import Button from '../buttons/Button.svelte';
 	import SidebarButton from './SidebarButton.svelte';
 	import { useSidebar } from './state.svelte';
 	import type { User } from '$lib/sdk/v1/admin/user_pb';

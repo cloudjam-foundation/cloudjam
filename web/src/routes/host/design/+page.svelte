@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import StaticBadge from '$lib/components/StaticBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
-	import OptionalSelect from '$lib/components/OptionalSelect.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import OptionalSelect from '$lib/components/inputs/OptionalSelect.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import { toDigest } from '$lib/utils.svelte';
 	import { ListRequestSchema } from '$lib/sdk/v1/cloud/definition/definition_pb';

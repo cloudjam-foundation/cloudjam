@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import Button from '$lib/components/Button.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
 	import type { ChartConfig } from '$lib/components/chart/chart';
-	import Card from '$lib/components/Card.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 	import {
 		AggregateHitsRequestSchema,
 		AggregateLatencyRequestSchema,
@@ -15,7 +15,7 @@
 	import { RotateCcwIcon as ResetIcon, ZoomOutIcon } from '@lucide/svelte';
 	import ZoomChart from './ZoomChart.svelte';
 	import { SvelteDate } from 'svelte/reactivity';
-	import Skeleton from '$lib/components/Skeleton.svelte';
+	import Skeleton from '$lib/components/ui/Skeleton.svelte';
 
 	// safe generates "layerchart" safe identifiers / keys.
 	const safe = (k: string) => k.replace(/[^a-zA-Z0-9_]/g, '_');

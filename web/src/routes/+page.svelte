@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Glue } from '$lib';
-	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
 	import { UserSchema } from '$lib/sdk/v1/admin/user_pb';
 	import { create } from '@bufbuild/protobuf';
 

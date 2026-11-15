@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Glue, Submit, type SubmitState } from '$lib';
-	import Alert from '$lib/components/Alert.svelte';
-	import StateBadge from '$lib/components/StateBadge.svelte';
-	import Button from '$lib/components/Button.svelte';
+	import Alert from '$lib/components/ui/Alert.svelte';
+	import StateBadge from '$lib/components/badges/StateBadge.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import { ListRequestSchema } from '$lib/sdk/v1/cloud/account/account_pb';
 	import { AccountState, type Account } from '$lib/sdk/v1/cloud/account_pb';

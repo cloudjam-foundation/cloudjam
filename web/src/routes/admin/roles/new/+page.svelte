@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import Button from '$lib/components/Button.svelte';
+	import Button from '$lib/components/buttons/Button.svelte';
 	import { ChevronLeftIcon } from '@lucide/svelte';
 	import CreateRole from './components/CreateRole.svelte';
 	import { resolve } from '$app/paths';
