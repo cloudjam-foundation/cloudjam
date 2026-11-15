@@ -3,7 +3,6 @@
 	import { Glue, Submit, type SubmitState } from '$lib';
 	import Alert from '$lib/components/ui/Alert.svelte';
 	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
-	import Button from '$lib/components/buttons/Button.svelte';
 	import OptionalSelect from '$lib/components/inputs/OptionalSelect.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import { toDigest } from '$lib/utils.svelte';
@@ -16,7 +15,6 @@
 	import type { Provider } from '$lib/sdk/v1/cloud/provider_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { WandSparklesIcon } from '@lucide/svelte';
-	import { ChevronLeftIcon } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import CreateDefinition from './components/CreateDefinition.svelte';
 	import DefinitionPanel from './components/DefinitionPanel.svelte';

@@ -4,7 +4,6 @@
 	import { getSubject, Glue, Submit, type SubmitState } from '$lib';
 	import StateBadge from '$lib/components/badges/StateBadge.svelte';
 	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
-	import Button from '$lib/components/buttons/Button.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
 	import { ListRequestSchema as ListChallengeRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb';
 	import type { Challenge } from '$lib/sdk/v1/play/challenge_pb';
@@ -14,7 +13,7 @@
 	import type { Team } from '$lib/sdk/v1/play/team_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import { ChevronLeftIcon, LayersIcon } from '@lucide/svelte';
+	import { LayersIcon } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
 	import CountdownBadge from './components/CountdownBadge.svelte';
 	import StandardPage from '$lib/components/ui/StandardPage.svelte';
