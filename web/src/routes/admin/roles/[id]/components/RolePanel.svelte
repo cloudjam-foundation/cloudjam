@@ -29,7 +29,8 @@
 	let features: Record<Feature, boolean> = $state(
 		Object.fromEntries(role.features.map((feature) => [feature, true])) as Record<Feature, boolean>
 	);
-	let attachTenant = $state('');
+	// svelte-ignore state_referenced_locally
+	let attachTenant = $state(role.scope);
 	let confirmDelete = $state(false);
 	// svelte-ignore state_referenced_locally
 	let entries: { scope: string; patterns: string }[] = $state(
@@ -68,7 +69,7 @@
 			<StaticBadge variant="jam" text="builtin" />
 		{/if}
 		{#if role.scope}
-			<StaticBadge variant="primary" text={`scope: ${role.scope}`} />
+			<StaticBadge variant="primary" text={`tenant: ${role.scope}`} />
 		{/if}
 		<StaticBadge variant="primary" text={role.id} />
 	</div>
@@ -143,6 +144,7 @@
 					onclick={() =>
 						Submit(async () => {
 							await Glue.rbac.configureRole(create(ConfigureRoleRequestSchema, { mod: mod }));
+							await loadActive();
 							refresh();
 						}, configureState)}
 				>

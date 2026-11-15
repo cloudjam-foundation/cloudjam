@@ -24,7 +24,7 @@
 
 	let organization = $derived(user.organization);
 	let role = $derived(user.role);
-	let attachTenant = $state('');
+	let attachTenant = $derived(user.scope);
 	let resetCode = $state('');
 	let confirmDelete = $state(false);
 

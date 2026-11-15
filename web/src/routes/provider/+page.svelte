@@ -71,7 +71,7 @@
 					{ title: 'Type', width: '90px', render: renderType },
 					{ title: 'Name', width: '20%', render: renderName },
 					{ title: 'Description', width: '35%', render: renderDescription },
-					{ title: 'Scope', width: '15%', render: renderScope },
+					{ title: 'Tenant', width: '15%', render: renderTenant },
 					{ title: 'Regions', width: '30%', render: renderRegions }
 				]}
 			/>
@@ -84,7 +84,7 @@
 			{#snippet renderDescription(provider: Provider)}
 				<span class="text-primary/60">{provider.description}</span>
 			{/snippet}
-			{#snippet renderScope(provider: Provider)}
+			{#snippet renderTenant(provider: Provider)}
 				{provider.scope}
 			{/snippet}
 			{#snippet renderRegions(provider: Provider)}
