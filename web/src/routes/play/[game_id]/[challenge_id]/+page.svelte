@@ -147,9 +147,6 @@
 			<ChevronLeftIcon />
 		</Button>
 		<h1 class="text-3xl opacity-80">{challenge?.title || definition?.name || 'Challenge'}</h1>
-		{#if definition}
-			<StaticBadge variant="primary" text={definition?.name} />
-		{/if}
 		{#if !active}
 			<DynamicBadge variant="primary">
 				<LockIcon class="size-3" />
