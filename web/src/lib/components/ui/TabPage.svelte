@@ -6,6 +6,7 @@
 	import Alert from '$lib/components/ui/Alert.svelte';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
+	import type { PageProps } from '$lib/components/ui/pageProps';
 
 	let {
 		title,
@@ -14,10 +15,7 @@
 		dataState,
 		tabs,
 		tabPages
-	}: {
-		title: string;
-		headers?: Snippet[];
-		back: () => void | Promise<void>;
+	}: PageProps & {
 		dataState?: SubmitState;
 		tabs: string[];
 		tabPages: Snippet[];
@@ -44,9 +42,11 @@
 
 <div class="flex w-full flex-col gap-4">
 	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => back()}>
-			<ChevronLeftIcon />
-		</Button>
+		{#if back}
+			<Button variant="ghost" onclick={async () => await back()}>
+				<ChevronLeftIcon />
+			</Button>
+		{/if}
 		<h1 class="text-3xl opacity-80">{title}</h1>
 		{#each headers as header (header)}
 			{@render header()}

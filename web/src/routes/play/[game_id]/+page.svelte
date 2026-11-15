@@ -4,7 +4,6 @@
 	import { getSubject, Glue, Submit, type SubmitState } from '$lib';
 	import StateBadge from '$lib/components/badges/StateBadge.svelte';
 	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
-	import Button from '$lib/components/buttons/Button.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
 	import { ListRequestSchema as ListChallengeRequestSchema } from '$lib/sdk/v1/play/challenge/challenge_pb';
 	import type { Challenge } from '$lib/sdk/v1/play/challenge_pb';
@@ -14,9 +13,10 @@
 	import type { Team } from '$lib/sdk/v1/play/team_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import { ChevronLeftIcon, LayersIcon } from '@lucide/svelte';
+	import { LayersIcon } from '@lucide/svelte';
 	import { resolve } from '$app/paths';
 	import CountdownBadge from './components/CountdownBadge.svelte';
+	import StandardPage from '$lib/components/ui/StandardPage.svelte';
 
 	let gameState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let game: Game | undefined = $state();
@@ -102,20 +102,16 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex w-full flex-col gap-4">
-	<div class="flex flex-row items-center gap-2">
-		<Button variant="ghost" onclick={() => goto(resolve(`/play`))}>
-			<ChevronLeftIcon />
-		</Button>
-		<h1 class="text-3xl opacity-80">{game?.name ?? 'Game'}</h1>
-		{#if active}
-			<StateBadge text="running" state="RunningPositive" mapper={undefined} />
-			<CountdownBadge {end} {now} />
-		{:else}
-			<StateBadge text="ended" state="StableNeutral" mapper={undefined} />
-		{/if}
-	</div>
+{#snippet badges()}
+	{#if active}
+		<StateBadge text="running" state="RunningPositive" mapper={undefined} />
+		<CountdownBadge {end} {now} />
+	{:else}
+		<StateBadge text="ended" state="StableNeutral" mapper={undefined} />
+	{/if}
+{/snippet}
 
+<StandardPage title={game?.name ?? 'Game'} headers={[badges]} back={() => goto(resolve(`/play`))}>
 	<p class="text-sm text-primary/60">
 		{game?.description}
 	</p>
@@ -149,7 +145,7 @@
 			{/each}
 		</div>
 	{/if}
-</div>
+</StandardPage>
 
 <!-- <h1>TODO: here will be an epic leaderboard</h1> -->
 <!-- <div class="flex flex-col"> -->
