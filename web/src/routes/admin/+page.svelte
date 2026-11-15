@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { UsersIcon, ShieldCheckIcon, ActivityIcon } from '@lucide/svelte';
 	import Card from '$lib/components/ui/Card.svelte';
+	import StandardPage from '$lib/components/ui/StandardPage.svelte';
 </script>
 
 <svelte:head>
@@ -10,8 +11,7 @@
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
 
-<div class="flex w-full flex-col items-center gap-4">
-	<h1 class="my-8 text-4xl opacity-80">Host</h1>
+<StandardPage title="Admin">
 	<div class="grid w-full gap-4 md:grid-cols-3">
 		<a href="/admin/users/">
 			<Card class="cursor-pointer items-start gap-2 duration-300 hover:opacity-70">
@@ -35,4 +35,4 @@
 			</Card>
 		</a>
 	</div>
-</div>
+</StandardPage>
