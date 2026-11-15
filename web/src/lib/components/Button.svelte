@@ -6,6 +6,7 @@
 	import { cn } from 'tailwind-variants';
 
 	type Variant = 'primary' | 'ghost' | 'jam' | 'destructive';
+	type ButtonState = 'idle' | 'success' | 'failed';
 
 	interface Props extends HTMLButtonAttributes {
 		variant: Variant;
@@ -13,6 +14,7 @@
 		processing?: boolean;
 		class?: string;
 		children: Snippet;
+		onclick: () => void | Promise<void>;
 	}
 
 	const variants: Record<Variant, string> = {
@@ -22,7 +24,14 @@
 		destructive: 'destructive-glass text-destructive/60 hover:text-destructive/80'
 	};
 
-	let { processing, hint, variant, class: className, children, ...restProps }: Props = $props();
+	let { processing, hint, variant, class: className, children, onclick, ...restProps }: Props = $props();
+
+	const buttonColorByState: Record<ButtonState, string> = {
+		idle: '',
+		success: 'bg-green-600 hover:bg-green-700 text-white',
+		failed: 'bg-red-600 hover:bg-red-700 text-white'
+	};
+	let buttonState: ButtonState = $state('idle');
 </script>
 
 <button
@@ -30,9 +39,23 @@
 	class={cn(
 		'relative flex cursor-pointer items-center justify-center rounded-md px-3 py-1.5 transition-all active:translate-y-px ',
 		variants[variant],
+		buttonColorByState[buttonState],
 		className
 	)}
 	{...restProps}
+	onclick={async () => {
+		processing = true;
+		try {
+			await onclick();
+			buttonState = 'success';
+		} catch (e) {
+			console.error(e);
+			buttonState = 'failed';
+		} finally {
+			processing = false;
+			setTimeout(() => (buttonState = 'idle'), 500);
+		}
+	}}
 >
 	<span
 		class="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 shimmer flex-row items-center justify-center gap-2 overflow-hidden transition-all shimmer-color-muted-foreground {processing
