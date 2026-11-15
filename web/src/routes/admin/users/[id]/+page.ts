@@ -10,7 +10,10 @@ export const trailingSlash = 'always';
 export const ssr = false;
 
 export const load: PageLoad = async ({ params }) => {
+	// eslint-disable-next-line prefer-const
 	let user = createState<User | undefined>(undefined);
+
+	// eslint-disable-next-line prefer-const
 	let userState = createState<SubmitState>({ error: '', forbidden: false, loading: false });
 
 	const refresh = async () => {

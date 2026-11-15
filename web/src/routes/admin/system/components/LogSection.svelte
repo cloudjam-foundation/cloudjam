@@ -16,7 +16,7 @@
 	import { RotateCcwIcon as ResetIcon, ZoomOutIcon } from '@lucide/svelte';
 	import LogPanel from './LogPanel.svelte';
 	import ZoomChart from './ZoomChart.svelte';
-	import { levelColors } from './logSeverities';
+	import { type Level, levelColors } from './logSeverities';
 
 	const levels = [
 		{ value: '', label: 'All levels' },
@@ -45,6 +45,8 @@
 	let limit = $state('50');
 
 	let labels: ChartConfig = $state({});
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let data: any[] = $state([]);
 	let counts: Record<string, number> = $state({});
 
@@ -59,8 +61,11 @@
 
 	function zoomTimeFormat(from: Date, to: Date) {
 		if (to.getTime() - from.getTime() <= 48 * 60 * 60 * 1000) {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			return (v: any) => v.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
 		}
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		return (v: any) => v.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' });
 	}
 
@@ -74,6 +79,8 @@
 		);
 
 		const found = Object.keys(resp.levels);
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const records: Record<number, any> = {};
 		const start = Math.floor(from.getTime() / bucket) * bucket;
 		for (let t = start; t <= to.getTime(); t += bucket) {
@@ -99,7 +106,7 @@
 		for (let i = 0; i < found.length; i++) {
 			config[found[i]] = {
 				label: found[i],
-				color: levelColors[found[i]] ?? `var(--chart-${(i % 5) + 1})`
+				color: levelColors[found[i] as Level] ?? `var(--chart-${(i % 5) + 1})`
 			};
 		}
 		return [totals, config, Object.values(records).sort((a, b) => a.date - b.date)] as const;
@@ -121,7 +128,7 @@
 		<div class="flex w-full flex-col items-start gap-4 border-b pb-5 sm:flex-row sm:items-center sm:gap-12">
 			{#each ['ERROR', 'WARN', 'INFO', 'DEBUG'] as name (name)}
 				<div>
-					<h1 class="text-3xl font-semibold" style="color: {levelColors[name]}">{counts[name] ?? 0}</h1>
+					<h1 class="text-3xl font-semibold" style="color: {levelColors[name as Level]}">{counts[name] ?? 0}</h1>
 					<p class="text-primary/60">{name.toLowerCase()}</p>
 				</div>
 			{/each}

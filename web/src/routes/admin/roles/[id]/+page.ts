@@ -10,8 +10,10 @@ export const trailingSlash = 'always';
 export const ssr = false;
 
 export const load: PageLoad = async ({ params }) => {
-	// TODO: Figure out how to get these to stop throwing ESLint errors.
+	// eslint-disable-next-line prefer-const
 	let role = createState<Role | undefined>(undefined);
+
+	// eslint-disable-next-line prefer-const
 	let roleState = createState<SubmitState>({ error: '', forbidden: false, loading: false });
 
 	const refresh = async () => {

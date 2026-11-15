@@ -8,7 +8,6 @@
 	import { useSidebar } from './state.svelte';
 	import type { User } from '$lib/sdk/v1/admin/user_pb';
 	import { resolve } from '$app/paths';
-	import { loadActive } from '$lib/auth.svelte';
 
 	const sidebar = useSidebar();
 	let { user, userIcon }: { user: User | undefined; userIcon: string } = $props();

@@ -53,6 +53,8 @@
 	];
 
 	let costLabels: ChartConfig = $state({});
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let costData: any[] = $state([]);
 	let totalCost: number = $state(0);
 	let accountCost: Record<string, { name: string; cost: number }> = $state({});
@@ -69,6 +71,7 @@
 	async function loadCost(
 		providerId: string,
 		window: number
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	): Promise<[number, Record<string, { name: string; cost: number }>, ChartConfig, any[]]> {
 		loading = true;
 		let bucket = 24 * 60 * 60 * 1000; // bucket is always daily
@@ -93,6 +96,7 @@
 			break;
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const records: Record<number, any> = {};
 		const start = Math.floor(new Date(now.getTime() - window).getTime() / bucket) * bucket;
 		for (let t = start; t <= now.getTime(); t += bucket) {
@@ -196,6 +200,7 @@
 	{:else if costData.length > 0}
 		<ZoomChart
 			timeFormat={(v: any) => {
+				// Can't remove this type error
 				return v.toLocaleDateString('en-US', {
 					month: '2-digit',
 					day: '2-digit'
