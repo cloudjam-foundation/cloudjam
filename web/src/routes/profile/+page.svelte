@@ -9,7 +9,6 @@
 	import Gauge from './components/Gauge.svelte';
 	import { goto } from '$app/navigation';
 	import { CircleCheck, CircleX, LogOut, Pencil, ShieldCheck } from '@lucide/svelte';
-	import Input from '$lib/components/inputs/Input.svelte';
 	import Dialog from '$lib/components/popovers/Dialog.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
 	import { resolve } from '$app/paths';
@@ -17,6 +16,8 @@
 	import LinkButton from '$lib/components/buttons/LinkButton.svelte';
 	import StaticBadge from '$lib/components/badges/StaticBadge.svelte';
 	import Alert from '$lib/components/ui/Alert.svelte';
+	import SmartForm from '$lib/components/forms/SmartForm.svelte';
+	import SmartField from '$lib/components/forms/SmartField.svelte';
 
 	let user: User | undefined = $state();
 
@@ -44,51 +45,46 @@
 	{#if user}
 		<Card class="my-[5%] w-full lg:flex-row">
 			{#if edit}
-				<form
-					class="flex h-full w-full flex-col items-start gap-1"
+				<SmartForm
+					class="mt-2 flex h-full w-full flex-col items-start gap-4"
+					bind:submitState={updateState}
 					onsubmit={() =>
 						Submit(async () => {
 							await Glue.user.update(create(UpdateRequestSchema, { mod: user }));
 							edit = false;
 						}, updateState)}
 				>
-					<div class="mt-2 flex h-full w-full flex-col items-start gap-4">
-						<h1 class="text-4xl opacity-80">Edit User</h1>
-						<div class="flex flex-col gap-1">
-							<label class="text-sm">
-								Description
-								<Input bind:value={user.username} placeholder="Change your username" />
-							</label>
-							<p class="text-xs text-destructive">{Glue.Validate(UserSchema, user).violation.username}</p>
-						</div>
-						<div class="flex flex-col gap-1">
-							<label class="text-sm">
-								Your Slogan (use \n for newlines)
-								<Input bind:value={user.description} placeholder="Invent a creative Slogan" />
-							</label>
-							<p class="text-xs text-destructive">{Glue.Validate(UserSchema, user).violation.description}</p>
-						</div>
-						<div class="mt-auto flex flex-row items-center gap-2">
-							<Button variant="primary" onclick={() => (edit = false)}>
-								<CircleX />
-								Close
-							</Button>
-							<Button
-								type="submit"
-								processing={updateState.loading}
-								variant="primary"
-								disabled={Boolean(Glue.Validate(UpdateRequestSchema, create(UpdateRequestSchema, { mod: user })).error)}
-							>
-								<CircleCheck />
-								Update
-							</Button>
-						</div>
+					<SmartField
+						id="username"
+						label="Username"
+						type="text"
+						bind:value={user.username}
+						validator={() => Glue.Validate(UserSchema, user!).violation.username}
+					/>
 
-						{#if updateState.error}
-							<Alert title="Update failed" message={updateState.error} animation={true} />
-						{/if}
+					<SmartField
+						id="slogan"
+						label="Your Slogan (Use \n for newlines)"
+						type="text"
+						bind:value={user.description}
+						validator={() => Glue.Validate(UserSchema, user!).violation.description}
+					/>
+
+					<div class="mt-auto flex flex-row items-center gap-2">
+						<Button variant="primary" onclick={() => (edit = false)}>
+							<CircleX />
+							Close
+						</Button>
+						<Button type="submit" processing={updateState.loading} variant="primary">
+							<CircleCheck />
+							Update
+						</Button>
 					</div>
-				</form>
+
+					{#if updateState.error}
+						<Alert title="Update failed" message={updateState.error} animation={true} />
+					{/if}
+				</SmartForm>
 				<div class="h-1 w-full rounded-2xl bg-neutral/80 lg:h-64 lg:w-1"></div>
 				<div class="flex w-full flex-col items-start justify-center gap-8 lg:flex-row">
 					<Button variant="primary" onclick={() => (resetOpen = true)}>Change Password</Button>
