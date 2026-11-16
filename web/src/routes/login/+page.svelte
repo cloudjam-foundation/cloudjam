@@ -4,7 +4,6 @@
 	import logo from '$lib/assets/favicon.svg';
 	import Alert from '$lib/components/ui/Alert.svelte';
 	import Button from '$lib/components/buttons/Button.svelte';
-	import Input from '$lib/components/inputs/Input.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
 	import { LoginRequestSchema } from '$lib/sdk/v1/auth/auth_pb';
 	import { create } from '@bufbuild/protobuf';
