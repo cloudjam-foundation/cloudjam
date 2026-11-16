@@ -57,7 +57,7 @@
 					<SmartField
 						id="username"
 						label="Username"
-						type="text"
+						placeholder="jdoe"
 						bind:value={user.username}
 						validator={() => Glue.Validate(UserSchema, user!).violation.username}
 					/>
@@ -65,7 +65,7 @@
 					<SmartField
 						id="slogan"
 						label="Your Slogan (Use \n for newlines)"
-						type="text"
+						placeholder="I am the greatest"
 						bind:value={user.description}
 						validator={() => Glue.Validate(UserSchema, user!).violation.description}
 					/>
