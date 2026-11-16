@@ -1,19 +1,25 @@
 <script lang="ts">
 	import { cn } from '$lib/utils.svelte.js';
 	import type { HTMLInputAttributes } from 'svelte/elements';
+	import Checkbox from '$lib/components/inputs/Checkbox.svelte';
 
 	interface Props extends HTMLInputAttributes {
+		id?: string;
 		label?: string;
 		validation?: string;
+		forceValidation?: boolean;
 		class?: string;
 	}
 
 	let {
+		id,
 		value = $bindable(),
 		files = $bindable(),
+		checked = $bindable(),
 		type,
 		label,
 		validation,
+		forceValidation = false,
 		class: className,
 		...restProps
 	}: Props = $props();
@@ -24,20 +30,24 @@
 
 {#snippet input()}
 	{#if type === 'file'}
-		<input type="file" bind:files bind:value class={cn(base, className)} {...restProps} />
+		<input type="file" {id} bind:files bind:value class={cn(base, className)} {...restProps} />
+	{:else if type === 'checkbox'}
+		<Checkbox bind:checked {id} {...restProps} />
 	{:else}
-		<input {type} bind:value class={cn(base, className)} {...restProps} />
+		<input {type} bind:value {id} class={cn(base, className)} {...restProps} />
 	{/if}
 {/snippet}
 
-{#if label}
+{#if label || forceValidation}
 	<div class="flex flex-col gap-1">
-		<label class="text-sm">
-			{label}
-			{@render input()}
-		</label>
-		{#if validation && value}
-			<p class="text-xs text-destructive">{validation}</p>
+		{#if label}
+			<label class="text-sm" for={id}>
+				{label}
+			</label>
+		{/if}
+		{@render input()}
+		{#if validation && (value || forceValidation)}
+			<p id={id ? `${id}-error` : undefined} class="text-xs text-destructive">{validation}</p>
 		{/if}
 	</div>
 {:else}
