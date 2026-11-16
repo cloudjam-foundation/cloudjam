@@ -3,7 +3,8 @@ import { twMerge } from 'tailwind-merge';
 
 // createState is used to construct a svelte state outside of svelte files.
 export function createState<T>(initial: T) {
-	return $state({ value: initial });
+	let state = $state({ value: initial });
+	return state;
 }
 
 // cn merges input tailwind classes in correct order and tailwind layering.
