@@ -8,7 +8,8 @@
 		id,
 		label,
 		validator,
-		type,
+		placeholder,
+		type = 'text',
 		value = $bindable(),
 		checked = $bindable(),
 		files = $bindable(),
@@ -17,6 +18,7 @@
 		id: string;
 		label?: string;
 		validator?: (value: string | number | boolean | undefined) => string | undefined;
+		placeholder?: string;
 		type: HTMLInputTypeAttribute;
 		value?: string | number | boolean;
 		checked?: boolean;
@@ -41,6 +43,7 @@
 	{id}
 	{type}
 	{label}
+	{placeholder}
 	bind:value
 	bind:files
 	bind:checked
