@@ -5,8 +5,8 @@
 
 	interface CheckboxProps extends Omit<HTMLInputAttributes, 'type'> {
 		ref?: HTMLInputElement | null;
-		checked?: boolean;
-		indeterminate?: boolean;
+		checked?: boolean | null | undefined;
+		indeterminate?: boolean | null;
 		class?: string;
 	}
 
@@ -31,7 +31,7 @@
 	/>
 	<span
 		data-slot="checkbox-indicator"
-		class="pointer-events-none col-start-1 row-start-1 text-primary disabled:opacity-50 [&>svg]:size-3 [&>svg]:zoom-in-50"
+		class="pointer-events-none relative col-start-1 row-start-1 text-primary disabled:opacity-50 [&>svg]:size-3 [&>svg]:zoom-in-50"
 	>
 		{#if indeterminate}
 			<MinusIcon strokeWidth={3} />
