@@ -19,7 +19,7 @@
 		label?: string;
 		validator?: (value: string | number | boolean | undefined) => string | undefined;
 		placeholder?: string;
-		type: HTMLInputTypeAttribute;
+		type?: HTMLInputTypeAttribute;
 		value?: string | number | boolean;
 		checked?: boolean;
 		files?: FileList;
