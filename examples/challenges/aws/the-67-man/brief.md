@@ -1,8 +1,10 @@
 # The 67 Man
 
-Office party. Your coworker hands you another tequila shot, and at the bottom of the glass you swear you can see the AWS console. You have work tomorrow. You down it anyway, call an Uber and fall asleep in the back seat.
+The party has been going on for hours and your office buddy just handed out another round of tequila shots. Halfway down the road to blackout, you spot the color of the AWS console in your shot glass and panic sets in: "WAIT, I HAVE TO WORK TOMORROW"...
 
-You wake up cuffed to a chair in a yellow padded cell. In front of you stands a Tesla Optimus in a white trenchcoat with a black belt, slowly moving both hands up and down. You've definitely seen this on TikTok. Then its tongue rolls out like a scroll.
+You knock back the shot, excuse yourself and head for the door, ordering an Uber to squeeze in at least a few hours of sleep. The Uber pulls up, you hop in and, before you know it, you're out.
+
+You wake up cuffed to a chair in a yellow padded cell. In front of you a Tesla Optimus in a white trenchcoat with a black belt, slowly moving both hands up and down. You've definitely seen this on TikTok. Then suddenly its tongue rolls out like a scroll.
 
 ---
 
