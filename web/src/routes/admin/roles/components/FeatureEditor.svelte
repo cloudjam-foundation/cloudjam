@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { featureMap } from './featureMap';
 	import { Feature } from '$lib/sdk/v1/admin/role_pb';
-	import Checkbox from '$lib/components/inputs/Checkbox.svelte';
+	import Input from '$lib/components/inputs/Input.svelte';
 
 	let { features = $bindable() }: { features: Record<Feature, boolean> } = $props();
 </script>
@@ -14,7 +14,7 @@
 			type="button"
 			onclick={() => (features[feature.id] = !features[feature.id])}
 		>
-			<Checkbox bind:checked={features[feature.id]} />
+			<Input type="checkbox" bind:checked={features[feature.id]} />
 			<span class="flex flex-col items-start justify-start pl-2 text-left">
 				<span class="font-medium">{feature.title}</span>
 				<span class="text-muted-foreground">{feature.description}</span>
