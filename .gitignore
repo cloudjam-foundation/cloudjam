@@ -5,3 +5,4 @@
 .idea
 *.wasm
 delete_me/**
+web/src/routes/sink

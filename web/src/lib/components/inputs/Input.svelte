@@ -39,7 +39,7 @@
 {/snippet}
 
 {#if label || forceValidation}
-	<div class="flex flex-col gap-1">
+	<div class="flex w-full flex-col gap-1">
 		{#if label}
 			<label class="text-sm" for={id}>
 				{label}
