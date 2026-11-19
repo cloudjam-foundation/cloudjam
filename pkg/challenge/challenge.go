@@ -58,8 +58,10 @@ const (
 	ScoreTypeOperational = api.ScoreTypeOperational
 )
 
-type HTTPRequest = api.SendHTTPInput
-type HTTPResponse = api.SendHTTPOutput
+type (
+	HTTPRequest  = api.SendHTTPInput
+	HTTPResponse = api.SendHTTPOutput
+)
 
 // NewDesignCheck creates a one-shot configuration check in the design score category.
 func NewDesignCheck(points float64, reason string, trigger func() (bool, error)) Check {

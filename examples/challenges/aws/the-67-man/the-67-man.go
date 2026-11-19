@@ -3,6 +3,8 @@
 package main
 
 import (
+	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/rand"
 	_ "embed"
 	"encoding/json"
@@ -16,12 +18,7 @@ import (
 	"codeberg.org/megakuul/cloudjam/pkg/challenge"
 	"codeberg.org/megakuul/cloudjam/pkg/challenge/api"
 	"codeberg.org/megakuul/cloudjam/pkg/challenge/aws"
-	"codeberg.org/megakuul/cloudjam/pkg/challenge/aws/policy"
-	"codeberg.org/megakuul/cloudjam/pkg/challenge/aws/services/apigateway"
 	"codeberg.org/megakuul/cloudjam/pkg/challenge/aws/services/apigatewayv2"
-	"codeberg.org/megakuul/cloudjam/pkg/challenge/aws/services/dynamodb"
-	"codeberg.org/megakuul/cloudjam/pkg/challenge/aws/services/lambda"
-	"codeberg.org/megakuul/cloudjam/pkg/challenge/aws/services/sqs"
 )
 
 //go:embed brief.md
@@ -30,35 +27,7 @@ var brief []byte
 //go:embed clues/clue1.md
 var clue1 []byte
 
-var permissions = policy.Document{
-	Version: policy.Version20121017,
-	Statement: []policy.Statement{
-		{
-			Sid:      "ApiGatewayAccess",
-			Effect:   policy.Allow,
-			Action:   policy.ActionsFrom(apigateway.ActionsList, apigateway.ActionsRead, apigateway.ActionsWrite),
-			Resource: policy.ARNsFrom("arn:aws:apigateway:*:*:*"),
-		},
-		{
-			Sid:      "SQSAccess",
-			Effect:   policy.Allow,
-			Action:   policy.ActionsFrom(sqs.ActionsTagging, sqs.ActionsRead, sqs.ActionsWrite),
-			Resource: policy.ARNsFrom("arn:aws:sqs:*:*:*"),
-		},
-		{
-			Sid:      "LambdaAccess",
-			Effect:   policy.Allow,
-			Action:   policy.ActionsFrom(lambda.ActionsList, lambda.ActionsTagging, lambda.ActionsRead, lambda.ActionsWrite),
-			Resource: policy.ARNsFrom("arn:aws:lambda:*:*:*"),
-		},
-		{
-			Sid:      "DynamodbAccess",
-			Effect:   policy.Allow,
-			Action:   policy.ActionsFrom(dynamodb.ActionsList, dynamodb.ActionsTagging, dynamodb.ActionsRead, dynamodb.ActionsWrite),
-			Resource: policy.ARNsFrom("arn:aws:dynamodb:*:*:*"),
-		},
-	},
-}
+var privkey, _ = ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 
 var status atomic.Bool = atomic.Bool{}
 
@@ -69,22 +38,31 @@ type armPosition struct {
 }
 
 func randomArmPosition() armPosition {
-	height, _ := rand.Int(rand.Reader, big.NewInt(100))
+	randHeight, _ := rand.Int(rand.Reader, big.NewInt(100))
+	timestamp, height := time.Now(), randHeight.Int64()
+	signature, err := ecdsa.SignASN1(rand.Reader, privkey, fmt.Append(nil, timestamp.Unix(), height))
+	if err != nil {
+		panic(err)
+	}
 	return armPosition{
-		Timestamp: time.Now(),
-		Height:    height.Int64(),
-		Signature: "", // TODO add signature
+		Timestamp: timestamp,
+		Height:    height,
+		Signature: string(signature),
 	}
 }
 
-func isValidPosition(six, seven armPosition) bool {
-	// TODO check signature
-	if six.Height > 50 && seven.Height <= 50 {
-		return true
-	} else if six.Height <= 50 && seven.Height > 50 {
-		return true
+func validateArmPosition(six, seven armPosition) error {
+	if !ecdsa.VerifyASN1(&privkey.PublicKey, fmt.Append(nil, six.Timestamp.Unix(), six.Height), []byte(six.Signature)) {
+		return fmt.Errorf("incorrect signature on six arm")
+	} else if !ecdsa.VerifyASN1(&privkey.PublicKey, fmt.Append(nil, seven.Timestamp.Unix(), seven.Height), []byte(seven.Signature)) {
+		return fmt.Errorf("incorrect signature on seven arm")
 	}
-	return false
+	if six.Height > 50 && seven.Height <= 50 {
+		return nil
+	} else if six.Height <= 50 && seven.Height > 50 {
+		return nil
+	}
+	return fmt.Errorf("cursed arm position (not slay bro)")
 }
 
 type updateSixRequest struct {
@@ -144,7 +122,16 @@ func bootstrap(s *challenge.Scenario) error {
 		if err = json.Unmarshal(resp.Body, state); err != nil {
 			return false, err
 		}
-		return isValidPosition(state.Six, state.Seven), nil
+		if err := validateArmPosition(state.Six, state.Seven); err != nil {
+			slog.Debug(fmt.Sprintf("67 state yields incorrect position: %v", err))
+			return false, err
+		}
+		threshold := time.Now().Add(-5 * time.Minute)
+		if state.Six.Timestamp.Before(threshold) || state.Seven.Timestamp.Before(threshold) {
+			slog.Debug(fmt.Sprintf("67 state yields legacy position: %v", err))
+			return false, fmt.Errorf("67 state is to old: %v", err)
+		}
+		return true, nil
 	}))
 	s.AddCheck("67 writes", challenge.NewOperationalCheck(15, "67 write succeeded", func() (bool, error) {
 		rawRequest, err := json.Marshal(updateSixRequest{State: randomArmPosition()})
