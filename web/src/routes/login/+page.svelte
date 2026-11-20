@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { Glue, setToken, Submit, type SubmitState } from '$lib';
-	import logo from '$lib/assets/favicon.svg';
 	import Alert from '$lib/components/ui/Alert.svelte';
 	import Button from '$lib/components/buttons/Button.svelte';
 	import Input from '$lib/components/inputs/Input.svelte';
@@ -10,6 +9,7 @@
 	import { create } from '@bufbuild/protobuf';
 	import { resolve } from '$app/paths';
 	import { loadActive } from '$lib/auth.svelte';
+	import SpreadLogo from '$lib/components/SpreadLogo.svelte';
 
 	let loginState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let loginRequest = $state(create(LoginRequestSchema, {}));
@@ -33,7 +33,7 @@
 					await goto(resolve('/profile'));
 				}, loginState)}
 		>
-			<img alt="icon" src={logo} class="h-32" />
+			<SpreadLogo spread={loginRequest.email.length + loginRequest.password.length} class="h-34" />
 			<h1 class="text-4xl opacity-80">CloudJam Login</h1>
 			<Input bind:value={loginRequest.email} placeholder="Please enter your Email" type="email" />
 			<Input bind:value={loginRequest.password} placeholder="Please enter your Password" type="password" />
