@@ -7,8 +7,20 @@
 	import { getActiveFeatures, getActiveUser, getActiveUserIcon } from '$lib/auth.svelte';
 	import { page } from '$app/state';
 	import Background from '$lib/components/ui/Background.svelte';
+	import { onNavigate } from '$app/navigation';
 
 	let { children } = $props();
+
+	onNavigate((navigation) => {
+		if (navigation.from?.route.id !== '/login') return; // not from login, skip animation
+		if (!document.startViewTransition) return; // unsupported browser, skip animation
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
+	});
 </script>
 
 <svelte:head><link rel="icon" href={mode.current === 'dark' ? black : white} /></svelte:head>

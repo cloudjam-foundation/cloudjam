@@ -13,6 +13,8 @@
 
 	let loginState: SubmitState = $state({ error: '', loading: false, forbidden: false });
 	let loginRequest = $state(create(LoginRequestSchema, {}));
+
+	let explosion = $state(false);
 </script>
 
 <svelte:head>
@@ -29,11 +31,15 @@
 			onsubmit={() =>
 				Submit(async () => {
 					setToken((await Glue.auth.login(loginRequest)).token);
+					explosion = true;
 					await loadActive(); // clear any old state
-					await goto(resolve('/profile'));
+					setTimeout(() => goto(resolve('/profile')), 300);
 				}, loginState)}
 		>
-			<SpreadLogo spread={loginRequest.email.length + loginRequest.password.length} class="h-34" />
+			<SpreadLogo
+				spread={explosion ? 100 : (loginRequest.email.length + loginRequest.password.length) / 14}
+				class="h-34"
+			/>
 			<h1 class="text-4xl opacity-80">CloudJam Login</h1>
 			<Input bind:value={loginRequest.email} placeholder="Please enter your Email" type="email" />
 			<Input bind:value={loginRequest.password} placeholder="Please enter your Password" type="password" />
