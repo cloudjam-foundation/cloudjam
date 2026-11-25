@@ -20,9 +20,9 @@
 
 	let user: User | undefined = $state();
 
-	let userState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let updateState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let resetState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let userState: SubmitState = $state({ status: 'idle' });
+	let updateState: SubmitState = $state({ status: 'idle' });
+	let resetState: SubmitState = $state({ status: 'idle' });
 	let edit = $state(false);
 	let resetOpen = $state(false);
 
@@ -75,7 +75,7 @@
 							</Button>
 							<Button
 								type="submit"
-								processing={updateState.loading}
+								processing={updateState.status === 'loading'}
 								variant="primary"
 								disabled={Boolean(Glue.Validate(UpdateRequestSchema, create(UpdateRequestSchema, { mod: user })).error)}
 							>
@@ -98,7 +98,7 @@
 						description="This will take you back to the registration process."
 					>
 						<Button
-							processing={resetState.loading}
+							processing={resetState.status === 'loading'}
 							onclick={() => {
 								Submit(async () => {
 									const resp = await Glue.user.resetPassword(

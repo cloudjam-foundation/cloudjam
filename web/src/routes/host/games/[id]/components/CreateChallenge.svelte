@@ -28,7 +28,7 @@
 	let assignedTeams: string[] = $state([]);
 	let blueprint: Challenge = $state(create(ChallengeSchema, { id: crypto.randomUUID() }));
 
-	let createState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let createState: SubmitState = $state({ status: 'idle' });
 
 	let providers: Provider[] = $state([]);
 	async function loadProviders() {
@@ -133,10 +133,12 @@
 				{/if}
 			</div>
 		</div>
-		<Button type="submit" variant="primary" processing={createState.loading} class="self-start">Rollout</Button>
+		<Button type="submit" variant="primary" processing={createState.status === 'loading'} class="self-start"
+			>Rollout</Button
+		>
 		{#if createState.error}
 			<Alert
-				title={createState.forbidden ? 'Permission denied' : 'Failed to hand out challenge'}
+				title={createState.status === 'forbidden' ? 'Permission denied' : 'Failed to hand out challenge'}
 				message={createState.error}
 				animation={true}
 			/>

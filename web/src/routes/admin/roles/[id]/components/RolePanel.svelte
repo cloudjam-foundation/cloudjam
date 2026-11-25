@@ -37,10 +37,10 @@
 		Object.entries(role.permissions).map(([scope, patterns]) => ({ scope, patterns }))
 	);
 
-	let updateState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let configureState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let attachState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let removeState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let updateState: SubmitState = $state({ status: 'idle' });
+	let configureState: SubmitState = $state({ status: 'idle' });
+	let attachState: SubmitState = $state({ status: 'idle' });
+	let removeState: SubmitState = $state({ status: 'idle' });
 
 	let mod = $derived(
 		create(RoleSchema, {
@@ -78,7 +78,7 @@
 		<p class="text-sm text-primary/60 italic">This role is builtin; its metadata and permissions cannot be modified.</p>
 	{:else}
 		<div class="flex flex-col gap-2">
-			{#if updateState.forbidden}
+			{#if updateState.status === 'forbidden'}
 				<Alert class="p-2" message="You are not allowed to update this role" animation={true} />
 			{:else}
 				<form
@@ -114,12 +114,13 @@
 						type="submit"
 						variant="primary"
 						class="mt-3 w-60"
-						processing={updateState.loading}
-						disabled={updateState.loading || Boolean(Glue.Validate(RoleSchema, mod).violation.name)}
+						processing={updateState.status === 'loading'}
+						disabled={updateState.status === 'loading' || Boolean(Glue.Validate(RoleSchema, mod).violation.name)}
+						buttonState={updateState.status === 'success' ? 'success' : 'idle'}
 					>
 						Save Features
 					</Button>
-					{#if updateState.error}
+					{#if updateState.status === 'error'}
 						<Alert class="p-2" message={updateState.error} animation={true} />
 					{/if}
 				</form>
@@ -139,8 +140,10 @@
 				<Button
 					variant="primary"
 					class="w-60"
-					processing={configureState.loading}
-					disabled={configureState.loading || Boolean(Glue.Validate(RoleSchema, mod).violation.permissions)}
+					processing={configureState.status === 'loading'}
+					disabled={configureState.status === 'loading' ||
+						Boolean(Glue.Validate(RoleSchema, mod).violation.permissions)}
+					buttonState={configureState.status === 'success' ? 'success' : 'idle'}
 					onclick={() =>
 						Submit(async () => {
 							await Glue.rbac.configureRole(create(ConfigureRoleRequestSchema, { mod: mod }));
@@ -173,9 +176,9 @@
 					</Button>
 				{/if}
 			</div>
-			{#if configureState.forbidden}
+			{#if configureState.status === 'forbidden'}
 				<Alert class="p-2" message="You are not allowed to configure this role" animation={true} />
-			{:else if configureState.error}
+			{:else if configureState.status === 'error'}
 				<Alert class="p-2" message={configureState.error} animation={true} />
 			{/if}
 		</div>
@@ -196,8 +199,10 @@
 			/>
 			<Button
 				variant="primary"
-				processing={attachState.loading}
-				disabled={attachState.loading || !attachTenant}
+				class="mt-3 w-60"
+				processing={attachState.status === 'loading'}
+				disabled={attachState.status === 'loading' || !attachTenant}
+				buttonState={attachState.status === 'success' ? 'success' : 'idle'}
 				onclick={() =>
 					Submit(async () => {
 						await Glue.rbac.attachScope(
@@ -213,9 +218,9 @@
 				Update
 			</Button>
 		</div>
-		{#if attachState.forbidden}
+		{#if attachState.status === 'forbidden'}
 			<Alert class="p-2" message="You are not allowed to move the role to the selected tenant" animation={true} />
-		{:else if attachState.error}
+		{:else if attachState.status === 'error'}
 			<Alert class="p-2" message={attachState.error} animation={true} />
 		{/if}
 	</div>
@@ -225,7 +230,7 @@
 
 		<div class="flex flex-col gap-2">
 			<h2 class="text-xl font-semibold text-primary/80">Danger Zone</h2>
-			{#if removeState.forbidden}
+			{#if removeState.status === 'forbidden'}
 				<Alert class="p-2" message="You are not allowed to delete this role" animation={true} />
 			{:else}
 				<div class="mt-3 flex w-60 flex-row items-center gap-2">
@@ -233,7 +238,7 @@
 						<Button
 							variant="destructive"
 							class="w-full"
-							disabled={removeState.loading}
+							disabled={removeState.status === 'loading'}
 							onclick={() =>
 								Submit(async () => {
 									await Glue.role.delete(create(DeleteRequestSchema, { id: role.id }));

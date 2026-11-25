@@ -42,29 +42,32 @@ export const Glue = createGlue(
 // SubmitState is the object that holds the state of the Submit.
 // It is recommended to create a state per operation to avoid a full page loading spinner if a small action failed.
 // Usually you want to instantiate this as a $state to make the properties reactive proxies.
-export type SubmitState = { error: string; loading: boolean; forbidden: boolean };
+export type SubmitState =
+	| { status: 'idle' }
+	| { status: 'loading' }
+	| { status: 'success' }
+	| { status: 'error'; error: string }
+	| { status: 'forbidden'; error: string };
 
 // Submit is a helper for the common "unerror->spin->call->unspin->error" flow
 // in most basic submit functions. Returns a usable user error and writes the full error
 // to an error bus (currently console.error() TBD).
 export async function Submit(call: () => Promise<void>, state: SubmitState) {
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	((state.loading = true), (state.error = ''), (state.forbidden = false));
+	state.status = 'loading';
 	try {
 		const res = await call();
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		((state.loading = false), (state.error = ''), (state.forbidden = false));
+		state.status = 'success';
 		return res;
 	} catch (e: unknown) {
 		const error = ConnectError.from(e);
 		if (error.code === Code.PermissionDenied) {
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			((state.loading = false), (state.error = error.rawMessage), (state.forbidden = true));
+			state.status = 'forbidden';
+			state.error = error.message;
 		} else {
 			// TODO: implement more sophisticated error notification system.
 			console.error(error.message);
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			((state.loading = false), (state.error = error.rawMessage), (state.forbidden = false));
+			state.status = 'error';
+			state.error = error.rawMessage;
 		}
 	}
 }

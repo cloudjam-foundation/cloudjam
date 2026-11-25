@@ -56,9 +56,9 @@
 		};
 	});
 
-	let startState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let credsState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let clueState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let startState: SubmitState = $state({ status: 'idle' });
+	let credsState: SubmitState = $state({ status: 'idle' });
+	let clueState: SubmitState = $state({ status: 'idle' });
 
 	let adhsTimeout: ReturnType<typeof setTimeout>;
 	let adhsSpinner: boolean = $state(false);
@@ -135,8 +135,8 @@
 		<div class="ml-auto flex flex-row flex-wrap gap-2">
 			<Button
 				variant="primary"
-				processing={startState.loading}
-				disabled={!active || startState.loading || Boolean(challenge.title)}
+				processing={startState.status === 'loading'}
+				disabled={!active || startState.status === 'loading' || Boolean(challenge.title)}
 				onclick={() =>
 					Submit(async () => {
 						await Glue.challenge.start(create(StartRequestSchema, { gameId: challenge.gameId, id: challenge.id }));
@@ -160,8 +160,8 @@
 
 			<Button
 				variant="primary"
-				processing={credsState.loading}
-				disabled={!active || !challenge.ready || credsState.loading || !challenge.title}
+				processing={credsState.status === 'loading'}
+				disabled={!active || !challenge.ready || credsState.status === 'loading' || !challenge.title}
 				onclick={() =>
 					Submit(async () => {
 						credentials = (
@@ -261,8 +261,8 @@
 						<Button
 							variant="primary"
 							class="self-start"
-							processing={clueState.loading}
-							disabled={clueState.loading || challenge.cluePrices[name] === undefined}
+							processing={clueState.status === 'loading'}
+							disabled={clueState.status === 'loading' || challenge.cluePrices[name] === undefined}
 							onclick={() =>
 								Submit(async () => {
 									await Glue.challenge.uncoverClue(
@@ -298,7 +298,7 @@
 					class="max-h-[60vh]"
 					limit={Infinity}
 					load={async () => groups}
-					loadState={{ error: '', loading: false, forbidden: false }}
+					loadState={{ status: 'idle' }}
 					onRowClick={(row) => {
 						history = row;
 						historyOpen = true;
@@ -352,7 +352,7 @@
 				class="max-h-[60vh]"
 				limit={Infinity}
 				load={async () => history?.events ?? []}
-				loadState={{ error: '', loading: false, forbidden: false }}
+				loadState={{ status: 'idle' }}
 				columns={[
 					{ title: '', width: '40px', render: icon },
 					{ title: 'Time', width: '80px', render: time },

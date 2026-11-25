@@ -22,7 +22,7 @@
 
 	let providerId: string = $state('');
 	let provider: Provider | undefined = $state();
-	let providerState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let providerState: SubmitState = $state({ status: 'idle' });
 	$effect(() => {
 		if (!providerId) {
 			provider = undefined;
@@ -34,14 +34,14 @@
 	});
 
 	let providerSuggestions: Provider[] = $state([]);
-	let providerSuggestionsState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let providerSuggestionsState: SubmitState = $state({ status: 'idle' });
 	onMount(() => {
 		Submit(async () => {
 			providerSuggestions = (await Glue.provider.list(create(ListProviderRequestSchema, { limit: 100 }))).providers;
 		}, providerSuggestionsState);
 	});
 
-	let definitionsState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let definitionsState: SubmitState = $state({ status: 'idle' });
 	// bumping the version remounts the table and therefore reloads the definitions.
 	let version = $state(0);
 

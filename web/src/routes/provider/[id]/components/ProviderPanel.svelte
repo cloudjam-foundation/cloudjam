@@ -21,15 +21,15 @@
 	let regions = $state(provider.regions.join(', '));
 	let confirmDelete = $state(false);
 
-	let updateState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let removeState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let updateState: SubmitState = $state({ status: 'idle' });
+	let removeState: SubmitState = $state({ status: 'idle' });
 </script>
 
 <Card class="w-full items-start">
 	<div>
 		<div class="flex flex-row items-center gap-2">
 			<h1 class="text-2xl font-semibold text-primary/90">{provider.name}</h1>
-			{#if updateState.loading}
+			{#if updateState.status === 'loading'}
 				<LoadingBadge text="Reprovisioning" />
 			{/if}
 		</div>
@@ -43,7 +43,7 @@
 
 	<div class="flex flex-col gap-2">
 		<h2 class="text-xl font-semibold text-primary/80">Configuration</h2>
-		{#if updateState.forbidden}
+		{#if updateState.status === 'forbidden'}
 			<p class="text-sm text-primary/60 italic">You are not allowed to update this provider.</p>
 		{:else}
 			<form
@@ -79,7 +79,7 @@
 						<Input bind:value={mod.credentials} placeholder="Provider specific credentials" />
 					{/if}
 				</div>
-				<Button type="submit" variant="primary" class="self-start" processing={updateState.loading}>
+				<Button type="submit" variant="primary" class="self-start" processing={updateState.status === 'loading'}>
 					Update and Reprovision
 				</Button>
 			</form>
@@ -93,7 +93,7 @@
 
 	<div class="flex flex-col gap-2">
 		<h2 class="text-xl font-semibold text-primary/80">Danger Zone</h2>
-		{#if removeState.forbidden}
+		{#if removeState.status === 'forbidden'}
 			<p class="text-sm text-primary/60 italic">You are not allowed to delete this provider.</p>
 		{:else}
 			<p class="text-sm text-primary/60">
@@ -103,7 +103,7 @@
 				{#if confirmDelete}
 					<Button
 						variant="destructive"
-						disabled={removeState.loading}
+						disabled={removeState.status === 'loading'}
 						onclick={() =>
 							Submit(async () => {
 								await Glue.provider.delete(create(DeleteRequestSchema, { id: provider.id }));

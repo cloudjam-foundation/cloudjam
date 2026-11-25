@@ -12,7 +12,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
-	let configureState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let configureState: SubmitState = $state({ status: 'idle' });
 
 	let id = $state(crypto.randomUUID());
 	let name = $state('');
@@ -75,14 +75,15 @@
 			type="submit"
 			variant="primary"
 			class="self-start"
-			processing={configureState.loading}
-			disabled={configureState.loading}
+			processing={configureState.status === 'loading'}
+			disabled={configureState.status === 'loading'}
+			buttonState={configureState.status === 'success' ? 'success' : 'idle'}
 		>
 			Create and Configure
 		</Button>
 		{#if configureState.error}
 			<Alert
-				title={configureState.forbidden ? 'Permission denied' : 'Failed to create role'}
+				title={configureState.status === 'forbidden' ? 'Permission denied' : 'Failed to create role'}
 				message={configureState.error}
 				animation={true}
 			/>

@@ -30,8 +30,8 @@
 		return teams.find((team) => team.id === id)?.name ?? id;
 	}
 
-	let challengesState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let teamsState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let challengesState: SubmitState = $state({ status: 'idle' });
+	let teamsState: SubmitState = $state({ status: 'idle' });
 
 	onMount(() =>
 		Submit(async () => {
@@ -56,7 +56,7 @@
 		<CreateChallenge {gameId} {teams} onCreated={() => version++} />
 	{/if}
 
-	{#if challengesState.forbidden}
+	{#if challengesState.status === 'forbidden'}
 		<Alert title="Permission Denied" message="You are not allowed to list the challenges of this game" />
 	{:else}
 		{#key version}

@@ -16,7 +16,7 @@
 
 	let id = $state('');
 
-	let rolesState: SubmitState = $state({ error: '', loading: true, forbidden: false });
+	let rolesState: SubmitState = $state({ error: '', loading: true, forbidden: false, success: false });
 </script>
 
 <svelte:head>

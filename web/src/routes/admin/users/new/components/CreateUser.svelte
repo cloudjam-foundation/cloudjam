@@ -107,6 +107,7 @@
 				class="self-start"
 				processing={createState.loading}
 				disabled={createState.loading || Boolean(Glue.Validate(CreateRequestSchema, request).error)}
+				buttonState={createState.status === 'success' ? 'success' : 'idle'}
 			>
 				Invite
 			</Button>

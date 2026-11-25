@@ -24,8 +24,8 @@
 
 	let confirmDelete = $state(false);
 
-	let updateState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let removeState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let updateState: SubmitState = $state({ status: 'idle' });
+	let removeState: SubmitState = $state({ status: 'idle' });
 </script>
 
 <Card class="w-full items-start">
@@ -40,7 +40,7 @@
 
 	<div class="flex flex-col gap-2">
 		<h2 class="text-xl font-semibold text-primary/80">Configuration</h2>
-		{#if updateState.forbidden}
+		{#if updateState.status === 'forbidden'}
 			<p class="text-sm text-primary/60 italic">You are not allowed to update this game.</p>
 		{:else}
 			<p class="text-sm text-primary/60">Games that already started cannot be changed anymore.</p>
@@ -82,7 +82,7 @@
 						</label>
 					</div>
 				</div>
-				<Button type="submit" variant="primary" processing={updateState.loading}>Save</Button>
+				<Button type="submit" variant="primary" processing={updateState.status === 'loading'}>Save</Button>
 			</form>
 			{#if updateState.error}
 				<Alert class="p-2" message={updateState.error} animation={true} />
@@ -93,14 +93,14 @@
 
 	<div class="flex flex-col gap-2">
 		<h2 class="text-xl font-semibold text-primary/80">Danger Zone</h2>
-		{#if removeState.forbidden}
+		{#if removeState.status === 'forbidden'}
 			<p class="text-sm text-muted-foreground italic">You are not allowed to delete this game.</p>
 		{:else}
 			<div class="flex flex-row items-center gap-2">
 				{#if confirmDelete}
 					<Button
 						variant="destructive"
-						disabled={removeState.loading}
+						disabled={removeState.status === 'loading'}
 						onclick={() =>
 							Submit(async () => {
 								await Glue.game.delete(create(DeleteRequestSchema, { id: game.id }));

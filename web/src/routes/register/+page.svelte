@@ -14,7 +14,7 @@
 
 	let registerRequest = $state(create(RegisterRequestSchema, {}));
 
-	let registerState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let registerState: SubmitState = $state({ status: 'idle' });
 
 	onMount(() => {
 		registerRequest.email = page.url.searchParams.get('email') ?? '';
@@ -26,7 +26,7 @@
 
 <svelte:head>
 	<title>Register | CloudJam</title>
-	<meta property="og:title" content="RegisteRegister | CloudJam" />
+	<meta property="og:title" content="Register | CloudJam" />
 	<meta property="og:type" content="website" />
 	<meta property="og:image" content="/favicon.png" />
 </svelte:head>
@@ -73,7 +73,7 @@
 				class="w-full"
 				type="submit"
 				variant="primary"
-				processing={registerState.loading}
+				processing={registerState.status === 'loading'}
 				disabled={Boolean(Glue.Validate(RegisterRequestSchema, registerRequest).error)}
 			>
 				Register

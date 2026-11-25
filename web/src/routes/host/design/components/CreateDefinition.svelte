@@ -16,7 +16,7 @@
 	let init = $derived(create(DefinitionSchema, { id: crypto.randomUUID(), scope: provider.scope }));
 	let files: FileList | undefined = $state();
 
-	let createState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let createState: SubmitState = $state({ status: 'idle' });
 	let createRequest = $derived(
 		create(CreateRequestSchema, { init: { ...init, providerId: provider.id }, compression: CompressionMode.Zstd })
 	);
@@ -72,20 +72,21 @@
 				type="submit"
 				variant="primary"
 				class="self-start"
-				disabled={createState.loading ||
+				disabled={createState.status === 'loading' ||
 					!files?.length ||
 					Boolean(Glue.Validate(CreateRequestSchema, createRequest).error)}
+				buttonState={createState.status === 'success' ? 'success' : 'idle'}
 			>
 				Upload
 			</Button>
-			{#if createState.loading}
+			{#if createState.status === 'loading'}
 				<LoadingBadge text="Compressing and Uploading" />
 			{/if}
 		</div>
 
 		{#if createState.error}
 			<Alert
-				title={createState.forbidden ? 'Permission denied' : 'Failed to upload definition'}
+				title={createState.status === 'forbidden' ? 'Permission denied' : 'Failed to upload definition'}
 				message={createState.error}
 				animation={true}
 			/>

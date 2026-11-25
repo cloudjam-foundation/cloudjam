@@ -28,7 +28,7 @@
 	let loading = $state(true);
 
 	let providerSuggestions: Provider[] = $state([]);
-	let providerSuggestionsState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let providerSuggestionsState: SubmitState = $state({ status: 'idle' });
 	onMount(() => {
 		Submit(async () => {
 			providerSuggestions = (await Glue.provider.list(create(ListProviderRequestSchema, { limit: 100 }))).providers;
@@ -37,7 +37,7 @@
 	});
 
 	let accountSuggestions: Account[] = $state([]);
-	let accountSuggestionsState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let accountSuggestionsState: SubmitState = $state({ status: 'idle' });
 	$effect(() => {
 		if (!providerId) return;
 		Submit(async () => {

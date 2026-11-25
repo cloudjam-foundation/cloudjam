@@ -112,7 +112,7 @@
 		return [totals, config, Object.values(records).sort((a, b) => a.date - b.date)] as const;
 	}
 
-	let levelState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let levelState: SubmitState = $state({ status: 'idle' });
 
 	$effect(() => {
 		Submit(async () => {
@@ -121,7 +121,7 @@
 	});
 </script>
 
-{#if levelState.forbidden}
+{#if levelState.status === 'forbidden'}
 	<Alert title="Permission Denied" message="You are not allowed to view this section" />
 {:else}
 	<Card class="w-full items-start gap-6">

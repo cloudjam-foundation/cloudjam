@@ -26,7 +26,13 @@
 	}
 </script>
 
-<Button variant="primary" class="ml-auto font-mono text-xs" title={`Copy ${descriptor}`} onclick={copy}>
+<Button
+	variant="primary"
+	class="ml-auto font-mono text-xs"
+	title={`Copy ${descriptor}`}
+	onclick={copy}
+	buttonState={copied ? 'success' : 'idle'}
+>
 	{descriptor}:
 	{value}
 	{#if copied}
