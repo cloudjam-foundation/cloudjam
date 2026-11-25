@@ -39,6 +39,9 @@
 				init = create(DefinitionSchema, { id: crypto.randomUUID(), scope: provider.scope });
 				files = undefined;
 				refresh();
+				setTimeout(() => {
+					createState.status = 'idle';
+				}, 2000);
 			}, createState)}
 	>
 		<div class="grid gap-4 md:grid-cols-2">
@@ -75,6 +78,7 @@
 				disabled={createState.status === 'loading' ||
 					!files?.length ||
 					Boolean(Glue.Validate(CreateRequestSchema, createRequest).error)}
+				buttonState={createState.status === 'success' ? 'success' : 'idle'}
 			>
 				Upload
 			</Button>

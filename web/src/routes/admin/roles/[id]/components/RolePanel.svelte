@@ -88,6 +88,9 @@
 							await Glue.role.update(create(UpdateRequestSchema, { mod: mod }));
 							await loadActive();
 							refresh();
+							setTimeout(() => {
+								updateState.status = 'idle';
+							}, 2000);
 						}, updateState)}
 				>
 					<h2 class="text-xl font-semibold text-primary/80">Metadata</h2>
@@ -116,6 +119,7 @@
 						class="mt-3 w-60"
 						processing={updateState.status === 'loading'}
 						disabled={updateState.status === 'loading' || Boolean(Glue.Validate(RoleSchema, mod).violation.name)}
+						buttonState={updateState.status === 'success' ? 'success' : 'idle'}
 					>
 						Save Features
 					</Button>
@@ -142,11 +146,15 @@
 					processing={configureState.status === 'loading'}
 					disabled={configureState.status === 'loading' ||
 						Boolean(Glue.Validate(RoleSchema, mod).violation.permissions)}
+					buttonState={configureState.status === 'success' ? 'success' : 'idle'}
 					onclick={() =>
 						Submit(async () => {
 							await Glue.rbac.configureRole(create(ConfigureRoleRequestSchema, { mod: mod }));
 							await loadActive();
 							refresh();
+							setTimeout(() => {
+								configureState.status = 'idle';
+							}, 2000);
 						}, configureState)}
 				>
 					Save Permissions
@@ -200,6 +208,7 @@
 				class="mt-3 w-60"
 				processing={attachState.status === 'loading'}
 				disabled={attachState.status === 'loading' || !attachTenant}
+				buttonState={attachState.status === 'success' ? 'success' : 'idle'}
 				onclick={() =>
 					Submit(async () => {
 						await Glue.rbac.attachScope(
@@ -210,6 +219,9 @@
 							})
 						);
 						refresh();
+						setTimeout(() => {
+							attachState.status = 'idle';
+						}, 2000);
 					}, attachState)}
 			>
 				Update

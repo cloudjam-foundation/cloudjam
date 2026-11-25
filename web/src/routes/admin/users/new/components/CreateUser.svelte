@@ -60,6 +60,9 @@
 					const resp = await Glue.user.create(request);
 					code = resp.code;
 					link = `${location.origin}/register?email=${encodeURIComponent(init.email)}&username=${encodeURIComponent(init.username)}&code=${encodeURIComponent(resp.code)}`;
+					setTimeout(() => {
+						createState.status = 'idle';
+					}, 2000);
 				}, createState)}
 		>
 			<div class="grid gap-4 md:grid-cols-2">
@@ -107,6 +110,7 @@
 				class="self-start"
 				processing={createState.loading}
 				disabled={createState.loading || Boolean(Glue.Validate(CreateRequestSchema, request).error)}
+				buttonState={createState.status === 'success' ? 'success' : 'idle'}
 			>
 				Invite
 			</Button>

@@ -85,10 +85,20 @@
 						Submit(async () => {
 							await Glue.user.update(create(UpdateRequestSchema, { mod: { ...user, organization: organization } }));
 							refresh();
+							setTimeout(() => {
+								updateState.status = 'idle';
+							}, 2000);
 						}, updateState)}
 				>
 					<Input class="max-w-96" bind:value={organization} placeholder="Organization of the user" />
-					<Button type="submit" variant="primary" processing={updateState.status === 'loading'}>Save</Button>
+					<Button
+						type="submit"
+						variant="primary"
+						processing={updateState.status === 'loading'}
+						buttonState={updateState.status === 'success' ? 'success' : 'idle'}
+					>
+						Save
+					</Button>
 				</form>
 				{#if updateState.error}
 					<Alert class="p-2" message={updateState.error} animation={true} />
@@ -114,10 +124,14 @@
 						variant="primary"
 						processing={attachRoleState.status === 'loading'}
 						disabled={attachRoleState.status === 'loading' || !role || role === user.role}
+						buttonState={attachRoleState.status === 'success' ? 'success' : 'idle'}
 						onclick={() =>
 							Submit(async () => {
 								await Glue.rbac.attachRole(create(AttachRoleRequestSchema, { id: user.id, role: role }));
 								refresh();
+								setTimeout(() => {
+									attachRoleState.status = 'idle';
+								}, 2000);
 							}, attachRoleState)}
 					>
 						Attach
@@ -196,6 +210,7 @@
 				<Button
 					variant="primary"
 					processing={resetState.status === 'loading'}
+					buttonState={resetState.status === 'success' ? 'success' : 'idle'}
 					onclick={() =>
 						Submit(async () => {
 							const resp = await Glue.user.resetPassword(
@@ -205,6 +220,9 @@
 								})
 							);
 							resetCode = resp.code;
+							setTimeout(() => {
+								resetState.status = 'idle';
+							}, 2000);
 						}, resetState)}
 				>
 					Create Reset Code
@@ -230,10 +248,14 @@
 						<Button
 							variant="destructive"
 							disabled={removeState.status === 'loading'}
+							buttonState={removeState.status === 'success' ? 'success' : 'idle'}
 							onclick={() =>
 								Submit(async () => {
 									await Glue.user.delete(create(DeleteRequestSchema, { id: user.id }));
 									deleted();
+									setTimeout(() => {
+										removeState.status = 'idle';
+									}, 2000);
 								}, removeState)}
 						>
 							Yes, delete {user.username}

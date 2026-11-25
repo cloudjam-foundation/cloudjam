@@ -43,6 +43,9 @@
 			Submit(async () => {
 				const resp = await Glue.role.create(create(CreateRequestSchema, { init: init }));
 				await goto(resolve('/admin/roles/[id]', { id: resp.id }));
+				setTimeout(() => {
+					configureState.status = 'idle';
+				}, 2000);
 			}, configureState)}
 	>
 		<div class="grid gap-4 md:grid-cols-2">
@@ -77,6 +80,7 @@
 			class="self-start"
 			processing={configureState.status === 'loading'}
 			disabled={configureState.status === 'loading'}
+			buttonState={configureState.status === 'success' ? 'success' : 'idle'}
 		>
 			Create and Configure
 		</Button>
