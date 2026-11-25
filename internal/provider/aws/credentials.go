@@ -49,7 +49,7 @@ func (p *Provider) Credentials(ctx context.Context, id string, admin bool, lifet
 		"AWS_SESSION_TOKEN":     credentials.SessionToken,
 		"URL": fmt.Sprintf(
 			"https://signin.aws.amazon.com/federation?Action=login&Destination=%s&SigninToken=%s",
-			url.QueryEscape("https://console.aws.amazon.com/"), result.SigninToken,
+			url.QueryEscape("https://console.aws.amazon.com?region="+url.QueryEscape(config.Region)), result.SigninToken,
 		),
 	})
 	return string(rawCredentials), nil
