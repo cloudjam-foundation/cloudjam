@@ -13,7 +13,7 @@
 
 	let init = $state(create(TeamSchema, { id: crypto.randomUUID() }));
 
-	let createState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let createState: SubmitState = $state({ status: 'idle' });
 	function createTeam() {
 		Submit(async () => {
 			await Glue.team.create(create(CreateRequestSchema, { init: { ...init, gameId: game.id, scope: game.scope } }));
@@ -31,11 +31,13 @@
 	<form class="flex flex-col gap-2" onsubmit={createTeam}>
 		<div class="flex flex-row items-center justify-center gap-2">
 			<Input bind:value={init.name} placeholder="Name of the team" />
-			<Button processing={createState.loading} variant="primary" type="submit" class="self-start">Create</Button>
+			<Button processing={createState.status === 'loading'} variant="primary" type="submit" class="self-start"
+				>Create</Button
+			>
 		</div>
 		{#if createState.error}
 			<Alert
-				title={createState.forbidden ? 'Permission denied' : 'Failed to create team'}
+				title={createState.status === 'forbidden' ? 'Permission denied' : 'Failed to create team'}
 				message={createState.error}
 				animation={true}
 			/>

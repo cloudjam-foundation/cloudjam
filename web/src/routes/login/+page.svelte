@@ -11,7 +11,7 @@
 	import { resolve } from '$app/paths';
 	import { loadActive } from '$lib/auth.svelte';
 
-	let loginState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let loginState: SubmitState = $state({ status: 'idle' });
 	let loginRequest = $state(create(LoginRequestSchema, {}));
 </script>
 
@@ -37,7 +37,7 @@
 			<h1 class="text-4xl opacity-80">CloudJam Login</h1>
 			<Input bind:value={loginRequest.email} placeholder="Please enter your Email" type="email" />
 			<Input bind:value={loginRequest.password} placeholder="Please enter your Password" type="password" />
-			<Button class="w-full" type="submit" variant="primary" processing={loginState.loading}>Login</Button>
+			<Button class="w-full" type="submit" variant="primary" processing={loginState.status === 'loading'}>Login</Button>
 			{#if loginState.error}
 				<Alert class="w-full" title="Authentication failed" message={loginState.error} animation={true} />
 			{/if}

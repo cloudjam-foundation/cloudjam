@@ -23,8 +23,8 @@
 	let files: FileList | undefined = $state();
 	let confirmDelete = $state(false);
 
-	let updateState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let removeState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let updateState: SubmitState = $state({ status: 'idle' });
+	let removeState: SubmitState = $state({ status: 'idle' });
 </script>
 
 <Popup bind:open title={definition.name} description={definition.description} badges={renderBadges} body={renderBody} />
@@ -41,7 +41,7 @@
 {#snippet renderBody()}
 	<div class="flex flex-col gap-2">
 		<h1 class="text-xl font-semibold text-primary/80">Definition</h1>
-		{#if updateState.forbidden}
+		{#if updateState.status === 'forbidden'}
 			<p class="text-sm text-primary/60 italic">You are not allowed to update this definition.</p>
 		{:else}
 			<form
@@ -83,10 +83,10 @@
 				</div>
 
 				<div class="flex flex-row items-center justify-start gap-2">
-					<Button type="submit" variant="primary" class="self-start" disabled={updateState.loading}>
+					<Button type="submit" variant="primary" class="self-start" disabled={updateState.status === 'loading'}>
 						Save and Upload
 					</Button>
-					{#if updateState.loading && files}
+					{#if updateState.status === 'loading' && files}
 						<LoadingBadge text="Compressing and Uploading" />
 					{/if}
 				</div>
@@ -101,14 +101,14 @@
 
 	<div class="flex flex-col gap-2">
 		<h1 class="text-xl font-semibold text-primary/80">Danger Zone</h1>
-		{#if removeState.forbidden}
+		{#if removeState.status === 'forbidden'}
 			<p class="text-sm text-primary/60 italic">You are not allowed to delete this definition.</p>
 		{:else}
 			<div class="flex flex-row items-center gap-2">
 				{#if confirmDelete}
 					<Button
 						variant="destructive"
-						disabled={removeState.loading}
+						disabled={removeState.status === 'loading'}
 						onclick={() =>
 							Submit(async () => {
 								await Glue.definition.delete(

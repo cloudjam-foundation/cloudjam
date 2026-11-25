@@ -25,7 +25,7 @@
 	const reloadInterval = 5000;
 
 	let gameId: string | undefined = $derived(page.params.game_id);
-	let gameState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let gameState: SubmitState = $state({ status: 'idle' });
 	let game: Game | undefined = $state();
 	$effect(() => {
 		if (!gameId) return;
@@ -41,7 +41,7 @@
 	});
 
 	let teamId: string | undefined = $state('');
-	let teamState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let teamState: SubmitState = $state({ status: 'idle' });
 	let team: Team | undefined = $state();
 	async function reloadTeam() {
 		if (!teamId) return undefined;
@@ -60,7 +60,7 @@
 
 	let definitionId: string | undefined = $state();
 	let definitionProviderId: string | undefined = $state();
-	let definitionState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let definitionState: SubmitState = $state({ status: 'idle' });
 	let definition: Definition | undefined = $state();
 	$effect(() => {
 		if (!definitionId) return undefined;
@@ -104,7 +104,7 @@
 	}
 
 	let challengeId: string | undefined = $derived(page.params.challenge_id);
-	let challengeState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let challengeState: SubmitState = $state({ status: 'idle' });
 	let challenge: Challenge | undefined = $state();
 	$effect(() => {
 		if (!gameId) return undefined;

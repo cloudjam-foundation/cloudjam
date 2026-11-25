@@ -28,8 +28,8 @@
 	const scoreTypeName = (type: ScoreType) =>
 		type === ScoreType.Unspecified ? '' : enumToJson(ScoreTypeSchema, type)?.toString().toLowerCase();
 
-	let updateState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let removeState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let updateState: SubmitState = $state({ status: 'idle' });
+	let removeState: SubmitState = $state({ status: 'idle' });
 </script>
 
 <Popup bind:open title={challenge.title || 'Not started yet'} badges={renderBadges} body={renderBody} />
@@ -73,7 +73,7 @@
 
 	<div class="flex flex-col gap-2">
 		<h1 class="text-xl font-semibold text-primary/80">Team</h1>
-		{#if updateState.forbidden}
+		{#if updateState.status === 'forbidden'}
 			<p class="text-sm text-primary/60 italic">You are not allowed to update this challenge.</p>
 		{:else}
 			<div class="flex flex-row items-center gap-2">
@@ -85,8 +85,8 @@
 				/>
 				<Button
 					variant="primary"
-					processing={updateState.loading}
-					disabled={updateState.loading || !teamId || teamId === challenge.teamId}
+					processing={updateState.status === 'loading'}
+					disabled={updateState.status === 'loading' || !teamId || teamId === challenge.teamId}
 					onclick={() =>
 						Submit(async () => {
 							await Glue.challenge.update(create(UpdateRequestSchema, { mod: { ...challenge, teamId: teamId } }));
@@ -146,14 +146,14 @@
 
 	<div class="flex flex-col gap-2">
 		<h1 class="text-xl font-semibold text-primary/80">Danger Zone</h1>
-		{#if removeState.forbidden}
+		{#if removeState.status === 'forbidden'}
 			<p class="text-sm text-primary/60 italic">You are not allowed to delete this challenge.</p>
 		{:else}
 			<div class="flex flex-row items-center gap-2">
 				{#if confirmDelete}
 					<Button
 						variant="destructive"
-						disabled={removeState.loading}
+						disabled={removeState.status === 'loading'}
 						onclick={() =>
 							Submit(async () => {
 								await Glue.challenge.delete(

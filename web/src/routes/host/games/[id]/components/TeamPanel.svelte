@@ -26,11 +26,11 @@
 	let users: User[] = $state([]);
 	let player = $state('');
 
-	let updateState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let attachState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let removeState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let updateState: SubmitState = $state({ status: 'idle' });
+	let attachState: SubmitState = $state({ status: 'idle' });
+	let removeState: SubmitState = $state({ status: 'idle' });
 
-	let usersState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let usersState: SubmitState = $state({ status: 'idle' });
 
 	onMount(() =>
 		Submit(async () => {
@@ -64,7 +64,7 @@
 {#snippet renderPopup()}
 	<div class="flex flex-col gap-2">
 		<h1 class="text-xl font-semibold text-primary/80">Name</h1>
-		{#if updateState.forbidden}
+		{#if updateState.status === 'forbidden'}
 			<Alert class="p-2" message="You are not allowed to update this team" />
 		{:else}
 			<form
@@ -76,7 +76,7 @@
 					}, updateState)}
 			>
 				<Input class="max-w-96" bind:value={name} placeholder="Name of the team" />
-				<Button processing={updateState.loading} type="submit" variant="primary">Save</Button>
+				<Button processing={updateState.status === 'loading'} type="submit" variant="primary">Save</Button>
 			</form>
 			{#if updateState.error}
 				<Alert class="p-2" message={updateState.error} animation={true} />
@@ -120,8 +120,8 @@
 
 			<Button
 				variant="primary"
-				processing={attachState.loading}
-				disabled={attachState.loading || !player || Boolean(players[player])}
+				processing={attachState.status === 'loading'}
+				disabled={attachState.status === 'loading' || !player || Boolean(players[player])}
 				onclick={() => {
 					const user = users.find((user) => user.id === player);
 					if (!user) return;
@@ -144,14 +144,14 @@
 
 	<div class="flex flex-col gap-2">
 		<h1 class="text-xl font-semibold text-primary/80">Danger Zone</h1>
-		{#if removeState.forbidden}
+		{#if removeState.status === 'forbidden'}
 			<p class="text-sm text-muted-foreground italic">You are not allowed to delete this team.</p>
 		{:else}
 			<div class="flex flex-row items-center gap-2">
 				{#if confirmDelete}
 					<Button
 						variant="destructive"
-						disabled={removeState.loading}
+						disabled={removeState.status === 'loading'}
 						onclick={() =>
 							Submit(async () => {
 								await Glue.team.delete(create(DeleteRequestSchema, { gameId: team.gameId, id: team.id }));

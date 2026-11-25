@@ -30,13 +30,13 @@
 
 	// roles are only used to resolve names and attach them to the user.
 	let roles: Role[] = $state([]);
-	let rolesState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let rolesState: SubmitState = $state({ status: 'idle' });
 
-	let updateState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let attachRoleState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let attachState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let resetState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let removeState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let updateState: SubmitState = $state({ status: 'idle' });
+	let attachRoleState: SubmitState = $state({ status: 'idle' });
+	let attachState: SubmitState = $state({ status: 'idle' });
+	let resetState: SubmitState = $state({ status: 'idle' });
+	let removeState: SubmitState = $state({ status: 'idle' });
 
 	onMount(() =>
 		Submit(async () => {
@@ -76,7 +76,7 @@
 	{:else}
 		<div class="flex flex-col gap-2">
 			<h2 class="text-xl font-semibold text-primary/80">Organization</h2>
-			{#if updateState.forbidden}
+			{#if updateState.status === 'forbidden'}
 				<Alert class="p-2" message="You are not allowed to update this user" animation={true} />
 			{:else}
 				<form
@@ -88,7 +88,7 @@
 						}, updateState)}
 				>
 					<Input class="max-w-96" bind:value={organization} placeholder="Organization of the user" />
-					<Button type="submit" variant="primary" processing={updateState.loading}>Save</Button>
+					<Button type="submit" variant="primary" processing={updateState.status === 'loading'}>Save</Button>
 				</form>
 				{#if updateState.error}
 					<Alert class="p-2" message={updateState.error} animation={true} />
@@ -100,7 +100,7 @@
 
 		<div class="flex flex-col gap-2">
 			<h2 class="text-xl font-semibold text-primary/80">Role</h2>
-			{#if rolesState.forbidden || attachRoleState.forbidden}
+			{#if rolesState.status === 'forbidden' || attachRoleState.status === 'forbidden'}
 				<Alert class="p-2" message="You are not allowed to modify the role of this user" animation={true} />
 			{:else}
 				<div class="flex flex-row items-center gap-2">
@@ -112,8 +112,8 @@
 					/>
 					<Button
 						variant="primary"
-						processing={attachRoleState.loading}
-						disabled={attachRoleState.loading || !role || role === user.role}
+						processing={attachRoleState.status === 'loading'}
+						disabled={attachRoleState.status === 'loading' || !role || role === user.role}
 						onclick={() =>
 							Submit(async () => {
 								await Glue.rbac.attachRole(create(AttachRoleRequestSchema, { id: user.id, role: role }));
@@ -142,8 +142,8 @@
 				/>
 				<Button
 					variant="primary"
-					processing={attachState.loading}
-					disabled={attachState.loading || !attachTenant}
+					processing={attachState.status === 'loading'}
+					disabled={attachState.status === 'loading' || !attachTenant}
 					onclick={() =>
 						Submit(async () => {
 							await Glue.rbac.attachScope(
@@ -166,9 +166,9 @@
 					Update
 				</Button>
 			</div>
-			{#if attachState.forbidden}
+			{#if attachState.status === 'forbidden'}
 				<Alert class="p-2" message="You are not allowed to move the user to the selected tenant" animation={true} />
-			{:else if attachState.error}
+			{:else if attachState.status === 'error'}
 				<Alert class="p-2" message={attachState.error} animation={true} />
 			{/if}
 		</div>
@@ -178,7 +178,7 @@
 
 	<div class="flex flex-col items-start gap-2">
 		<h2 class="text-xl font-semibold text-primary/80">Reset Password</h2>
-		{#if resetState.forbidden}
+		{#if resetState.status === 'forbidden'}
 			<Alert class="p-2" message="You are not allowed to reset this users password" animation={true} />
 		{:else if resetCode}
 			<p class="text-sm text-primary/60">Share the reset link with the user:</p>
@@ -195,7 +195,7 @@
 			<div class="flex flex-row items-center gap-2">
 				<Button
 					variant="primary"
-					processing={resetState.loading}
+					processing={resetState.status === 'loading'}
 					onclick={() =>
 						Submit(async () => {
 							const resp = await Glue.user.resetPassword(
@@ -222,14 +222,14 @@
 
 		<div class="flex flex-col gap-2">
 			<h2 class="text-xl font-semibold text-primary/80">Danger Zone</h2>
-			{#if removeState.forbidden}
+			{#if removeState.status === 'forbidden'}
 				<Alert class="p-2" message="You are not allowed to delete this user" animation={true} />
 			{:else}
 				<div class="flex flex-row items-center gap-2">
 					{#if confirmDelete}
 						<Button
 							variant="destructive"
-							disabled={removeState.loading}
+							disabled={removeState.status === 'loading'}
 							onclick={() =>
 								Submit(async () => {
 									await Glue.user.delete(create(DeleteRequestSchema, { id: user.id }));

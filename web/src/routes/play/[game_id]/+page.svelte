@@ -18,7 +18,7 @@
 	import CountdownBadge from './components/CountdownBadge.svelte';
 	import StandardPage from '$lib/components/ui/StandardPage.svelte';
 
-	let gameState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let gameState: SubmitState = $state({ status: 'idle' });
 	let game: Game | undefined = $state();
 	$effect(() => {
 		Submit(async () => {
@@ -32,7 +32,7 @@
 		}, gameState);
 	});
 
-	let challengesState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let challengesState: SubmitState = $state({ status: 'idle' });
 	let challenges: Challenge[] = $state([]);
 	$effect(() => {
 		if (!game) return undefined;
@@ -48,7 +48,7 @@
 		}, challengesState);
 	});
 
-	let teamsState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let teamsState: SubmitState = $state({ status: 'idle' });
 	let teams: Team[] = $state([]);
 	$effect(() => {
 		if (!game) return undefined;

@@ -30,7 +30,7 @@
 		limit: number;
 	} = $props();
 
-	let scanState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let scanState: SubmitState = $state({ status: 'idle' });
 
 	let count = $state(0);
 	let nonce = $state(0);
@@ -86,13 +86,13 @@
 					<XIcon class="size-3" />
 				</Button>
 			{/if}
-			<Button variant="primary" title="Refresh" disabled={scanState.loading} onclick={() => nonce++}>
+			<Button variant="primary" title="Refresh" disabled={scanState.status === 'loading'} onclick={() => nonce++}>
 				<RefreshCwIcon />
 			</Button>
 		</div>
 	</div>
 
-	{#if scanState.forbidden}
+	{#if scanState.status === 'forbidden'}
 		<p class="text-sm text-primary/60 italic">You are not allowed to read the system logs.</p>
 	{:else}
 		{#key scanKey}
@@ -132,7 +132,7 @@
 				]}
 			/>
 		{/key}
-		{#if count === 0 && !scanState.loading}
+		{#if count === 0 && scanState.status !== 'loading'}
 			<p class="text-sm text-primary/60 italic">No logs matched the selected range and filters.</p>
 		{/if}
 		{#snippet renderTime(log: Log)}

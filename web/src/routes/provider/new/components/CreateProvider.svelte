@@ -20,7 +20,7 @@
 	let type = $state(String(ProviderType.AWS));
 	let regions = $state('');
 
-	let createState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let createState: SubmitState = $state({ status: 'idle' });
 
 	let createRequest = $derived(
 		create(CreateRequestSchema, {
@@ -107,14 +107,14 @@
 			type="submit"
 			variant="primary"
 			class="self-start"
-			processing={createState.loading}
-			disabled={createState.loading || Boolean(Glue.Validate(CreateRequestSchema, createRequest).error)}
+			processing={createState.status === 'loading'}
+			disabled={createState.status === 'loading' || Boolean(Glue.Validate(CreateRequestSchema, createRequest).error)}
 		>
 			Add
 		</Button>
 		{#if createState.error}
 			<Alert
-				title={createState.forbidden ? 'Permission denied' : 'Failed to add provider'}
+				title={createState.status === 'forbidden' ? 'Permission denied' : 'Failed to add provider'}
 				message={createState.error}
 				animation={true}
 			/>

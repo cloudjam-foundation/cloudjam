@@ -43,12 +43,12 @@
 	});
 
 	// TODO: Remove?
-	let costState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let updateState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let resetState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let credentialState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let fixState: SubmitState = $state({ error: '', loading: false, forbidden: false });
-	let removeState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let costState: SubmitState = $state({ status: 'idle' });
+	let updateState: SubmitState = $state({ status: 'idle' });
+	let resetState: SubmitState = $state({ status: 'idle' });
+	let credentialState: SubmitState = $state({ status: 'idle' });
+	let fixState: SubmitState = $state({ status: 'idle' });
+	let removeState: SubmitState = $state({ status: 'idle' });
 </script>
 
 <Popup bind:open title={account.name} description={account.description} {badges} {body} />
@@ -83,7 +83,7 @@
 
 	<div class="flex flex-col gap-2">
 		<h1 class="text-xl font-semibold text-primary/80">Description</h1>
-		{#if updateState.forbidden}
+		{#if updateState.status === 'forbidden'}
 			<p class="text-sm text-primary/60 italic">You are not allowed to update this account.</p>
 		{:else}
 			<p class="text-sm text-primary/60">Only accounts in the ready state accept metadata updates.</p>
@@ -96,7 +96,7 @@
 					}, updateState)}
 			>
 				<Input class="max-w-96" bind:value={description} placeholder="Purpose of the account" />
-				<Button type="submit" variant="primary" processing={updateState.loading}>Save</Button>
+				<Button type="submit" variant="primary" processing={updateState.status === 'loading'}>Save</Button>
 			</form>
 			{#if updateState.error}
 				<Alert class="p-2" message={updateState.error} animation={true} />
@@ -108,14 +108,14 @@
 
 	<div class="flex flex-col gap-2">
 		<h1 class="text-xl font-semibold text-primary/80">Maintenance</h1>
-		{#if fixState.forbidden}
+		{#if fixState.status === 'forbidden'}
 			<p class="text-sm text-primary/60 italic">You are not allowed to fix this account.</p>
 		{:else}
 			<p class="text-sm text-primary/60">Generates short lived credentials for the account.</p>
 			<div class="flex flex-row flex-wrap items-center gap-2">
 				<Button
 					variant="primary"
-					disabled={credentialState.loading}
+					disabled={credentialState.status === 'loading'}
 					onclick={() =>
 						Submit(async () => {
 							credentials = (
@@ -128,7 +128,7 @@
 					<KeyRoundIcon />
 					Generate Credentials
 				</Button>
-				{#if credentialState.loading}
+				{#if credentialState.status === 'loading'}
 					<LoadingBadge text="Generating Credentials" />
 				{/if}
 				{#if credentials}
@@ -155,7 +155,7 @@
 			<div class="flex flex-row items-center gap-2">
 				<Button
 					variant="primary"
-					disabled={resetState.loading}
+					disabled={resetState.status === 'loading'}
 					onclick={() =>
 						Submit(async () => {
 							await Glue.account.reset(create(ResetRequestSchema, { providerId: account.providerId, id: account.id }));
@@ -164,7 +164,7 @@
 				>
 					Reset Account
 				</Button>
-				{#if resetState.loading}
+				{#if resetState.status === 'loading'}
 					<LoadingBadge text="Initializing Eviction" />
 				{/if}
 			</div>
@@ -179,7 +179,7 @@
 			<div class="flex flex-row items-center gap-2">
 				<Button
 					variant="destructive"
-					disabled={fixState.loading}
+					disabled={fixState.status === 'loading'}
 					onclick={() =>
 						Submit(async () => {
 							await Glue.account.fix(create(FixRequestSchema, { providerId: account.providerId, id: account.id }));
@@ -188,7 +188,7 @@
 				>
 					Force Metafix
 				</Button>
-				{#if fixState.loading}
+				{#if fixState.status === 'loading'}
 					<LoadingBadge text="Force Resetting" />
 				{/if}
 			</div>
@@ -202,7 +202,7 @@
 
 	<div class="flex flex-col gap-2">
 		<h1 class="text-xl font-semibold text-primary/80">Danger Zone</h1>
-		{#if removeState.forbidden}
+		{#if removeState.status === 'forbidden'}
 			<p class="text-sm text-primary/60 italic">You are not allowed to delete this account.</p>
 		{:else}
 			<label class="flex flex-row items-center gap-2 text-sm text-primary/60">
@@ -213,7 +213,7 @@
 				{#if confirmDelete}
 					<Button
 						variant="destructive"
-						disabled={removeState.loading}
+						disabled={removeState.status === 'loading'}
 						onclick={() =>
 							Submit(async () => {
 								await Glue.account.delete(

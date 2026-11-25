@@ -10,7 +10,7 @@
 
 	let { providerId, onCreated }: { providerId: string; onCreated: () => void } = $props();
 
-	let createState: SubmitState = $state({ error: '', loading: false, forbidden: false });
+	let createState: SubmitState = $state({ status: 'idle' });
 
 	let init = $state(create(AccountSchema, { id: crypto.randomUUID() }));
 
@@ -52,14 +52,14 @@
 			type="submit"
 			variant="primary"
 			class="self-start"
-			processing={createState.loading}
-			disabled={createState.loading || Boolean(Glue.Validate(CreateRequestSchema, request).error)}
+			processing={createState.status === 'loading'}
+			disabled={createState.status === 'loading' || Boolean(Glue.Validate(CreateRequestSchema, request).error)}
 		>
 			Provision
 		</Button>
 		{#if createState.error}
 			<Alert
-				title={createState.forbidden ? 'Permission denied' : 'Failed to provision account'}
+				title={createState.status === 'forbidden' ? 'Permission denied' : 'Failed to provision account'}
 				message={createState.error}
 				animation={true}
 			/>
