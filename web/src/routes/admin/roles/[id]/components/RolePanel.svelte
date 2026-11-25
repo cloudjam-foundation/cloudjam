@@ -88,9 +88,6 @@
 							await Glue.role.update(create(UpdateRequestSchema, { mod: mod }));
 							await loadActive();
 							refresh();
-							setTimeout(() => {
-								updateState.status = 'idle';
-							}, 2000);
 						}, updateState)}
 				>
 					<h2 class="text-xl font-semibold text-primary/80">Metadata</h2>
@@ -152,9 +149,6 @@
 							await Glue.rbac.configureRole(create(ConfigureRoleRequestSchema, { mod: mod }));
 							await loadActive();
 							refresh();
-							setTimeout(() => {
-								configureState.status = 'idle';
-							}, 2000);
 						}, configureState)}
 				>
 					Save Permissions
@@ -219,9 +213,6 @@
 							})
 						);
 						refresh();
-						setTimeout(() => {
-							attachState.status = 'idle';
-						}, 2000);
 					}, attachState)}
 			>
 				Update

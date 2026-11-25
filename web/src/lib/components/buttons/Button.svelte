@@ -4,6 +4,7 @@
 	import type { Snippet } from 'svelte';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
 	import { cn } from 'tailwind-variants';
+	import { CheckIcon } from '@lucide/svelte';
 
 	type Variant = 'primary' | 'ghost' | 'jam' | 'destructive';
 	type ButtonState = 'idle' | 'success' | 'failed';
@@ -15,6 +16,7 @@
 		class?: string;
 		children: Snippet;
 		buttonState?: ButtonState;
+		timeout?: number;
 	}
 
 	const variants: Record<Variant, string> = {
@@ -24,7 +26,17 @@
 		destructive: 'destructive-glass text-destructive/60 hover:text-destructive/80'
 	};
 
-	let { processing, hint, variant, class: className, children, buttonState = 'idle', ...restProps }: Props = $props();
+	let {
+		processing,
+		hint,
+		variant,
+		class: className,
+		children,
+		buttonState = 'idle',
+		onclick,
+		timeout = 500,
+		...restProps
+	}: Props = $props();
 
 	const buttonColorByState: Record<ButtonState, string> = {
 		idle: '',
@@ -42,6 +54,14 @@
 		className
 	)}
 	{...restProps}
+	onclick={async () => {
+		if (onclick) {
+			await onclick();
+		}
+		setTimeout(() => {
+			buttonState = 'idle';
+		}, timeout);
+	}}
 >
 	<span
 		class="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 shimmer flex-row items-center justify-center gap-2 overflow-hidden transition-all shimmer-color-muted-foreground {processing
@@ -55,6 +75,9 @@
 		{/if}
 	</span>
 	<span class="flex flex-row items-center justify-center gap-1 {processing ? 'opacity-0' : ''}">
+		{#if buttonState === 'success'}
+			<CheckIcon />
+		{/if}
 		{@render children()}
 	</span>
 </button>

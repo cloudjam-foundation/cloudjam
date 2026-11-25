@@ -85,9 +85,6 @@
 						Submit(async () => {
 							await Glue.user.update(create(UpdateRequestSchema, { mod: { ...user, organization: organization } }));
 							refresh();
-							setTimeout(() => {
-								updateState.status = 'idle';
-							}, 2000);
 						}, updateState)}
 				>
 					<Input class="max-w-96" bind:value={organization} placeholder="Organization of the user" />
@@ -129,9 +126,6 @@
 							Submit(async () => {
 								await Glue.rbac.attachRole(create(AttachRoleRequestSchema, { id: user.id, role: role }));
 								refresh();
-								setTimeout(() => {
-									attachRoleState.status = 'idle';
-								}, 2000);
 							}, attachRoleState)}
 					>
 						Attach
@@ -220,9 +214,6 @@
 								})
 							);
 							resetCode = resp.code;
-							setTimeout(() => {
-								resetState.status = 'idle';
-							}, 2000);
 						}, resetState)}
 				>
 					Create Reset Code
@@ -253,9 +244,6 @@
 								Submit(async () => {
 									await Glue.user.delete(create(DeleteRequestSchema, { id: user.id }));
 									deleted();
-									setTimeout(() => {
-										removeState.status = 'idle';
-									}, 2000);
 								}, removeState)}
 						>
 							Yes, delete {user.username}

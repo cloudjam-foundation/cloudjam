@@ -60,9 +60,6 @@
 					const resp = await Glue.user.create(request);
 					code = resp.code;
 					link = `${location.origin}/register?email=${encodeURIComponent(init.email)}&username=${encodeURIComponent(init.username)}&code=${encodeURIComponent(resp.code)}`;
-					setTimeout(() => {
-						createState.status = 'idle';
-					}, 2000);
 				}, createState)}
 		>
 			<div class="grid gap-4 md:grid-cols-2">
