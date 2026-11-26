@@ -5,12 +5,13 @@
 	import logo from '$lib/assets/favicon.svg';
 	import Alert from '$lib/components/ui/Alert.svelte';
 	import Button from '$lib/components/buttons/Button.svelte';
-	import Input from '$lib/components/inputs/Input.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
 	import { RegisterRequestSchema } from '$lib/sdk/v1/auth/auth_pb';
 	import { create } from '@bufbuild/protobuf';
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
+	import SmartForm from '$lib/components/forms/SmartForm.svelte';
+	import SmartField from '$lib/components/forms/SmartField.svelte';
 
 	let registerRequest = $state(create(RegisterRequestSchema, {}));
 
@@ -33,7 +34,8 @@
 
 <div class="flex w-full items-center justify-center">
 	<Card class="mt-[10%] w-96">
-		<form
+		<SmartForm
+			bind:submitState={registerState}
 			class="flex w-full flex-col items-center gap-4"
 			onsubmit={() =>
 				Submit(async () => {
@@ -43,32 +45,33 @@
 		>
 			<img alt="icon" src={logo} class="h-32" />
 			<h1 class="text-4xl opacity-80">Registration</h1>
-			<Input bind:value={registerRequest.email} class="w-full" placeholder="Please enter your Email" type="email" />
-			<Input
+			<SmartField id="email" type="email" bind:value={registerRequest.email} placeholder="Please enter your email" />
+			<SmartField
+				id="registerCode"
 				bind:value={registerRequest.code}
-				class="w-full"
-				placeholder="Please enter your registration code"
-				type="text"
+				placeholder="The registration code given to you"
 			/>
+
 			<hr class="w-full border border-neutral/40" />
-			<Input
+
+			<SmartField
+				id="username"
 				bind:value={registerRequest.username}
-				class="w-full"
-				placeholder="Create a creative username"
-				type="text"
+				placeholder="Please enter the username you want"
 			/>
-			<Input
+			<SmartField
+				id="password"
+				type="password"
 				bind:value={registerRequest.password}
-				class="w-full"
-				placeholder="Create a supersecret password"
-				type="password"
+				placeholder="Create a super secret password"
 			/>
-			<Input
+			<SmartField
+				id="passwordConfirmation"
+				type="password"
 				bind:value={registerRequest.confirmPassword}
-				class="w-full"
-				placeholder="Confirm your supersecret password"
-				type="password"
+				placeholder="Confirm your super secret password"
 			/>
+
 			<Button
 				class="w-full"
 				type="submit"
@@ -81,6 +84,6 @@
 			{#if registerState.error}
 				<Alert title="Registration failed" message={registerState.error} animation={true} />
 			{/if}
-		</form>
+		</SmartForm>
 	</Card>
 </div>
